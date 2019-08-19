@@ -14,3 +14,17 @@ func (c *Client) NewHostgroup(hostgroup *Hostgroup) error {
 
 	return nil
 }
+
+func (c *Client) GetHostgroup(name string) (*Hostgroup, error) {
+	var hostgroup Hostgroup
+
+	objectURL := "/objects/hostgroup"
+
+	err := c.get(objectURL, &hostgroup)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &hostgroup, nil
+}

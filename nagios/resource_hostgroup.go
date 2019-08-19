@@ -18,7 +18,7 @@ func resourceHostGroup() *schema.Resource {
 				Required:    true,
 				Description: "The name of the hostgroup",
 			},
-			"description": {
+			"alias": {
 				Type:        schema.TypeString,
 				Required:    true,
 				Description: "The description of the hostgroup",
@@ -49,10 +49,22 @@ func resourceCreateHostGroup(d *schema.ResourceData, m interface{}) error {
 		return err
 	}
 
+	d.Set("name", hostgroup.name)
 	return resourceReadHostGroup(d, m)
 }
 
 func resourceReadHostGroup(d *schema.ResourceData, m interface{}) error {
+	nagiosClient := m.(*Client)
+
+	hostgroup, err := nagiosClient.GetHostgroup(d.Get("name").(string))
+
+	if err != nil {
+		return err
+	}
+
+	d.Set("name", hostgroup.name)
+	d.Set("alias", hostgroup.alias)
+
 	return nil
 }
 

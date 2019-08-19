@@ -46,8 +46,22 @@ func (c *Client) sendRequest(httpRequest *http.Request) ([]byte, error) {
 	return body, nil
 }
 
-func (c *Client) get() {
-	// placeholder
+func (c *Client) get(objectURL string, resourceInfo interface{}) error {
+	nagiosURL := c.url + objectURL + "?apikey=" + c.token + "&pretty=1"
+
+	request, err := http.NewRequest(http.MethodGet, nagiosURL, nil)
+
+	if err != nil {
+		return err
+	}
+
+	body, err := c.sendRequest(request)
+
+	if err != nil {
+		return err
+	}
+
+	return json.Unmarshal(body, resourceInfo)
 }
 
 func (c *Client) post(configURL string, requestBody interface{}) ([]byte, error) {
@@ -72,7 +86,4 @@ func (c *Client) post(configURL string, requestBody interface{}) ([]byte, error)
 	}
 
 	return response, nil
-
-	// curl -XPOST "https://nagiosdev1-v.hy-vee.net/nagiosxi/api/v1/config/hostgroup?apikey=f0RWe3VY5prUC58FmuVQAYlbevA0iujRvbN3tYhSHMMf7abMH6Ct4eIC3uSF2bsQ&pretty=1"
-	// -d "hostgroup_name=testapihostgroup&alias=HostGroup&applyconfig=1"
 }
