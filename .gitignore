@@ -1,7 +1,6 @@
 terraform-provider-nagios
 *.tf
 *.tfvars
-crash.log
-*.tfstate
-*.tfstate.backup
+*.log
+*.tfstate*
 .terraform

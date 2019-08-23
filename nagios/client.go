@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"time"
 )
@@ -30,16 +31,21 @@ func NewClient(url string, token string) *Client {
 
 func (c *Client) sendRequest(httpRequest *http.Request) ([]byte, error) {
 	response, err := c.httpClient.Do(httpRequest)
+	log.Printf("[DEBUG] Request body: [%p]", httpRequest)
+	log.Printf("[DEBUG] HTTP Status code: %d", response.StatusCode)
 
 	if err != nil {
+		log.Printf("[ERROR] Error occurred completing HTTP request: %s", err.Error())
 		return nil, err
 	}
 
 	defer response.Body.Close()
 
 	body, err := ioutil.ReadAll(response.Body)
+	log.Printf("[DEBUG] HTTP response body: [%p]", body)
 
 	if err != nil {
+		log.Printf("[ERROR] Error occurred reading body: %s", err.Error())
 		return nil, err
 	}
 
@@ -52,12 +58,14 @@ func (c *Client) get(objectURL string, resourceInfo interface{}) error {
 	request, err := http.NewRequest(http.MethodGet, nagiosURL, nil)
 
 	if err != nil {
+		log.Printf("[ERROR] Error occurred during request: %s", err.Error())
 		return err
 	}
 
 	body, err := c.sendRequest(request)
 
 	if err != nil {
+		log.Printf("[ERROR] Error occurred sending request: %s", err.Error())
 		return err
 	}
 
@@ -65,23 +73,29 @@ func (c *Client) get(objectURL string, resourceInfo interface{}) error {
 }
 
 func (c *Client) post(configURL string, requestBody interface{}) ([]byte, error) {
-	nagiosURL := c.url + configURL + "?apikey=" + c.token + "&pretty=1"
-
+	nagiosURL := c.url + configURL + "?apikey=" + c.token + "&applyconfig=1"
 	data, err := json.Marshal(requestBody)
+	// log.Printf("[DEBUG] Request body: [%p]", requestBody)
+	// log.Printf("[DEBUG] data variable value: [%p]", data)
 
 	if err != nil {
+		log.Printf("[ERROR] Error occurred: %s", err.Error())
 		return nil, err
 	}
 
 	request, err := http.NewRequest(http.MethodPost, nagiosURL, bytes.NewReader(data))
+	log.Printf("[DEBUG] HTTP request body: [%p]", request.Body)
 
 	if err != nil {
+		log.Printf("[ERROR] Error occurred creating request: %s", err.Error())
 		return nil, err
 	}
 
 	response, err := c.sendRequest(request)
+	log.Printf("[DEBUG] Response from Nagios: [%p]", response)
 
 	if err != nil {
+		log.Printf("[ERROR] Error occurred sending request: %s", err.Error())
 		return nil, err
 	}
 
