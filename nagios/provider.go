@@ -18,7 +18,7 @@ func Provider() *schema.Provider {
 				Type:        schema.TypeString,
 				Required:    true,
 				DefaultFunc: schema.EnvDefaultFunc("TOKEN", ""),
-				Description: "The API token used to authenticate to Nagios",
+				Description: "API token to authenticate to Nagios",
 			},
 		},
 		ResourcesMap: map[string]*schema.Resource{

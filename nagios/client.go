@@ -17,16 +17,18 @@ type Client struct {
 }
 
 // NewClient creates a pointer to the client that will be used to send requests to Nagios
-func NewClient(url string, token string) *Client {
+func NewClient(url, token string) *Client {
 	httpClient := &http.Client{
 		Timeout: time.Second * 5,
 	}
 
-	return &Client{
-		url,
-		token,
-		httpClient,
+	nagiosClient := &Client{
+		url:        url,
+		token:      token,
+		httpClient: httpClient,
 	}
+
+	return nagiosClient
 }
 
 func (c *Client) sendRequest(httpRequest *http.Request) ([]byte, error) {
@@ -91,13 +93,13 @@ func (c *Client) post(configURL string, requestBody interface{}) ([]byte, error)
 		return nil, err
 	}
 
-	response, err := c.sendRequest(request)
-	log.Printf("[DEBUG] Response from Nagios: [%p]", response)
+	body, err := c.sendRequest(request)
+	log.Printf("[DEBUG] Response from Nagios - %s", string(body))
 
 	if err != nil {
 		log.Printf("[ERROR] Error occurred sending request: %s", err.Error())
 		return nil, err
 	}
 
-	return response, nil
+	return body, nil
 }

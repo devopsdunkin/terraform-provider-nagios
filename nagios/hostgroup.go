@@ -1,42 +1,58 @@
 package nagios
 
 import (
-	"bytes"
-	"encoding/json"
+	"io/ioutil"
 	"log"
 	"net/http"
+	"net/url"
+	"strings"
 )
 
 // NewHostgroup initiates the HTTP POST to the Nagios API to create a hostgroup
-func (c *Client) NewHostgroup(hostgroup *Hostgroup) error {
+func (c *Client) NewHostgroup(hostgroup *Hostgroup) ([]byte, error) {
 	nagiosURL := c.url + "/config/hostgroup?apikey=" + c.token + "&applyconfig=1"
-	data, err := json.Marshal(hostgroup)
+
+	data := url.Values{}
+	data.Set("hostgroup_name", hostgroup.Name)
+	data.Set("alias", hostgroup.Alias)
+	// log.Printf("[DEBUG] Data to be sent to Nagios - %s", string(data))
+
+	// if err != nil {
+	// 	log.Printf("[ERROR] Error occurred converting hostgroup struct")
+	// 	return nil, err
+	// }
+
+	request, err := http.NewRequest(http.MethodPost, nagiosURL, strings.NewReader(data.Encode()))
 
 	if err != nil {
-		log.Printf("[ERROR] Error occurred converting hostgroup struct")
-		return err
+		log.Printf("[ERROR] Error creating HTTP request - %s", err.Error())
+		return nil, err
 	}
 
-	request, err := http.NewRequest(http.MethodPost, nagiosURL, bytes.NewReader(data))
-	log.Printf("[DEBUG] HTTP request body: [%p]", request.Body)
+	// Add headers
+	request.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+	request.Header.Add("Accept", "/")
 
-	if err != nil {
-		log.Printf("[ERROR] Error occurred creating request: %s", err.Error())
-		return err
-	}
-
+	// Perform HTTP request
 	response, err := c.httpClient.Do(request)
-
-	log.Printf("[DEBUG] Response from Nagios: [%p]", response)
 
 	if err != nil {
 		log.Printf("[ERROR] Error occurred sending request: %s", err.Error())
-		return err
+		return nil, err
 	}
 
 	defer response.Body.Close()
 
-	return nil
+	body, err := ioutil.ReadAll(response.Body)
+
+	log.Printf("[DEBUG] Response - %s", string(body))
+
+	if err != nil {
+		log.Printf("[ERROR] Error processing response.Body: %s", err.Error())
+		return nil, err
+	}
+
+	return body, nil
 }
 
 func (c *Client) GetHostgroup(name string) (*Hostgroup, error) {

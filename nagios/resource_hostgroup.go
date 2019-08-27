@@ -6,7 +6,6 @@ import (
 
 // Hostgroup contains all info needed to create a hostgroup in Nagios
 type Hostgroup struct {
-	Id    string `json:"id,omitempty"`
 	Name  string `json:"hostgroup_name"`
 	Alias string `json:"alias"`
 }
@@ -40,18 +39,17 @@ func resourceCreateHostGroup(d *schema.ResourceData, m interface{}) error {
 	nagiosClient := m.(*Client)
 
 	hostgroup := &Hostgroup{
-		d.Id(),
 		d.Get("name").(string),
 		d.Get("alias").(string),
 	}
 
-	err := nagiosClient.NewHostgroup(hostgroup)
+	_, err := nagiosClient.NewHostgroup(hostgroup)
 
 	if err != nil {
 		return err
 	}
 
-	d.SetId(hostgroup.Id)
+	d.SetId(hostgroup.Name)
 
 	return resourceReadHostGroup(d, m)
 }
@@ -65,7 +63,6 @@ func resourceReadHostGroup(d *schema.ResourceData, m interface{}) error {
 		return err
 	}
 
-	d.SetId(hostgroup.Id)
 	d.Set("name", hostgroup.Name)
 	d.Set("alias", hostgroup.Alias)
 
