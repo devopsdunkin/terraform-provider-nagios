@@ -1,6 +1,8 @@
 package nagios
 
 import (
+	"log"
+
 	"github.com/hashicorp/terraform/helper/schema"
 )
 
@@ -39,8 +41,8 @@ func resourceCreateHostGroup(d *schema.ResourceData, m interface{}) error {
 	nagiosClient := m.(*Client)
 
 	hostgroup := &Hostgroup{
-		d.Get("name").(string),
-		d.Get("alias").(string),
+		Name:  d.Get("name").(string),
+		Alias: d.Get("alias").(string),
 	}
 
 	_, err := nagiosClient.NewHostgroup(hostgroup)
@@ -50,19 +52,36 @@ func resourceCreateHostGroup(d *schema.ResourceData, m interface{}) error {
 	}
 
 	d.SetId(hostgroup.Name)
+	d.Set("name", hostgroup.Name)
+	d.Set("alias", hostgroup.Alias)
 
 	return resourceReadHostGroup(d, m)
 }
 
-func resourceReadHostGroup(d *schema.ResourceData, m interface{}) error {
+func resourceReadHostGroup(d *schema.ResourceData, m interface{}) error { // TODO: Need to make sure name attr is being set in tfstate. ID and alias are set but name is empty string
 	nagiosClient := m.(*Client)
+	log.Printf("[DEBUG] name - %s", d.Get("name").(string))
 
-	hostgroup, err := nagiosClient.GetHostgroup(d.Get("name").(string))
+	// hostgroup := &Hostgroup{}
+
+	hostgroup, err := nagiosClient.GetHostgroup(d.Id())
 
 	if err != nil {
+		log.Printf("[ERROR] Error reading hostgroup - %s", err.Error())
+
+		if err.Error() == "No hostgroup found" {
+			log.Printf("Hostgroup does not exist in Nagios. Updating Terraform state")
+			d.SetId("")
+		}
+
 		return err
 	}
 
+	log.Printf("[DEBUG] d.Set on hostgroup.Name - %s", hostgroup.Name)
+	log.Printf("[DEBUG] d.Set on hostgroup.Alias - %s", hostgroup.Alias)
+	log.Printf("[DEBUG] d.Id - %s", d.Id())
+
+	d.SetId("tf_test")
 	d.Set("name", hostgroup.Name)
 	d.Set("alias", hostgroup.Alias)
 
