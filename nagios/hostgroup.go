@@ -1,54 +1,27 @@
 package nagios
 
 import (
-	"io/ioutil"
 	"log"
-	"net/http"
 	"net/url"
-	"strings"
 )
 
 // NewHostgroup initiates the HTTP POST to the Nagios API to create a hostgroup
 func (c *Client) NewHostgroup(hostgroup *Hostgroup) ([]byte, error) {
-	nagiosURL := c.url + "/config/hostgroup?apikey=" + c.token + "&applyconfig=1"
+	nagiosURL, err := c.buildURL("hostgroup", "POST", "", "")
 
-	data := url.Values{}
+	if err != nil {
+		log.Printf("[ERROR] %s", err.Error())
+		return nil, err
+	}
+
+	data := &url.Values{}
 	data.Set("hostgroup_name", hostgroup.Name)
 	data.Set("alias", hostgroup.Alias)
-	// log.Printf("[DEBUG] Data to be sent to Nagios - %s", string(data))
 
-	// if err != nil {
-	// 	log.Printf("[ERROR] Error occurred converting hostgroup struct")
-	// 	return nil, err
-	// }
-
-	request, err := http.NewRequest(http.MethodPost, nagiosURL, strings.NewReader(data.Encode()))
+	body, err := c.post(data, nagiosURL)
 
 	if err != nil {
-		log.Printf("[ERROR] Error creating HTTP request - %s", err.Error())
-		return nil, err
-	}
-
-	// Add headers
-	request.Header.Add("Content-Type", "application/x-www-form-urlencoded")
-	request.Header.Add("Accept", "/")
-
-	// Perform HTTP request
-	response, err := c.httpClient.Do(request)
-
-	if err != nil {
-		log.Printf("[ERROR] Error occurred sending request: %s", err.Error())
-		return nil, err
-	}
-
-	defer response.Body.Close()
-
-	body, err := ioutil.ReadAll(response.Body)
-
-	log.Printf("[DEBUG] Response - %s", string(body))
-
-	if err != nil {
-		log.Printf("[ERROR] Error processing response.Body: %s", err.Error())
+		log.Printf("[ERROR] Error occurred during HTTP POST - %s", err.Error())
 		return nil, err
 	}
 
@@ -56,15 +29,90 @@ func (c *Client) NewHostgroup(hostgroup *Hostgroup) ([]byte, error) {
 }
 
 func (c *Client) GetHostgroup(name string) (*Hostgroup, error) {
+	var hostgroupArray = []Hostgroup{}
 	var hostgroup Hostgroup
 
-	objectURL := "/objects/hostgroup"
-
-	err := c.get(objectURL, &hostgroup)
+	nagiosURL, err := c.buildURL("hostgroup", "GET", "hostgroup_name", name)
 
 	if err != nil {
+		log.Printf("[ERROR] %s", err.Error())
 		return nil, err
 	}
 
+	data := &url.Values{}
+	data.Set("hostgroup_name", name)
+
+	err = c.get(data, &hostgroupArray, nagiosURL)
+
+	if err != nil {
+		log.Printf("[ERROR] Error getting hostgroup from Nagios - %s", err.Error())
+		return nil, err
+	}
+
+	// if len(hostgroupArray) == 0 {
+	// 	return nil, errors.New("No hostgroup found")
+	// }
+
+	log.Printf("[DEBUG] Hostgroup Array - %s", hostgroupArray)
+
+	for i, _ := range hostgroupArray {
+		hostgroup.Name = hostgroupArray[i].Name
+		hostgroup.Alias = hostgroupArray[i].Alias
+		if i > 1 { // Nagios should only return 1 object during a GET with the way we are manipulating it. So only grab the first object and break if we have more than 1
+			break
+		}
+	}
+	log.Printf("[DEBUG] GetHostgroup func: hostgroup.Name - %s", hostgroup.Name)
+	log.Printf("[DEBUG] GetHostgroup func: hostgroup.Alias - %s", hostgroup.Alias)
 	return &hostgroup, nil
+}
+
+// func (c *Client) UpdateHostgroup(name string) ([]byte, error) {
+// 	var hostgroup Hostgroup
+
+// 	nagiosURL, err := c.buildURL("hostgroup", "PUT", "hostgroup_name", name)
+
+// 	if err != nil {
+// 		log.Printf("[ERROR] %s", err.Error())
+// 		return nil, err
+// 	}
+
+// 	data := &url.Values{}
+// 	data.Set("hostgroup_name", hostgroup.Name)
+// 	data.Set("alias", hostgroup.Alias)
+
+// 	body, err := c.put(data, nagiosURL)
+
+// 	if err != nil {
+// 		log.Printf("[ERROR] Error during HTTP PUT - %s", err.Error())
+// 		return nil, err
+// 	}
+
+// 	return body, nil
+// }
+
+func (c *Client) DeleteHostgroup(name string) ([]byte, error) {
+	// TODO: Come back to this func. Not sure if implementing correctly
+	// Not sure if we should be creating a pointer to hostgroup when deleting
+	// Or do we just pass in the name of the hostgroup to delete since it no longer exists?
+	hostgroup := &Hostgroup{}
+	nagiosURL, err := c.buildURL("hostgroup", "DELETE", "hostgroup_name", name)
+
+	if err != nil {
+		log.Printf("[ERROR] %s", err.Error())
+		return nil, err
+	}
+
+	data := &url.Values{}
+	data.Set("hostgroup_name", hostgroup.Name)
+	data.Set("alias", hostgroup.Alias)
+
+	body, err := c.delete(data, nagiosURL)
+
+	if err != nil {
+		log.Printf("[ERROR] Error during HTTP DELETE - %s", err.Error())
+		return nil, err
+	}
+
+	return body, nil
 }
