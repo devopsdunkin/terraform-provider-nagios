@@ -7,10 +7,17 @@ import (
 )
 
 // Hostgroup contains all info needed to create a hostgroup in Nagios
+// TODO: Test to see if we need both JSON and schema tags
 type Hostgroup struct {
-	Name  string `json:"hostgroup_name"`
-	Alias string `json:"alias"`
+	Name  string `json:"hostgroup_name" schema:"hostgroup_name"`
+	Alias string `json:"alias" schema:"alias"`
 }
+
+// Test cases
+// TODO: TF should only show it added something if it did
+// TODO: TF should only show it changed something if it did
+// TODO: TF should only show it deleted something if it did
+// TODO:TF should display that infrastructure is up-to-date if no changes
 
 func resourceHostGroup() *schema.Resource {
 	return &schema.Resource{

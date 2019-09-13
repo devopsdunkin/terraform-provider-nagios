@@ -38,6 +38,7 @@ func (c *Client) sendRequest(httpRequest *http.Request) ([]byte, error) {
 
 	response, err := c.httpClient.Do(httpRequest)
 
+	// TODO: Need to validate that when Nagios is unavailable, this err check will catch it
 	if err != nil {
 		log.Printf("[ERROR] Error occurred completing HTTP request: %s", err.Error())
 		return nil, err
