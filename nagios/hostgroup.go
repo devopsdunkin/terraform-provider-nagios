@@ -95,7 +95,7 @@ func (c *Client) DeleteHostgroup(name string) ([]byte, error) {
 	// TODO: Come back to this func. Not sure if implementing correctly
 	// Not sure if we should be creating a pointer to hostgroup when deleting
 	// Or do we just pass in the name of the hostgroup to delete since it no longer exists?
-	hostgroup := &Hostgroup{}
+	// hostgroup := &Hostgroup{}
 	nagiosURL, err := c.buildURL("hostgroup", "DELETE", "hostgroup_name", name, "")
 
 	if err != nil {
@@ -104,8 +104,7 @@ func (c *Client) DeleteHostgroup(name string) ([]byte, error) {
 	}
 
 	data := &url.Values{}
-	data.Set("hostgroup_name", hostgroup.Name)
-	data.Set("alias", hostgroup.Alias)
+	data.Set("hostgroup_name", name)
 
 	body, err := c.delete(data, nagiosURL)
 

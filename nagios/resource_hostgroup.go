@@ -127,7 +127,19 @@ func resourceUpdateHostGroup(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceDeleteHostGroup(d *schema.ResourceData, m interface{}) error {
-	return resourceReadHostGroup(d, m)
+	nagiosClient := m.(*Client)
+
+	_, err := nagiosClient.DeleteHostgroup(d.Id())
+
+	if err != nil {
+		log.Printf("[ERROR] Error trying to delete resource - %s", err.Error())
+		return err
+	}
+
+	// Update Terraform state that we have deleted the resource
+	d.SetId("")
+
+	return nil
 }
 
 func resourceExistsHostGroup(d *schema.ResourceData, m interface{}) error {
