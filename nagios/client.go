@@ -56,7 +56,7 @@ func (c *Client) sendRequest(httpRequest *http.Request) ([]byte, error) {
 	return body, nil
 }
 
-func (c *Client) buildURL(objectType, method, objectName, name string) (string, error) {
+func (c *Client) buildURL(objectType, method, objectName, name, oldVal string) (string, error) {
 	var nagiosURL strings.Builder
 
 	var apiURL string
@@ -76,7 +76,7 @@ func (c *Client) buildURL(objectType, method, objectName, name string) (string, 
 	// and type to filter results to only that. Otherwise, Nagios
 	// will return all results for that particular object type
 	// TODO: This is getting messy. Need to figure out a more streamlined way to handle all of this
-	if method == "GET" || method == "DELETE" {
+	if method == "GET" {
 		nagiosURL.WriteString("?apikey=")
 		nagiosURL.WriteString(c.token)
 		nagiosURL.WriteString("&")
@@ -90,9 +90,27 @@ func (c *Client) buildURL(objectType, method, objectName, name string) (string, 
 		} else {
 			nagiosURL.WriteString(name)
 		}
+
+		nagiosURL.WriteString("&pretty=1")
+	} else if method == "DELETE" {
+		nagiosURL.WriteString("?apikey=")
+		nagiosURL.WriteString(c.token)
+		nagiosURL.WriteString("&")
+		nagiosURL.WriteString(objectName)
+		nagiosURL.WriteString("=")
+
+		if name == "" {
+			errMsg := "Name must be provided when using the " + method + " method"
+			log.Printf("[ERROR] %s", errMsg)
+			return "", errors.New(errMsg)
+		} else {
+			nagiosURL.WriteString(name)
+		}
+
+		nagiosURL.WriteString("&applyconfig=1")
 	} else if method == "PUT" {
 		nagiosURL.WriteString("/")
-		nagiosURL.WriteString(name)
+		nagiosURL.WriteString(oldVal)
 		nagiosURL.WriteString("?apikey=")
 		nagiosURL.WriteString(c.token)
 		nagiosURL.WriteString("&pretty=1&applyconfig=1")
@@ -103,16 +121,14 @@ func (c *Client) buildURL(objectType, method, objectName, name string) (string, 
 		nagiosURL.WriteString("&applyconfig=1")
 	}
 
-	if method != "GET" {
-		nagiosURL.WriteString("&applyconfig=1") // During a POST/PUT/DELETE, we want to tell Nagios to update the config
-	} else {
-		nagiosURL.WriteString("&pretty=1") // Otherwise, if just doing a GET, we want it returned in a pretty format (JSON)
-	}
-
 	log.Printf("[DEBUG] Nagios URL - %s", nagiosURL.String()) // TODO: Need to scrub API key from logs
 
 	return nagiosURL.String(), nil
 }
+
+// func (c *Client) scrubToken(url string) error {
+// 	if strings.Contains(url, "apikey=")
+// }
 
 func (c *Client) addRequestHeaders(request *http.Request) {
 	request.Header.Add("Content-Type", "application/x-www-form-urlencoded")
@@ -130,20 +146,15 @@ func (c *Client) get(data *url.Values, resourceInfo interface{}, nagiosURL strin
 	}
 
 	body, err := c.sendRequest(request)
-	// log.Printf("[DEBUG] Body - %s", string(body))
 
 	if err != nil {
 		log.Printf("[ERROR] Error occurred sending request: %s", err.Error())
 		return err
 	}
 
-	if err != nil {
-		log.Printf("[ERROR] Error unmarshaling JSON data from Nagios - %s", err.Error())
-		return err
-	}
-
 	test := body
-	log.Printf("[DEBUG] Test value - %s", string(test))
+
+	log.Printf("[DEBUG] Body value - %s", string(test))
 
 	return json.Unmarshal(body, resourceInfo)
 }

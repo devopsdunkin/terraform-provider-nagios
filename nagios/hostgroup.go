@@ -7,7 +7,7 @@ import (
 
 // NewHostgroup initiates the HTTP POST to the Nagios API to create a hostgroup
 func (c *Client) NewHostgroup(hostgroup *Hostgroup) ([]byte, error) {
-	nagiosURL, err := c.buildURL("hostgroup", "POST", "", "")
+	nagiosURL, err := c.buildURL("hostgroup", "POST", "", "", "")
 
 	if err != nil {
 		log.Printf("[ERROR] %s", err.Error())
@@ -32,7 +32,7 @@ func (c *Client) GetHostgroup(name string) (*Hostgroup, error) {
 	var hostgroupArray = []Hostgroup{}
 	var hostgroup Hostgroup
 
-	nagiosURL, err := c.buildURL("hostgroup", "GET", "hostgroup_name", name)
+	nagiosURL, err := c.buildURL("hostgroup", "GET", "hostgroup_name", name, "")
 
 	if err != nil {
 		log.Printf("[ERROR] %s", err.Error())
@@ -49,10 +49,6 @@ func (c *Client) GetHostgroup(name string) (*Hostgroup, error) {
 		return nil, err
 	}
 
-	// if len(hostgroupArray) == 0 {
-	// 	return nil, errors.New("No hostgroup found")
-	// }
-
 	log.Printf("[DEBUG] Hostgroup Array - %s", hostgroupArray)
 
 	for i, _ := range hostgroupArray {
@@ -67,36 +63,40 @@ func (c *Client) GetHostgroup(name string) (*Hostgroup, error) {
 	return &hostgroup, nil
 }
 
-// func (c *Client) UpdateHostgroup(name string) ([]byte, error) {
-// 	var hostgroup Hostgroup
+func (c *Client) UpdateHostgroup(hostgroup *Hostgroup, oldVal interface{}) error {
+	nagiosURL, err := c.buildURL("hostgroup", "PUT", "hostgroup_name", hostgroup.Name, oldVal.(string))
 
-// 	nagiosURL, err := c.buildURL("hostgroup", "PUT", "hostgroup_name", name)
+	if err != nil {
+		log.Printf("[ERROR] %s", err.Error())
+		return err
+	}
 
-// 	if err != nil {
-// 		log.Printf("[ERROR] %s", err.Error())
-// 		return nil, err
-// 	}
+	// TODO: Needs migrated to buildURL func
+	nagiosURL = nagiosURL + "&hostgroup_name=" + hostgroup.Name + "&alias=" + hostgroup.Alias
 
-// 	data := &url.Values{}
-// 	data.Set("hostgroup_name", hostgroup.Name)
-// 	data.Set("alias", hostgroup.Alias)
+	data := &url.Values{}
+	data.Set("hostgroup_name", hostgroup.Name)
+	data.Set("alias", hostgroup.Alias)
 
-// 	body, err := c.put(data, nagiosURL)
+	log.Printf("[DEBUG] hostgroup.Name in UpdateHostgroup func - %S", hostgroup.Name) // TODO: Clean up logging and make it more consistent
+	log.Printf("[DEBUG] Value of url.Values (data) - %s", data)
 
-// 	if err != nil {
-// 		log.Printf("[ERROR] Error during HTTP PUT - %s", err.Error())
-// 		return nil, err
-// 	}
+	_, err = c.put(data, nagiosURL)
 
-// 	return body, nil
-// }
+	if err != nil {
+		log.Printf("[ERROR] Error during HTTP PUT - %s", err.Error())
+		return err
+	}
+
+	return nil
+}
 
 func (c *Client) DeleteHostgroup(name string) ([]byte, error) {
 	// TODO: Come back to this func. Not sure if implementing correctly
 	// Not sure if we should be creating a pointer to hostgroup when deleting
 	// Or do we just pass in the name of the hostgroup to delete since it no longer exists?
 	hostgroup := &Hostgroup{}
-	nagiosURL, err := c.buildURL("hostgroup", "DELETE", "hostgroup_name", name)
+	nagiosURL, err := c.buildURL("hostgroup", "DELETE", "hostgroup_name", name, "")
 
 	if err != nil {
 		log.Printf("[ERROR] %s", err.Error())

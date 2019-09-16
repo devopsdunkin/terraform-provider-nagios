@@ -4,4 +4,4 @@ terraform-provider-nagios
 *.log
 *.tfstate*
 .terraform
-setup.sh
+setup.py

@@ -8,6 +8,8 @@ import (
 
 // Hostgroup contains all info needed to create a hostgroup in Nagios
 // TODO: Test to see if we need both JSON and schema tags
+// EWe tag with both JSON and schema because a POST uses URL encoding to send data
+// A GET returns data in JSON format
 type Hostgroup struct {
 	Name  string `json:"hostgroup_name" schema:"hostgroup_name"`
 	Alias string `json:"alias" schema:"alias"`
@@ -37,8 +39,8 @@ func resourceHostGroup() *schema.Resource {
 		Read:   resourceReadHostGroup,
 		Update: resourceUpdateHostGroup,
 		Delete: resourceDeleteHostGroup,
-		// Exists: resourceExistsHostGroup,  #TODO: Need to figure out how to define this
-		Importer: &schema.ResourceImporter{
+		// Exists: resourceExistsHostGroup,  // TODO: Need to figure out how to define this
+		Importer: &schema.ResourceImporter{ // TODO: Need to figure out what is needed here
 			State: schema.ImportStatePassthrough,
 		},
 	}
@@ -65,30 +67,30 @@ func resourceCreateHostGroup(d *schema.ResourceData, m interface{}) error {
 	return resourceReadHostGroup(d, m)
 }
 
-func resourceReadHostGroup(d *schema.ResourceData, m interface{}) error { // TODO: Need to make sure name attr is being set in tfstate. ID and alias are set but name is empty string
+// TODO: When no changes are done, it still says "apply complete". Believe it should say "Infrastructure up-to-date"
+func resourceReadHostGroup(d *schema.ResourceData, m interface{}) error {
 	nagiosClient := m.(*Client)
-	log.Printf("[DEBUG] name - %s", d.Get("name").(string))
-
-	// hostgroup := &Hostgroup{}
+	log.Printf("[DEBUG] name - %s", d.Id())
 
 	hostgroup, err := nagiosClient.GetHostgroup(d.Id())
 
 	if err != nil {
 		log.Printf("[ERROR] Error reading hostgroup - %s", err.Error())
 
-		if err.Error() == "No hostgroup found" {
-			log.Printf("Hostgroup does not exist in Nagios. Updating Terraform state")
-			d.SetId("")
-		}
-
 		return err
+	}
+
+	if hostgroup == nil {
+		// Hostgroup not found in Nagios. Update terraform state
+		d.SetId("")
+		return nil
 	}
 
 	log.Printf("[DEBUG] d.Set on hostgroup.Name - %s", hostgroup.Name)
 	log.Printf("[DEBUG] d.Set on hostgroup.Alias - %s", hostgroup.Alias)
 	log.Printf("[DEBUG] d.Id - %s", d.Id())
 
-	d.SetId("tf_test")
+	d.SetId(hostgroup.Name)
 	d.Set("name", hostgroup.Name)
 	d.Set("alias", hostgroup.Alias)
 
@@ -96,6 +98,31 @@ func resourceReadHostGroup(d *schema.ResourceData, m interface{}) error { // TOD
 }
 
 func resourceUpdateHostGroup(d *schema.ResourceData, m interface{}) error {
+	nagiosClient := m.(*Client)
+
+	log.Printf("[DEBUG] name - %s", d.Get("name").(string))
+
+	hostgroup := &Hostgroup{
+		Name:  d.Get("name").(string),
+		Alias: d.Get("alias").(string),
+	}
+
+	oldVal, _ := d.GetChange("name")
+
+	log.Printf("[DEBUG] Old value - %s", oldVal.(string))
+
+	err := nagiosClient.UpdateHostgroup(hostgroup, oldVal) // TODO: Alias is not getting updated. It is blank
+
+	if err != nil {
+		log.Printf("[ERROR] Error updating hostgroup in Nagios - %s", err.Error())
+		return err
+	}
+
+	// TODO: name and alias are not getting set.
+	d.SetId(hostgroup.Name)
+	d.Set("name", hostgroup.Name)
+	d.Set("alias", hostgroup.Alias)
+
 	return resourceReadHostGroup(d, m)
 }
 
