@@ -78,7 +78,7 @@ func (c *Client) UpdateHostgroup(hostgroup *Hostgroup, oldVal interface{}) error
 	data.Set("hostgroup_name", hostgroup.Name)
 	data.Set("alias", hostgroup.Alias)
 
-	log.Printf("[DEBUG] hostgroup.Name in UpdateHostgroup func - %S", hostgroup.Name) // TODO: Clean up logging and make it more consistent
+	log.Printf("[DEBUG] hostgroup.Name in UpdateHostgroup func - %s", hostgroup.Name) // TODO: Clean up logging and make it more consistent
 	log.Printf("[DEBUG] Value of url.Values (data) - %s", data)
 
 	_, err = c.put(data, nagiosURL)
