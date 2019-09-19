@@ -22,10 +22,12 @@ func Provider() *schema.Provider {
 				Required:    true,
 				DefaultFunc: schema.EnvDefaultFunc("TOKEN", ""),
 				Description: "API token to authenticate to Nagios",
+				Sensitive:   true,
 			},
 		},
 		ResourcesMap: map[string]*schema.Resource{
 			"nagios_hostgroup": resourceHostGroup(),
+			"nagios_host":      resourceHost(),
 		},
 		ConfigureFunc: providerConfigure,
 	}

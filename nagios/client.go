@@ -110,11 +110,16 @@ func (c *Client) buildURL(objectType, method, objectName, name, oldVal string) (
 		nagiosURL.WriteString("&applyconfig=1")
 	} else if method == "PUT" {
 		nagiosURL.WriteString("/")
-		nagiosURL.WriteString(oldVal)
+
+		if oldVal != "" {
+			nagiosURL.WriteString(oldVal)
+		} else {
+			return "", errors.New("[ERROR] A value for oldVal must be provided when attempting a PUT")
+		}
+
 		nagiosURL.WriteString("?apikey=")
 		nagiosURL.WriteString(c.token)
 		nagiosURL.WriteString("&pretty=1&applyconfig=1")
-		// nagiosURL.WriteString()
 	} else if method == "POST" {
 		nagiosURL.WriteString("?apikey=")
 		nagiosURL.WriteString(c.token)
@@ -212,4 +217,22 @@ func (c *Client) delete(data *url.Values, nagiosURL string) ([]byte, error) {
 	}
 
 	return body, nil
+}
+
+// Function maps the elements of a string array to a single string with each value separated by commas
+// Nagios expects a list of values supplied in this format via URL encoding
+func mapArrayToString(sourceArray []interface{}) string {
+	var destString strings.Builder
+
+	for i, sourceObject := range sourceArray {
+		// If this is the first time looping through, set the destination object euqal to the first element in array
+		if i == 0 {
+			destString.WriteString(sourceObject.(string))
+		} else { // More than one element in array. Append a comma first before we add the next item
+			destString.WriteString(",")
+			destString.WriteString(sourceObject.(string))
+		}
+	}
+
+	return destString.String()
 }
