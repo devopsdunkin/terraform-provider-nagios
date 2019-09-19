@@ -4,5 +4,6 @@ terraform-provider-nagios
 *.log
 *.tfstate*
 .terraform
-setup.py
+cleanup.py
 Nagios.postman_collection.json
+terraform-provider-nagios.postman_collection.json
