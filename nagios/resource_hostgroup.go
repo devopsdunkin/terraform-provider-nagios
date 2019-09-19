@@ -15,12 +15,6 @@ type Hostgroup struct {
 	Alias string `json:"alias" schema:"alias"`
 }
 
-// Test cases
-// TODO: TF should only show it added something if it did
-// TODO: TF should only show it changed something if it did
-// TODO: TF should only show it deleted something if it did
-// TODO:TF should display that infrastructure is up-to-date if no changes
-
 func resourceHostGroup() *schema.Resource {
 	return &schema.Resource{
 		Schema: map[string]*schema.Schema{
@@ -40,9 +34,9 @@ func resourceHostGroup() *schema.Resource {
 		Update: resourceUpdateHostGroup,
 		Delete: resourceDeleteHostGroup,
 		// Exists: resourceExistsHostGroup,  // TODO: Need to figure out how to define this
-		Importer: &schema.ResourceImporter{ // TODO: Need to figure out what is needed here
-			State: schema.ImportStatePassthrough,
-		},
+		// Importer: &schema.ResourceImporter{ // TODO: Need to figure out what is needed here
+		// 	State: schema.ImportStatePassthrough,
+		// },
 	}
 }
 
@@ -142,6 +136,7 @@ func resourceDeleteHostGroup(d *schema.ResourceData, m interface{}) error {
 	return nil
 }
 
-func resourceExistsHostGroup(d *schema.ResourceData, m interface{}) error {
-	return resourceReadHostGroup(d, m)
-}
+// TODO: Need to determine if this needs implemented. Need more understanding of this
+// func resourceExistsHostGroup(d *schema.ResourceData, m interface{}) error {
+// 	return resourceReadHostGroup(d, m)
+// }
