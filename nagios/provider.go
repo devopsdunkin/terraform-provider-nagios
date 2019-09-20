@@ -26,8 +26,9 @@ func Provider() *schema.Provider {
 			},
 		},
 		ResourcesMap: map[string]*schema.Resource{
-			"nagios_hostgroup": resourceHostGroup(),
-			"nagios_host":      resourceHost(),
+			"nagios_hostgroup":    resourceHostGroup(),
+			"nagios_host":         resourceHost(),
+			"nagios_servicegroup": resourceServiceGroup(),
 		},
 		ConfigureFunc: providerConfigure,
 	}
