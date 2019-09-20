@@ -126,18 +126,22 @@ func (c *Client) buildURL(objectType, method, objectName, name, oldVal string) (
 		nagiosURL.WriteString("&applyconfig=1")
 	}
 
-	log.Printf("[DEBUG] Nagios URL - %s", nagiosURL.String()) // TODO: Need to scrub API key from logs
+	log.Printf("[DEBUG] Nagios URL - %s", c.scrubToken(nagiosURL.String())) // TODO: Need to scrub API key from logs
 
 	return nagiosURL.String(), nil
 }
 
-// func (c *Client) scrubToken(url string) error {
-// 	if strings.Contains(url, "apikey=")
-// }
+func (c *Client) scrubToken(url string) string {
+	if strings.Contains(url, c.token) {
+		strings.Replace(url, c.token, "<SensitiveInfo>", 1)
+	}
+
+	return url
+}
 
 func (c *Client) addRequestHeaders(request *http.Request) {
 	request.Header.Add("Content-Type", "application/x-www-form-urlencoded")
-	request.Header.Add("Accept", "/")
+	request.Header.Add("Accept", "/") // TODO: Remove this. Per documentation, sounds like this is not needed
 
 	return
 }
