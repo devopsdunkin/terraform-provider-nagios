@@ -49,8 +49,6 @@ func (c *Client) GetHostgroup(name string) (*Hostgroup, error) {
 		return nil, err
 	}
 
-	log.Printf("[DEBUG] Hostgroup Array - %s", hostgroupArray)
-
 	for i, _ := range hostgroupArray {
 		hostgroup.Name = hostgroupArray[i].Name
 		hostgroup.Alias = hostgroupArray[i].Alias
@@ -58,8 +56,7 @@ func (c *Client) GetHostgroup(name string) (*Hostgroup, error) {
 			break
 		}
 	}
-	log.Printf("[DEBUG] GetHostgroup func: hostgroup.Name - %s", hostgroup.Name)
-	log.Printf("[DEBUG] GetHostgroup func: hostgroup.Alias - %s", hostgroup.Alias)
+
 	return &hostgroup, nil
 }
 
@@ -78,9 +75,6 @@ func (c *Client) UpdateHostgroup(hostgroup *Hostgroup, oldVal interface{}) error
 	data.Set("hostgroup_name", hostgroup.Name)
 	data.Set("alias", hostgroup.Alias)
 
-	log.Printf("[DEBUG] hostgroup.Name in UpdateHostgroup func - %s", hostgroup.Name) // TODO: Clean up logging and make it more consistent
-	log.Printf("[DEBUG] Value of url.Values (data) - %s", data)
-
 	_, err = c.put(data, nagiosURL)
 
 	if err != nil {
@@ -92,10 +86,6 @@ func (c *Client) UpdateHostgroup(hostgroup *Hostgroup, oldVal interface{}) error
 }
 
 func (c *Client) DeleteHostgroup(name string) ([]byte, error) {
-	// TODO: Come back to this func. Not sure if implementing correctly
-	// Not sure if we should be creating a pointer to hostgroup when deleting
-	// Or do we just pass in the name of the hostgroup to delete since it no longer exists?
-	// hostgroup := &Hostgroup{}
 	nagiosURL, err := c.buildURL("hostgroup", "DELETE", "hostgroup_name", name, "")
 
 	if err != nil {
