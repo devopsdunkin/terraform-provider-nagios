@@ -8,19 +8,19 @@ import (
 )
 
 // Provider function defines the schema and resources for this Nagios provider
-func Provider() *schema.Provider {
+func NagiosProvider() *schema.Provider {
 	return &schema.Provider{
 		Schema: map[string]*schema.Schema{
 			"url": {
 				Type:        schema.TypeString,
 				Required:    true,
-				DefaultFunc: schema.EnvDefaultFunc("URL", ""),
+				DefaultFunc: schema.EnvDefaultFunc("NAGIOS_URL", ""),
 				Description: "The URL of the Nagios application",
 			},
 			"token": {
 				Type:        schema.TypeString,
 				Required:    true,
-				DefaultFunc: schema.EnvDefaultFunc("TOKEN", ""),
+				DefaultFunc: schema.EnvDefaultFunc("API_TOKEN", ""),
 				Description: "API token to authenticate to Nagios",
 				Sensitive:   true,
 			},
