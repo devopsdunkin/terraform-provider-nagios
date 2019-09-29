@@ -21,12 +21,14 @@ func resourceHostGroup() *schema.Resource {
 			"name": {
 				Type:        schema.TypeString,
 				Required:    true,
-				Description: "The name of the hostgroup",
+				Description: "The name of the hostgroup. It can be up to 255 characters long.",
+				// ValidateFunc: validation.StringLenBetween(1, 255),
 			},
 			"alias": {
 				Type:        schema.TypeString,
 				Required:    true,
 				Description: "The description of the hostgroup",
+				// ValidateFunc: validation.StringLenBetween(1, 255),
 			},
 		},
 		Create: resourceCreateHostGroup,
@@ -54,9 +56,11 @@ func resourceCreateHostGroup(d *schema.ResourceData, m interface{}) error {
 		return err
 	}
 
+	log.Printf("[TRACE] Passed NewHostgroup err check")
+
 	d.SetId(hostgroup.Name)
-	d.Set("name", hostgroup.Name)
-	d.Set("alias", hostgroup.Alias)
+
+	log.Printf("[TRACE] Passed setting state")
 
 	return resourceReadHostGroup(d, m)
 }
@@ -64,7 +68,6 @@ func resourceCreateHostGroup(d *schema.ResourceData, m interface{}) error {
 // TODO: When no changes are done, it still says "apply complete". Believe it should say "Infrastructure up-to-date"
 func resourceReadHostGroup(d *schema.ResourceData, m interface{}) error {
 	nagiosClient := m.(*Client)
-	log.Printf("[DEBUG] name - %s", d.Id())
 
 	hostgroup, err := nagiosClient.GetHostgroup(d.Id())
 
@@ -80,11 +83,6 @@ func resourceReadHostGroup(d *schema.ResourceData, m interface{}) error {
 		return nil
 	}
 
-	log.Printf("[DEBUG] d.Set on hostgroup.Name - %s", hostgroup.Name)
-	log.Printf("[DEBUG] d.Set on hostgroup.Alias - %s", hostgroup.Alias)
-	log.Printf("[DEBUG] d.Id - %s", d.Id())
-
-	d.SetId(hostgroup.Name)
 	d.Set("name", hostgroup.Name)
 	d.Set("alias", hostgroup.Alias)
 
@@ -103,16 +101,17 @@ func resourceUpdateHostGroup(d *schema.ResourceData, m interface{}) error {
 
 	oldVal, _ := d.GetChange("name")
 
-	log.Printf("[DEBUG] Old value - %s", oldVal.(string))
+	if oldVal == "" { // No change, but perhaps the resource was manually deleted and need to update it so pass in the same name
+		oldVal = d.Get("name").(string)
+	}
 
-	err := nagiosClient.UpdateHostgroup(hostgroup, oldVal) // TODO: Alias is not getting updated. It is blank
+	err := nagiosClient.UpdateHostgroup(hostgroup, oldVal)
 
 	if err != nil {
 		log.Printf("[ERROR] Error updating hostgroup in Nagios - %s", err.Error())
 		return err
 	}
 
-	// TODO: name and alias are not getting set.
 	d.SetId(hostgroup.Name)
 	d.Set("name", hostgroup.Name)
 	d.Set("alias", hostgroup.Alias)
