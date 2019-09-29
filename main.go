@@ -9,7 +9,7 @@ import (
 func main() {
 	plugin.Serve(&plugin.ServeOpts{
 		ProviderFunc: func() terraform.ResourceProvider {
-			return nagios.Provider()
+			return nagios.NagiosProvider()
 		},
 	})
 }
