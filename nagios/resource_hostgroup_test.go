@@ -121,7 +121,6 @@ func testAccCheckHostgroupDestroy() resource.TestCheckFunc {
 			conn := testAccProvider.Meta().(*Client)
 
 			hostgroup, _ := conn.GetHostgroup(name)
-			log.Printf("[DEBUG] Hostgroup - %s", *hostgroup)
 			if hostgroup.Name != "" {
 				return fmt.Errorf("Hostgroup %s still exists", name)
 			}
@@ -146,42 +145,32 @@ func testAccCheckHostgroupExists(resourceName string) resource.TestCheckFunc {
 
 func getHostgroupFromState(s *terraform.State, rName string) (*Hostgroup, error) {
 	nagiosClient := testAccProvider.Meta().(*Client)
-	log.Printf("[DEBUG] Right before call to s.RootModule().Resources[rName]")
 	rs, ok := s.RootModule().Resources[rName]
 	if !ok {
 		return nil, fmt.Errorf("hostgroup not found: %s", rName)
 	}
 
-	log.Printf("[DEBUG] After if !ok check to see if hostgroup not found")
-
 	id := rs.Primary.ID
 	name := rs.Primary.Attributes["name"]
 
-	log.Printf("[DEBUG] Name - %s", name)
-	log.Printf("[DEBUG] ID - %s", id)
-
 	hostgroup, err := nagiosClient.GetHostgroup(name)
-
-	log.Printf("[DEBUG] Made it after calling GetHostgroup")
 
 	if err != nil {
 		return nil, fmt.Errorf("error getting hostgroup with name %s: %s", name, err)
 	}
-
-	log.Printf("Made it through gewtHostgroupFromState func. Returning hostgroup - %s", hostgroup)
 
 	return hostgroup, nil
 }
 
 func testAccCheckHostgroupFetch(rName string, hostgroup *Hostgroup) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
-		returnedUser, err := getHostgroupFromState(s, rName)
+		returnedHg, err := getHostgroupFromState(s, rName)
 		if err != nil {
 			return err
 		}
 
-		hostgroup.Name = returnedUser.Name
-		hostgroup.Alias = returnedUser.Alias
+		hostgroup.Name = returnedHg.Name
+		hostgroup.Alias = returnedHg.Alias
 
 		return nil
 	}
