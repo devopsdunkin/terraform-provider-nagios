@@ -104,14 +104,6 @@ func resourceCreateHost(d *schema.ResourceData, m interface{}) error {
 		Templates:            d.Get("templates").(*schema.Set).List(),
 	}
 
-	log.Printf("[DEBUG] host.name - %s", host.Name)
-	log.Printf("[DEBUG] host.address - %s", host.Address)
-	log.Printf("[DEBUG] host.max_check_attempts - %s", host.MaxCheckAttempts)
-	log.Printf("[DEBUG] host.check_period - %s", host.CheckPeriod)
-	log.Printf("[DEBUG] host.notification_interval - %s", host.NotificationInterval)
-	log.Printf("[DEBUG] host.notification_period - %s", host.NotificationPeriod)
-	log.Printf("[DEBUG] host.contacts - %s", host.Contacts)
-
 	_, err := nagiosClient.NewHost(host)
 
 	if err != nil {
@@ -119,15 +111,6 @@ func resourceCreateHost(d *schema.ResourceData, m interface{}) error {
 	}
 
 	d.SetId(host.Name)
-	d.Set("name", host.Name)
-	d.Set("alias", host.Alias)
-	d.Set("address", host.Address)
-	d.Set("max_check_attempts", host.MaxCheckAttempts)
-	d.Set("check_period", host.CheckPeriod)
-	d.Set("notification_interval", host.NotificationInterval)
-	d.Set("notification_period", host.NotificationPeriod)
-	d.Set("contacts", host.Contacts) // TODO: If contact does not exist in Nagios, it should not add it. Applies fine through API but causes validation errors when trying to apply config manually
-	d.Set("templates", host.Templates)
 
 	return resourceReadHost(d, m)
 }
@@ -150,10 +133,6 @@ func resourceReadHost(d *schema.ResourceData, m interface{}) error {
 		return nil
 	}
 
-	log.Printf("[DEBUG] d.Set within Read func on host.Contacts - %s", host.Contacts[0])
-	log.Printf("[DEBUG] d.Id - %s", d.Id())
-
-	d.SetId(host.Name)
 	d.Set("name", host.Name)
 	d.Set("alias", host.Alias)
 	d.Set("address", host.Address)
@@ -170,7 +149,7 @@ func resourceReadHost(d *schema.ResourceData, m interface{}) error {
 func resourceUpdateHost(d *schema.ResourceData, m interface{}) error {
 	nagiosClient := m.(*Client)
 
-	log.Printf("[DEBUG] name - %s", d.Get("name").(string))
+	log.Printf("[DEBUG] resourceUpdateHost => name - %s", d.Get("name").(string))
 
 	host := &Host{
 		Name:                 d.Get("name").(string),
@@ -186,7 +165,10 @@ func resourceUpdateHost(d *schema.ResourceData, m interface{}) error {
 
 	oldVal, _ := d.GetChange("name")
 
-	log.Printf("[DEBUG] Old value - %s", oldVal.(string))
+	if oldVal == "" { // No change, but perhaps the resource was manually deleted and need to update it so pass in the same name
+		oldVal = d.Get("name").(string)
+		log.Printf("[DEBUG] resourceUpdateHost => oldVal was blank, so should be same name as current - %s", oldVal)
+	}
 
 	err := nagiosClient.UpdateHost(host, oldVal)
 
@@ -194,6 +176,8 @@ func resourceUpdateHost(d *schema.ResourceData, m interface{}) error {
 		log.Printf("[ERROR] Error updating host in Nagios - %s", err.Error())
 		return err
 	}
+
+	log.Printf("[DEBUG] resourceUpdateHost => UpdateHost successful - %s", *host)
 
 	// TODO: name and alias are not getting set.
 	d.SetId(host.Name)
