@@ -1,9 +1,16 @@
 package nagios
 
 import (
+	"encoding/json"
 	"log"
 	"net/url"
+	"strings"
 )
+
+type UpdateResponse struct {
+	StatusError   string `json:"error"`
+	StatusSuccess string `json:"success"`
+}
 
 // TODO: Need to figure out how most of the funcs should be scoped. Thinking we don't need to expose most of these globally
 
@@ -61,8 +68,6 @@ func (c *Client) GetHost(name string) (*Host, error) {
 		return nil, err
 	}
 
-	log.Printf("[DEBUG] Hostgroup Array - %s", hostArray)
-
 	for i, _ := range hostArray {
 		host.Name = hostArray[i].Name
 		host.Alias = hostArray[i].Alias
@@ -98,6 +103,8 @@ func (c *Client) UpdateHost(host *Host, oldVal interface{}) error {
 		"&check_period=" + host.CheckPeriod + "&notification_interval=" + host.NotificationInterval +
 		"&notification_period=" + host.NotificationPeriod + "&contacts=" + contactList + "&use=" + templatesList
 
+	log.Printf("[DEBUG] UpdateHost => Nagios URL - %s", nagiosURL)
+
 	data := &url.Values{}
 	data.Set("host_name", host.Name)
 	data.Set("alias", host.Alias)
@@ -109,11 +116,21 @@ func (c *Client) UpdateHost(host *Host, oldVal interface{}) error {
 	data.Set("contacts", contactList)
 	data.Set("use", templatesList)
 
-	_, err = c.put(data, nagiosURL)
+	updateBody, err := c.put(data, nagiosURL)
 
 	if err != nil {
 		log.Printf("[ERROR] Error during HTTP PUT - %s", err.Error())
 		return err
+	}
+
+	updateResponse := &UpdateResponse{}
+
+	json.Unmarshal(updateBody, &updateResponse)
+
+	// If Nagios returns an error and it contains the specific line of text, then the host was deleted outside of Terraform. We have to create the host again
+	// Nagios API returns an error if the host does not exist and we attempt a PUT. Other Nagios objects don't seem vulnerable to this though
+	if updateResponse.StatusError != "" && strings.Contains(updateResponse.StatusError, "Does the host exist?") {
+		c.NewHost(host)
 	}
 
 	return nil
