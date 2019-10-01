@@ -150,7 +150,6 @@ func getHostgroupFromState(s *terraform.State, rName string) (*Hostgroup, error)
 		return nil, fmt.Errorf("hostgroup not found: %s", rName)
 	}
 
-	id := rs.Primary.ID
 	name := rs.Primary.Attributes["name"]
 
 	hostgroup, err := nagiosClient.GetHostgroup(name)
