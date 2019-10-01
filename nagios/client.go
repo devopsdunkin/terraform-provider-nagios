@@ -161,10 +161,6 @@ func (c *Client) get(data *url.Values, resourceInfo interface{}, nagiosURL strin
 		return err
 	}
 
-	test := body
-
-	log.Printf("[DEBUG] Body value - %s", string(test))
-
 	return json.Unmarshal(body, resourceInfo)
 }
 
