@@ -56,7 +56,7 @@ func (c *Client) sendRequest(httpRequest *http.Request) ([]byte, error) {
 	return body, nil
 }
 
-func (c *Client) buildURL(objectType, method, objectName, name, oldVal string) (string, error) {
+func (c *Client) buildURL(objectType, method, objectName, objectDescription, name, oldVal string) (string, error) {
 	var nagiosURL strings.Builder
 
 	var apiURL string
@@ -107,7 +107,7 @@ func (c *Client) buildURL(objectType, method, objectName, name, oldVal string) (
 			nagiosURL.WriteString(name)
 		}
 
-		nagiosURL.WriteString("&applyconfig=1")
+		nagiosURL.WriteString("&force=1&applyconfig=1")
 	} else if method == "PUT" {
 		nagiosURL.WriteString("/")
 
@@ -117,13 +117,17 @@ func (c *Client) buildURL(objectType, method, objectName, name, oldVal string) (
 			return "", errors.New("[ERROR] A value for oldVal must be provided when attempting a PUT")
 		}
 
+		if objectType == "service" {
+			nagiosURL.WriteString("/service_description=" + objectDescription)
+		}
+
 		nagiosURL.WriteString("?apikey=")
 		nagiosURL.WriteString(c.token)
-		nagiosURL.WriteString("&pretty=1&applyconfig=1")
+		nagiosURL.WriteString("&pretty=1&force=1&applyconfig=1")
 	} else if method == "POST" {
 		nagiosURL.WriteString("?apikey=")
 		nagiosURL.WriteString(c.token)
-		nagiosURL.WriteString("&applyconfig=1")
+		nagiosURL.WriteString("&force=1&applyconfig=1")
 	}
 
 	log.Printf("[DEBUG] Nagios URL - %s", c.scrubToken(nagiosURL.String())) // TODO: Need to scrub API key from logs
@@ -184,7 +188,8 @@ func (c *Client) post(data *url.Values, nagiosURL string) ([]byte, error) {
 }
 
 func (c *Client) put(data *url.Values, nagiosURL string) ([]byte, error) {
-	request, err := http.NewRequest(http.MethodPut, nagiosURL, strings.NewReader(data.Encode()))
+	// request, err := http.NewRequest(http.MethodPut, nagiosURL, strings.NewReader(data.Encode()))
+	request, err := http.NewRequest(http.MethodPut, nagiosURL, nil)
 
 	if err != nil {
 		log.Printf("[ERROR] Error creating HTTP request - %s", err.Error())
