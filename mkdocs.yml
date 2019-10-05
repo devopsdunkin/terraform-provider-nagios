@@ -1,0 +1,6 @@
+site_name: My Docs
+theme: readthedocs
+nav:
+  - Home: index.md
+  - Resources:
+    - resource_hostgroup: resource_hostgroup.md

@@ -1,16 +1,17 @@
-# Terraform Provider for Nagios XI
+# Welcome to MkDocs
 
-This project is a Hashicorp Terraform provider written to manage Nagios XI
+For full documentation visit [mkdocs.org](https://mkdocs.org).
 
-# Installing
+## Commands
 
-Coming soon!
+* `mkdocs new [dir-name]` - Create a new project.
+* `mkdocs serve` - Start the live-reloading docs server.
+* `mkdocs build` - Build the documentation site.
+* `mkdocs help` - Print this help message.
 
-# Provider Setup
+## Project layout
 
-```hcl
-provider "nagios" {
-    token = "fjvnDFG949fmvkdfERTE993jfsazZZ23Ppfmvo8TsWqq1v0sDDjr8gBBKl13mMAz"
-    url = "https://nagios.test.local"
-}
-```
+    mkdocs.yml    # The configuration file.
+    docs/
+        index.md  # The documentation homepage.
+        ...       # Other markdown pages, images and other files.
