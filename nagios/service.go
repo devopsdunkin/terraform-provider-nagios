@@ -5,13 +5,9 @@ import (
 	"log"
 	"net/url"
 	"strings"
-)
 
-// TODO: Might be able to move this struct into client.go and make it universal for all object types
-type UpdateServiceResponse struct {
-	StatusError   string `json:"error"`
-	StatusSuccess string `json:"success"`
-}
+	"github.com/devopsdunkin/terraform-provider-nagios/utils"
+)
 
 // TODO: Need to figure out how most of the funcs should be scoped. Thinking we don't need to expose most of these globally
 
@@ -28,7 +24,7 @@ func (c *Client) newService(service *Service) ([]byte, error) {
 	hostNameList := mapArrayToString(service.HostName)
 
 	data := &url.Values{}
-	data.Set("service_name", service.ServiceName)
+	data.Set("config_name", service.ServiceName)
 	data.Set("host_name", hostNameList)
 	data.Set("service_description", service.Description)
 	data.Set("check_command", service.CheckCommand)
@@ -39,7 +35,7 @@ func (c *Client) newService(service *Service) ([]byte, error) {
 	data.Set("notification_interval", service.NotificationInterval)
 	data.Set("notification_period", service.NotificationPeriod)
 	data.Set("contacts", contactList)
-	data.Set("templates", templatesList)
+	data.Set("use", templatesList)
 
 	body, err := c.post(data, nagiosURL)
 
@@ -56,9 +52,7 @@ func (c *Client) getService(name string) (*Service, error) {
 	var serviceArray = []Service{}
 	var service Service
 
-	nagiosURL, err := c.buildURL("service", "GET", "service_name", "", name, "")
-
-	log.Printf("[DEBUG] Nagios URL - %s", nagiosURL)
+	nagiosURL, err := c.buildURL("service", "GET", "config_name", "", name, "")
 
 	if err != nil {
 		log.Printf("[ERROR] %s", err.Error())
@@ -66,7 +60,7 @@ func (c *Client) getService(name string) (*Service, error) {
 	}
 
 	data := &url.Values{}
-	data.Set("service_name", name)
+	data.Set("config_name", name)
 
 	log.Printf("[DEBUG] Right before c.get; URL encoded data - %s", data)
 
@@ -104,7 +98,7 @@ func (c *Client) getService(name string) (*Service, error) {
 }
 
 func (c *Client) updateService(service *Service, oldVal interface{}) error {
-	nagiosURL, err := c.buildURL("service", "PUT", "service_name", service.Description, service.ServiceName, oldVal.(string))
+	nagiosURL, err := c.buildURL("service", "PUT", "config_name", service.Description, service.ServiceName, oldVal.(string))
 
 	log.Printf("[DEBUG] updateService => nagios URL - %s", nagiosURL)
 
@@ -118,14 +112,16 @@ func (c *Client) updateService(service *Service, oldVal interface{}) error {
 	hostNameList := mapArrayToString(service.HostName)
 
 	// TODO: Unsure if this should go to buildURL function or not. If we can find a way to pass it in through parameters via an interface
-	nagiosURL = nagiosURL + "&service_name" + service.ServiceName + "&host_name=" + hostNameList + "&description=" + service.Description + "&check_command=" + service.CheckCommand + "&max_check_attempts=" + service.MaxCheckAttempts +
+	// TODO: Nagios does their updates in a weird weay. Found that doing the URL encoded values doesn't do anything for
+	// updates. Need to specify by generating the URL string. Need to determine if both are needed or just URL string as below
+	nagiosURL = nagiosURL + "&config_name=" + service.ServiceName + "&host_name=" + hostNameList + "&service_description=" + service.Description + "&check_command=" + service.CheckCommand + "&max_check_attempts=" + service.MaxCheckAttempts +
 		"&check_interval=" + service.CheckInterval + "&retry_interval=" + service.RetryInterval + "&check_period=" + service.CheckPeriod + "&notification_interval=" + service.NotificationInterval +
 		"&notification_period=" + service.NotificationPeriod + "&contacts=" + contactList + "&use=" + templatesList
 
-	log.Printf("[DEBUG] UpdateService => Nagios URL - %s", nagiosURL)
+	log.Printf("[DEBUG] updateService => Nagios URL - %s", nagiosURL)
 
 	data := &url.Values{}
-	data.Set("service_name", service.ServiceName)
+	data.Set("config_name", service.ServiceName)
 	data.Set("host_name", hostNameList)
 	data.Set("service_description", service.Description)
 	data.Set("check_command", service.CheckCommand)
@@ -136,7 +132,9 @@ func (c *Client) updateService(service *Service, oldVal interface{}) error {
 	data.Set("notification_interval", service.NotificationInterval)
 	data.Set("notification_period", service.NotificationPeriod)
 	data.Set("contacts", contactList)
-	data.Set("templates", templatesList)
+	data.Set("use", templatesList)
+
+	log.Printf("[DEBUG] updateService => data - %s", data)
 
 	updateBody, err := c.put(data, nagiosURL)
 
@@ -145,8 +143,11 @@ func (c *Client) updateService(service *Service, oldVal interface{}) error {
 		return err
 	}
 
-	updateServiceResponse := &UpdateServiceResponse{}
+	log.Printf("[DEBUG] updateService => Right before calling updateServiceResponse")
+	// updateServiceResponse := &UpdateServiceResponse{}
+	updateServiceResponse := utils.ResponseStatus{}
 
+	log.Printf("[DEBUG] updateService => Right before unmarshalling body into updateServiceResponse")
 	json.Unmarshal(updateBody, &updateServiceResponse)
 
 	// If Nagios returns an error and it contains the specific line of text, then the service was deleted outside of Terraform. We have to create the service again
@@ -155,19 +156,24 @@ func (c *Client) updateService(service *Service, oldVal interface{}) error {
 		c.newService(service)
 	}
 
+	log.Printf("[DEBUG] Made it through updateService")
+
 	return nil
 }
 
-func (c *Client) deleteService(name string) ([]byte, error) {
-	nagiosURL, err := c.buildURL("service", "DELETE", "service_name", "", name, "")
+func (c *Client) deleteService(hostName, serviceDescription string) ([]byte, error) {
+	nagiosURL, err := c.buildURL("service", "DELETE", "host_name", "", hostName, "")
 
 	if err != nil {
 		log.Printf("[ERROR] %s", err.Error())
 		return nil, err
 	}
 
+	nagiosURL = nagiosURL + "&service_description=" + serviceDescription
+
 	data := &url.Values{}
-	data.Set("service_name", name)
+	data.Set("host_name", hostName)
+	data.Set("service_description", serviceDescription)
 
 	body, err := c.delete(data, nagiosURL)
 

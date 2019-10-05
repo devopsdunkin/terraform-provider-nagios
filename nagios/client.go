@@ -118,7 +118,7 @@ func (c *Client) buildURL(objectType, method, objectName, objectDescription, nam
 		}
 
 		if objectType == "service" {
-			nagiosURL.WriteString("/service_description=" + objectDescription)
+			nagiosURL.WriteString("/" + objectDescription)
 		}
 
 		nagiosURL.WriteString("?apikey=")

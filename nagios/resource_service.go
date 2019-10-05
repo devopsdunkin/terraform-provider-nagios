@@ -160,7 +160,7 @@ func resourceReadService(d *schema.ResourceData, m interface{}) error {
 	log.Printf("[DEBUG] Start of resourceReadService")
 	nagiosClient := m.(*Client)
 
-	service, err := nagiosClient.getService(d.Id())
+	service, err := nagiosClient.getService(d.Get("service_name").(string))
 
 	if err != nil {
 		log.Printf("[ERROR] Error reading service - %s", err.Error())
@@ -195,10 +195,7 @@ func resourceReadService(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceUpdateService(d *schema.ResourceData, m interface{}) error {
-	log.Printf("[DEBUG] Start of resourceUpdateService")
 	nagiosClient := m.(*Client)
-
-	log.Printf("[DEBUG] resourceUpdateService => name - %s", d.Get("name").(string))
 
 	service := &Service{
 		ServiceName:          d.Get("service_name").(string),
@@ -254,12 +251,14 @@ func resourceUpdateService(d *schema.ResourceData, m interface{}) error {
 func resourceDeleteService(d *schema.ResourceData, m interface{}) error {
 	nagiosClient := m.(*Client)
 
-	_, err := nagiosClient.deleteService(d.Id())
+	_, err := nagiosClient.deleteService(d.Id(), d.Get("description").(string))
 
 	if err != nil {
 		log.Printf("[ERROR] Error trying to delete resource - %s", err.Error())
 		return err
 	}
+
+	d.SetId("")
 
 	return nil
 }
