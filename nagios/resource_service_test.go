@@ -12,10 +12,10 @@ import (
 
 func TestAccService_basic(t *testing.T) {
 	serviceServiceName := "tf_" + acctest.RandString((10))
-	serviceHostName := "tf_" + acctest.RandString(10)
+	serviceHostName := "localhost"
 	serviceDescription := "tf_" + acctest.RandString(5)
 	// serviceCheckCommand := "check_ping\\3000,80%\\5000,100%"
-	serviceCheckCommand := "test"
+	serviceCheckCommand := "check_http"
 	serviceMaxCheckAttempts := "2"
 	serviceCheckInterval := "5"
 	serviceRetryInterval := "5"
@@ -44,9 +44,9 @@ func TestAccService_basic(t *testing.T) {
 func TestAccService_createAfterManualDestroy(t *testing.T) {
 	var service = &Service{}
 	serviceServiceName := "tf_" + acctest.RandString((10))
-	serviceHostName := "tf_" + acctest.RandString(10)
+	serviceHostName := "localhost"
 	serviceDescription := "tf_" + acctest.RandString(50)
-	serviceCheckCommand := "check_ping\\!3000,80%\\!5000,100%"
+	serviceCheckCommand := "check_http"
 	serviceMaxCheckAttempts := "2"
 	serviceCheckInterval := "5"
 	serviceRetryInterval := "5"
@@ -73,7 +73,7 @@ func TestAccService_createAfterManualDestroy(t *testing.T) {
 				PreConfig: func() {
 					client := testAccProvider.Meta().(*Client)
 
-					_, err := client.deleteService(service.ServiceName)
+					_, err := client.deleteService(service.ServiceName, service.Description)
 					if err != nil {
 						t.Fatal(err)
 					}
@@ -128,7 +128,9 @@ func testAccServiceResource_basic(serviceName, hostName, description, checkComma
 	return fmt.Sprintf(`
 resource "nagios_service" "service" {
 	service_name = "%s"
-	host_name = "%s"
+	host_name = [
+		"%s"
+	]
 	description = "%s"
 	check_command = "%s"
 	max_check_attempts = "%s"
