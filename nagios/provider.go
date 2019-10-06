@@ -29,6 +29,7 @@ func NagiosProvider() *schema.Provider {
 			"nagios_hostgroup":    resourceHostGroup(),
 			"nagios_host":         resourceHost(),
 			"nagios_servicegroup": resourceServiceGroup(),
+			"nagios_service":      resourceService(),
 		},
 		ConfigureFunc: providerConfigure,
 	}
