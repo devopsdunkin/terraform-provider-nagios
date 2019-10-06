@@ -10,3 +10,4 @@ terraform-provider-nagios.postman_collection.json
 the_plan
 .vscode
 env.sh
+site/

@@ -22,8 +22,16 @@ resource "nagios_hostgroup" "hostgroup1" {
 
 ## Arguments
 
+<<<<<<< HEAD
 name`: The name of the Nagios hostgroup
 
 alias`: The description or other name that the hostgroup may be called. This field can be longer and more descriptive
 
 members`: A list of hosts that should be members of the hostgroup. The members must be valid hosts within Nagios and must be active
+=======
+`name`: The name of the Nagios hostgroup
+
+`alias`: The description or other name that the hostgroup may be called. This field can be longer and more descriptive
+
+`members`: A list of hosts that should be members of the hostgroup. The members must be valid hosts within Nagios and must be active
+>>>>>>> origin/master
