@@ -1,10 +1,3 @@
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-# Resource: Hostgroup
-=======
-=======
->>>>>>> Stashed changes
-<<<<<<< HEAD
 # Resource: Hostgroup
 
 # Overview
@@ -26,10 +19,3 @@ resource "nagios_hostgroup" "hostgroup1" {
     ]
 }
 ```
-=======
-# Resource: Hostgroup
->>>>>>> origin/master
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
