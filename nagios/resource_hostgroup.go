@@ -11,8 +11,9 @@ import (
 // EWe tag with both JSON and schema because a POST uses URL encoding to send data
 // A GET returns data in JSON format
 type Hostgroup struct {
-	Name  string `json:"hostgroup_name" schema:"hostgroup_name"`
-	Alias string `json:"alias" schema:"alias"`
+	Name    string        `json:"hostgroup_name" schema:"hostgroup_name"`
+	Alias   string        `json:"alias" schema:"alias"`
+	Members []interface{} `json:"members" schema:"members"`
 }
 
 func resourceHostGroup() *schema.Resource {
@@ -30,12 +31,19 @@ func resourceHostGroup() *schema.Resource {
 				Description: "The description of the hostgroup",
 				// ValidateFunc: validation.StringLenBetween(1, 255),
 			},
+			"members": {
+				Type:        schema.TypeSet,
+				Optional:    true,
+				Description: "List of hosts to be members of this hostgroup",
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
+			},
 		},
 		Create: resourceCreateHostGroup,
 		Read:   resourceReadHostGroup,
 		Update: resourceUpdateHostGroup,
 		Delete: resourceDeleteHostGroup,
-		// Exists: resourceExistsHostGroup,  // TODO: Need to figure out how to define this
 		// Importer: &schema.ResourceImporter{ // TODO: Need to figure out what is needed here
 		// 	State: schema.ImportStatePassthrough,
 		// },
@@ -46,8 +54,9 @@ func resourceCreateHostGroup(d *schema.ResourceData, m interface{}) error {
 	nagiosClient := m.(*Client)
 
 	hostgroup := &Hostgroup{
-		Name:  d.Get("name").(string),
-		Alias: d.Get("alias").(string),
+		Name:    d.Get("name").(string),
+		Alias:   d.Get("alias").(string),
+		Members: d.Get("members").(*schema.Set).List(),
 	}
 
 	_, err := nagiosClient.NewHostgroup(hostgroup)
@@ -56,11 +65,7 @@ func resourceCreateHostGroup(d *schema.ResourceData, m interface{}) error {
 		return err
 	}
 
-	log.Printf("[TRACE] Passed NewHostgroup err check")
-
 	d.SetId(hostgroup.Name)
-
-	log.Printf("[TRACE] Passed setting state")
 
 	return resourceReadHostGroup(d, m)
 }
@@ -85,6 +90,7 @@ func resourceReadHostGroup(d *schema.ResourceData, m interface{}) error {
 
 	d.Set("name", hostgroup.Name)
 	d.Set("alias", hostgroup.Alias)
+	d.Set("members", hostgroup.Members)
 
 	return nil
 }
@@ -95,8 +101,9 @@ func resourceUpdateHostGroup(d *schema.ResourceData, m interface{}) error {
 	log.Printf("[DEBUG] name - %s", d.Get("name").(string))
 
 	hostgroup := &Hostgroup{
-		Name:  d.Get("name").(string),
-		Alias: d.Get("alias").(string),
+		Name:    d.Get("name").(string),
+		Alias:   d.Get("alias").(string),
+		Members: d.Get("members").(*schema.Set).List(),
 	}
 
 	oldVal, _ := d.GetChange("name")
@@ -115,6 +122,7 @@ func resourceUpdateHostGroup(d *schema.ResourceData, m interface{}) error {
 	d.SetId(hostgroup.Name)
 	d.Set("name", hostgroup.Name)
 	d.Set("alias", hostgroup.Alias)
+	d.Set("members", hostgroup.Members)
 
 	return resourceReadHostGroup(d, m)
 }
@@ -128,9 +136,6 @@ func resourceDeleteHostGroup(d *schema.ResourceData, m interface{}) error {
 		log.Printf("[ERROR] Error trying to delete resource - %s", err.Error())
 		return err
 	}
-
-	// Update Terraform state that we have deleted the resource
-	d.SetId("")
 
 	return nil
 }

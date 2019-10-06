@@ -14,9 +14,12 @@ func (c *Client) NewHostgroup(hostgroup *Hostgroup) ([]byte, error) {
 		return nil, err
 	}
 
+	hostGroupMemberList := mapArrayToString(hostgroup.Members)
+
 	data := &url.Values{}
 	data.Set("hostgroup_name", hostgroup.Name)
 	data.Set("alias", hostgroup.Alias)
+	data.Set("members", hostGroupMemberList)
 
 	body, err := c.post(data, nagiosURL)
 
@@ -52,6 +55,7 @@ func (c *Client) GetHostgroup(name string) (*Hostgroup, error) {
 	for i, _ := range hostgroupArray {
 		hostgroup.Name = hostgroupArray[i].Name
 		hostgroup.Alias = hostgroupArray[i].Alias
+		hostgroup.Members = hostgroupArray[i].Members
 		if i > 1 { // Nagios should only return 1 object during a GET with the way we are manipulating it. So only grab the first object and break if we have more than 1
 			break
 		}
@@ -68,12 +72,15 @@ func (c *Client) UpdateHostgroup(hostgroup *Hostgroup, oldVal interface{}) error
 		return err
 	}
 
+	hostGroupMemberList := mapArrayToString(hostgroup.Members)
+
 	// TODO: Needs migrated to buildURL func
-	nagiosURL = nagiosURL + "&hostgroup_name=" + hostgroup.Name + "&alias=" + hostgroup.Alias
+	nagiosURL = nagiosURL + "&hostgroup_name=" + hostgroup.Name + "&alias=" + hostgroup.Alias + "members=" + hostGroupMemberList
 
 	data := &url.Values{}
 	data.Set("hostgroup_name", hostgroup.Name)
 	data.Set("alias", hostgroup.Alias)
+	data.Set("members", hostGroupMemberList)
 
 	_, err = c.put(data, nagiosURL)
 
