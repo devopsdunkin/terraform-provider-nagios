@@ -75,7 +75,7 @@ func (c *Client) UpdateHostgroup(hostgroup *Hostgroup, oldVal interface{}) error
 	hostGroupMemberList := mapArrayToString(hostgroup.Members)
 
 	// TODO: Needs migrated to buildURL func
-	nagiosURL = nagiosURL + "&hostgroup_name=" + hostgroup.Name + "&alias=" + hostgroup.Alias + "members=" + hostGroupMemberList
+	nagiosURL = nagiosURL + "&hostgroup_name=" + hostgroup.Name + "&alias=" + hostgroup.Alias + "&members=" + hostGroupMemberList
 
 	data := &url.Values{}
 	data.Set("hostgroup_name", hostgroup.Name)

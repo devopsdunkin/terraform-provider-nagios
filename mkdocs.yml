@@ -1,8 +1,9 @@
-site_name: "Terraform Provider: Nagios"
+site_name: "terraform provider: nagios"
 site_url: https://devopsdunkin.github.io/terraform-propvider-nagios
 repo_url: https://github.com/devopsdunkin/terraform-provider-nagios
 theme: readthedocs
 nav:
-  - Home: index.md
-  - Resources:
+  - getting started: index.md
+  - resources:
+    - rsource_host: resources/resource_host.md
     - resource_hostgroup: resources/resource_hostgroup.md
