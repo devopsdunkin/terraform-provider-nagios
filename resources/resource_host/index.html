@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../../img/favicon.ico">
+  <title>rsource_host - terraform provider: nagios</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "rsource_host";
+    var mkdocs_page_input_path = "resources/resource_host.md";
+    var mkdocs_page_url = "/terraform-propvider-nagios/resources/resource_host/";
+  </script>
+  
+  <script src="../../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href="../.." class="icon icon-home"> terraform provider: nagios</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../..">getting started</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">resources</span>
+    <ul class="subnav">
+                <li class=" current">
+                    
+    <a class="current" href="./">rsource_host</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#resource-hostgroup">Resource: Hostgroup</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#overview">Overview</a></li>
+        
+            <li><a class="toctree-l4" href="#best-practices">Best practices</a></li>
+        
+            <li><a class="toctree-l4" href="#example">Example</a></li>
+        
+            <li><a class="toctree-l4" href="#arguments">Arguments</a></li>
+        
+        </ul>
+    
+
+    </ul>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../resource_hostgroup/">resource_hostgroup</a>
+                </li>
+    </ul>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../..">terraform provider: nagios</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>resources &raquo;</li>
+        
+      
+    
+    <li>rsource_host</li>
+    <li class="wy-breadcrumbs-aside">
+      
+        <a href="https://github.com/devopsdunkin/terraform-provider-nagios/edit/master/docs/resources/resource_host.md"
+          class="icon icon-github"> Edit on GitHub</a>
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="resource-hostgroup">Resource: Hostgroup</h1>
+<h2 id="overview">Overview</h2>
+<p>This resource manages Nagios hosts. Nagios monitors hosts based off health checks defined by an administrator.</p>
+<p>Refer to the object definition for <a href="https://assets.nagios.com/downloads/nagioscore/docs/nagioscore/3/en/objectdefinitions.html#host">hosts</a> from Nagios to learn more</p>
+<h2 id="best-practices">Best practices</h2>
+<p>This resource allows you to configure any attribute on a host, however, we recommend to manually create a host template that contains shared settings for the hosts, and then use the host resource to create your hosts and set host specific attributes. </p>
+<h2 id="example">Example</h2>
+<pre><code class="hcl">resource &quot;nagios_host&quot; &quot;host1&quot; {
+    name                            = &quot;host1&quot;
+    address                         = &quot;127.0.0.1&quot;
+    display_name                    = &quot;host1 - Test server&quot;
+    max_check_attempts              = &quot;2&quot;
+    check_period                    = &quot;24x7&quot;
+    notification_interval           = &quot;5&quot;
+    notification_period             = &quot;24x7&quot;
+    contacts                        = [
+        &quot;nagiosadmin&quot;
+    ]
+    alias                           = &quot;host1&quot;
+    templates                       = &quot;generic-host&quot;
+    contact_groups                  = [
+        &quot;noc_staff&quot;
+    ]
+    notes                           = &quot;If this host is down for more than 20 mninutes, page out to the operations on-call&quot;
+    notes_url                       = &quot;http://docs.company.com/host_alert&quot;
+    action_url                      = &quot;http://docs.company.com/host_alert/actions&quot;
+    initial_state                   = &quot;s&quot;
+    retry_interval                  = &quot;5&quot;
+    passive_checks_enabled          = true
+    active_checks_enabled           = true
+    obsess_over_host                = false
+    event_handler                   = 
+    event_handler_enabled           = true
+    flap_detection_enabled          = true
+    flap_detection_options          = 
+    low_flap_threshold              = &quot;5&quot;
+    high_flap_threshold             = &quot;5&quot;
+    process_perf_data               = true
+    retain_status_information       =
+    retain_nonstatus_information    =
+    check_freshness                 =
+    freshness_threshold             =
+    first_notification_delay        =
+    notification_options            =
+    notifications_enabled           = true
+    stalking_options                =
+    icon_image                      = &quot;windows_host.jpg&quot;
+    icon_image_alt                  = &quot;Windows Server&quot;
+    vrml_image                      =
+    statusmap_image                 =
+    2d_coords                       =
+    3d_coords                       =
+}
+</code></pre>
+
+<h2 id="arguments">Arguments</h2>
+<p><code>name</code>:
+<code>address</code>:
+<code>display_name</code>:
+<code>max_check_attempts</code>:
+<code>check_period</code>:
+<code>notification_interval</code>:
+<code>notification_period</code>:
+<code>contacts</code>:
+<code>alias</code>:
+<code>templates</code>:
+<code>contact_groups</code>:
+<code>notes</code>:
+<code>notes_url</code>:
+<code>action_url</code>:
+<code>initial_state</code>:
+<code>retry_interval</code>:
+<code>passive_checks_enabled</code>:
+<code>active_checks_enabled</code>:
+<code>obsess_over_host</code>:
+<code>event_handler</code>:
+<code>event_handler_enabled</code>:
+<code>flap_detection_enabled</code>:
+<code>flap_detection_options</code>:
+<code>low_flap_threshold</code>:
+<code>high_flap_threshold</code>:
+<code>process_perf_data</code>:
+<code>retain_status_information</code>:
+<code>retain_nonstatus_information</code>:
+<code>check_freshness</code>:
+<code>freshness_threshold</code>:
+<code>first_notification_delay</code>:
+<code>notification_options</code>:
+<code>notifications_enabled</code>:
+<code>stalking_options</code>:
+<code>icon_image</code>:
+<code>icon_image_alt</code>: 
+<code>vrml_image</code>:
+<code>statusmap_image</code>:
+<code>2d_coords</code>:
+<code>3d_coords</code>:</p>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../resource_hostgroup/" class="btn btn-neutral float-right" title="resource_hostgroup">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../.." class="btn btn-neutral" title="getting started"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+          <a href="https://github.com/devopsdunkin/terraform-provider-nagios/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
+      
+      
+        <span><a href="../.." style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../resource_hostgroup/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '../..';</script>
+    <script src="../../js/theme.js" defer></script>
+      <script src="../../search/main.js" defer></script>
+
+</body>
+</html>

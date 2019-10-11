@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../../img/favicon.ico">
-  <title>resource_hostgroup - Terraform Provider: Nagios</title>
+  <title>resource_hostgroup - terraform provider: nagios</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
@@ -36,7 +36,7 @@
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
       <div class="wy-side-nav-search">
-        <a href="../.." class="icon icon-home"> Terraform Provider: Nagios</a>
+        <a href="../.." class="icon icon-home"> terraform provider: nagios</a>
         <div role="search">
   <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
@@ -50,13 +50,17 @@
           
             <li class="toctree-l1">
 		
-    <a class="" href="../..">Home</a>
+    <a class="" href="../..">getting started</a>
 	    </li>
           
             <li class="toctree-l1">
 		
-    <span class="caption-text">Resources</span>
+    <span class="caption-text">resources</span>
     <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../resource_host/">rsource_host</a>
+                </li>
                 <li class=" current">
                     
     <a class="current" href="./">resource_hostgroup</a>
@@ -91,7 +95,7 @@
       
       <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
         <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href="../..">Terraform Provider: Nagios</a>
+        <a href="../..">terraform provider: nagios</a>
       </nav>
 
       
@@ -103,7 +107,7 @@
     
       
         
-          <li>Resources &raquo;</li>
+          <li>resources &raquo;</li>
         
       
     
@@ -139,7 +143,7 @@ similar function or other attribute.</p>
 <h2 id="arguments">Arguments</h2>
 <p><code>name</code>: The name of the Nagios hostgroup</p>
 <p><code>alias</code>: The description or other name that the hostgroup may be called. This field can be longer and more descriptive</p>
-<p><code>members</code>: A list of hosts that should be members of the hostgroup. The members must be valid hosts within Nagios and must be active</p>
+<p><code>members</code>: A list of hosts that should be members of the hostgroup. The members must be valid hosts within Nagios and must be active. The provider will NOT validate that the host is correctly configured in Nagios. The reason for this is, if the membership grows to hundreds or thousands of hosts, querying for each one of those would create performance issues.</p>
               
             </div>
           </div>
@@ -148,7 +152,7 @@ similar function or other attribute.</p>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
       
-        <a href="../.." class="btn btn-neutral" title="Home"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../resource_host/" class="btn btn-neutral" title="rsource_host"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -176,7 +180,7 @@ similar function or other attribute.</p>
           <a href="https://github.com/devopsdunkin/terraform-provider-nagios/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
       
       
-        <span><a href="../.." style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../resource_host/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
     </span>

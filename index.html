@@ -8,7 +8,7 @@
   <meta name="description" content="None">
   
   <link rel="shortcut icon" href="img/favicon.ico">
-  <title>Home - Terraform Provider: Nagios</title>
+  <title>getting started - terraform provider: nagios</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="css/theme.css" type="text/css" />
@@ -17,7 +17,7 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "Home";
+    var mkdocs_page_name = "getting started";
     var mkdocs_page_input_path = "index.md";
     var mkdocs_page_url = "/terraform-propvider-nagios/";
   </script>
@@ -36,7 +36,7 @@
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
       <div class="wy-side-nav-search">
-        <a href="." class="icon icon-home"> Terraform Provider: Nagios</a>
+        <a href="." class="icon icon-home"> terraform provider: nagios</a>
         <div role="search">
   <form id ="rtd-search-form" class="wy-form" action="./search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
@@ -50,16 +50,16 @@
           
             <li class="toctree-l1 current">
 		
-    <a class="current" href=".">Home</a>
+    <a class="current" href=".">getting started</a>
     <ul class="subnav">
             
-    <li class="toctree-l2"><a href="#welcome-to-mkdocs">Welcome to MkDocs</a></li>
+    <li class="toctree-l2"><a href="#installing">Installing</a></li>
     
         <ul>
         
-            <li><a class="toctree-l3" href="#commands">Commands</a></li>
+            <li><a class="toctree-l3" href="#supported-nagios-versions">Supported Nagios Versions</a></li>
         
-            <li><a class="toctree-l3" href="#project-layout">Project layout</a></li>
+            <li><a class="toctree-l3" href="#provider-setup">Provider setup</a></li>
         
         </ul>
     
@@ -69,8 +69,12 @@
           
             <li class="toctree-l1">
 		
-    <span class="caption-text">Resources</span>
+    <span class="caption-text">resources</span>
     <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="resources/resource_host/">rsource_host</a>
+                </li>
                 <li class="">
                     
     <a class="" href="resources/resource_hostgroup/">resource_hostgroup</a>
@@ -88,7 +92,7 @@
       
       <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
         <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href=".">Terraform Provider: Nagios</a>
+        <a href=".">terraform provider: nagios</a>
       </nav>
 
       
@@ -100,7 +104,7 @@
     
       
     
-    <li>Home</li>
+    <li>getting started</li>
     <li class="wy-breadcrumbs-aside">
       
         <a href="https://github.com/devopsdunkin/terraform-provider-nagios/edit/master/docs/index.md"
@@ -113,20 +117,19 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="welcome-to-mkdocs">Welcome to MkDocs</h1>
-<p>For full documentation visit <a href="https://mkdocs.org">mkdocs.org</a>.</p>
-<h2 id="commands">Commands</h2>
-<ul>
-<li><code>mkdocs new [dir-name]</code> - Create a new project.</li>
-<li><code>mkdocs serve</code> - Start the live-reloading docs server.</li>
-<li><code>mkdocs build</code> - Build the documentation site.</li>
-<li><code>mkdocs help</code> - Print this help message.</li>
-</ul>
-<h2 id="project-layout">Project layout</h2>
-<pre><code>mkdocs.yml    # The configuration file.
-docs/
-    index.md  # The documentation homepage.
-    ...       # Other markdown pages, images and other files.
+                <h1 id="installing">Installing</h1>
+<p>Refer to Hashicorp's <a href="https://www.terraform.io/docs/configuration/providers.html#third-party-plugins">documentation</a> to install third-party providers</p>
+<h2 id="supported-nagios-versions">Supported Nagios Versions</h2>
+<p>This provider was tested on Nagios XI 5.6.1. It may work with other versions, it will just depend on if there are differences in how the API processes commands.</p>
+<h2 id="provider-setup">Provider setup</h2>
+<p>The provider requires the following attributes:</p>
+<p><code>url</code> (required) - The URL to login to Nagios XI. This should just be the FQDN of the Nagios server, with <code>/nagiosxi</code> appended to it. It defaults to using the environment variable <code>NAGIOS_URL</code> if no value is provided in the provider definition.</p>
+<p><code>token</code> (required) - The API token used to login to the Nagios XI API. This value can be found by logging in to the web application, clicking <code>Help</code>, and on the left hand side menu, click <code>Introduction</code>. Then it will be listed under the <code>Authentication</code> section. It defaults to using the environment variable <code>API_TOKEN</code> if no value is provided in the provider definition.</p>
+<h3 id="examples">Examples</h3>
+<pre><code class="hcl">provider &quot;nagios&quot; {
+    url = &quot;http://localhost/nagiosxi&quot;
+    token = &quot;pd994lfldfjfgGGHPDdj83iDjvdPv9033AAbwewwpPP69fmd4201qQmv0zCzxodD&quot;
+}
 </code></pre>
               
             </div>
@@ -135,7 +138,7 @@ docs/
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="resources/resource_hostgroup/" class="btn btn-neutral float-right" title="resource_hostgroup">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="resources/resource_host/" class="btn btn-neutral float-right" title="rsource_host">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
     </div>
@@ -165,7 +168,7 @@ docs/
       
       
       
-        <span style="margin-left: 15px"><a href="resources/resource_hostgroup/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="resources/resource_host/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>
@@ -178,5 +181,5 @@ docs/
 
 <!--
 MkDocs version : 1.0.4
-Build Date UTC : 2019-10-06 02:40:07
+Build Date UTC : 2019-10-11 01:57:46
 -->
