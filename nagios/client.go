@@ -118,7 +118,7 @@ func (c *Client) buildURL(objectType, method, objectName, name, oldVal string) (
 			nagiosURL.WriteString(name)
 		}
 
-		nagiosURL.WriteString("&applyconfig=1")
+		nagiosURL.WriteString("&force=1&applyconfig=1")
 	} else if method == "PUT" {
 		nagiosURL.WriteString("/")
 
@@ -127,6 +127,10 @@ func (c *Client) buildURL(objectType, method, objectName, name, oldVal string) (
 		} else {
 			return "", errors.New("[ERROR] A value for oldVal must be provided when attempting a PUT")
 		}
+
+		// if objectType == "service" {
+		// 	nagiosURL.WriteString("/" + objectDescription)
+		// }
 
 		nagiosURL.WriteString("?apikey=")
 		nagiosURL.WriteString(c.token)
@@ -203,7 +207,8 @@ func (c *Client) post(data *url.Values, nagiosURL string) ([]byte, error) {
 }
 
 func (c *Client) put(data *url.Values, nagiosURL string) ([]byte, error) {
-	request, err := http.NewRequest(http.MethodPut, nagiosURL, strings.NewReader(data.Encode()))
+	// request, err := http.NewRequest(http.MethodPut, nagiosURL, strings.NewReader(data.Encode()))
+	request, err := http.NewRequest(http.MethodPut, nagiosURL, nil)
 
 	if err != nil {
 		log.Printf("[ERROR] Error creating HTTP request - %s", err.Error())
