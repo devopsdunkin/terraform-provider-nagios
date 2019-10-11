@@ -153,50 +153,34 @@
     action_url                      = &quot;http://docs.company.com/host_alert/actions&quot;
     initial_state                   = &quot;s&quot;
     retry_interval                  = &quot;5&quot;
-    passive_checks_enabled          = true
-    active_checks_enabled           = true
-    obsess_over_host                = false
-    event_handler                   = 
-    event_handler_enabled           = true
-    flap_detection_enabled          = true
-    flap_detection_options          = 
-    low_flap_threshold              = &quot;5&quot;
-    high_flap_threshold             = &quot;5&quot;
-    process_perf_data               = true
-    retain_status_information       =
-    retain_nonstatus_information    =
-    check_freshness                 =
-    freshness_threshold             =
-    first_notification_delay        =
-    notification_options            =
-    notifications_enabled           = true
-    stalking_options                =
-    icon_image                      = &quot;windows_host.jpg&quot;
-    icon_image_alt                  = &quot;Windows Server&quot;
-    vrml_image                      =
-    statusmap_image                 =
-    2d_coords                       =
-    3d_coords                       =
+    passive_checks_enabled          = 1
+    active_checks_enabled           = 1
+    obsess_over_host                = 0
+    process_perf_data               = 1
+    notification_options            = [
+        &quot;d&quot;
+    ]
+    notifications_enabled           = 1
 }
 </code></pre>
 
 <h2 id="arguments">Arguments</h2>
-<p><code>name</code>:
-<code>address</code>:
-<code>display_name</code>:
+<p><code>name</code>: The name of the host
+<code>address</code>: The IP address of the host
+<code>display_name</code>: The pretty formatted name if you want to use something besides <code>name</code>
 <code>max_check_attempts</code>:
-<code>check_period</code>:
-<code>notification_interval</code>:
-<code>notification_period</code>:
-<code>contacts</code>:
-<code>alias</code>:
-<code>templates</code>:
-<code>contact_groups</code>:
-<code>notes</code>:
-<code>notes_url</code>:
-<code>action_url</code>:
-<code>initial_state</code>:
-<code>retry_interval</code>:
+<code>check_period</code>: Determines when Nagios should be monitoring the host. 
+<code>notification_interval</code>: How often should Nagios send notifications about a host
+<code>notification_period</code>: When should Nagios alert administrators of a down host. An example value of this would be <code>24x7</code>
+<code>contacts</code>: The list of users that Nagios should alert when a host is down
+<code>alias</code>: Another name for the host if it is known as something else
+<code>templates</code>: A list of Nagios templates to apply to the host
+<code>contact_groups</code>: A list of groups that should be notified when the host goes down
+<code>notes</code>: Notes about the host that may assist with troubleshooting
+<code>notes_url</code>: URL to a third-party documentation respoitory containing more information about the host
+<code>action_url</code>: URL to a third-party documentation repository containing actions to take in the event the host goes down
+<code>initial_state</code>: The state of the host when it is first added to Nagios
+<code>retry_interval</code>: How often should Nagios try to check the host after the initial down alert
 <code>passive_checks_enabled</code>:
 <code>active_checks_enabled</code>:
 <code>obsess_over_host</code>:
@@ -206,17 +190,17 @@
 <code>flap_detection_options</code>:
 <code>low_flap_threshold</code>:
 <code>high_flap_threshold</code>:
-<code>process_perf_data</code>:
+<code>process_perf_data</code>: Determines if Nagios should process performance dat
 <code>retain_status_information</code>:
 <code>retain_nonstatus_information</code>:
 <code>check_freshness</code>:
 <code>freshness_threshold</code>:
 <code>first_notification_delay</code>:
-<code>notification_options</code>:
-<code>notifications_enabled</code>:
+<code>notification_options</code>: A list of notification options. Determines if Nagios should alert if a host is down, up, or unreachable
+<code>notifications_enabled</code>: Determines if Nagios should send notifications
 <code>stalking_options</code>:
-<code>icon_image</code>:
-<code>icon_image_alt</code>: 
+<code>icon_image</code>: The icon to display in Nagios
+<code>icon_image_alt</code>:  The text to display when hovering over the <code>icon_image</code> or the text to display if the <code>icon_image</code> is unavailable
 <code>vrml_image</code>:
 <code>statusmap_image</code>:
 <code>2d_coords</code>:
