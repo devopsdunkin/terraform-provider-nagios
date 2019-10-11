@@ -56,14 +56,25 @@ func (c *Client) sendRequest(httpRequest *http.Request) ([]byte, error) {
 	return body, nil
 }
 
-func (c *Client) buildURL(objectType, method, objectName, objectDescription, name, oldVal string) (string, error) {
+func (c *Client) buildURL(objectType, method, objectName, name, oldVal string) (string, error) {
 	var nagiosURL strings.Builder
 
 	var apiURL string
-	if strings.HasSuffix(c.url, "/") {
-		apiURL = "api/v1/config/"
+	var apiType string
+	if objectType == "applyconfig" {
+		apiType = "system"
+
+		if method != "POST" {
+			return "", errors.New("You must use a HTTP POST when performing an applyconfig")
+		}
 	} else {
-		apiURL = "/api/v1/config/"
+		apiType = "config"
+	}
+
+	apiURL = "api/v1/" + apiType + "/"
+
+	if !strings.HasSuffix(c.url, "/") {
+		apiURL = "/" + apiURL
 	}
 
 	// All of this creates the nagiosURL to get the object
@@ -117,17 +128,20 @@ func (c *Client) buildURL(objectType, method, objectName, objectDescription, nam
 			return "", errors.New("[ERROR] A value for oldVal must be provided when attempting a PUT")
 		}
 
-		if objectType == "service" {
-			nagiosURL.WriteString("/" + objectDescription)
-		}
+		// if objectType == "service" {
+		// 	nagiosURL.WriteString("/" + objectDescription)
+		// }
 
 		nagiosURL.WriteString("?apikey=")
 		nagiosURL.WriteString(c.token)
-		nagiosURL.WriteString("&pretty=1&force=1&applyconfig=1")
+		nagiosURL.WriteString("&pretty=1&applyconfig=1&force=1")
 	} else if method == "POST" {
 		nagiosURL.WriteString("?apikey=")
 		nagiosURL.WriteString(c.token)
-		nagiosURL.WriteString("&force=1&applyconfig=1")
+
+		if objectType != "applyconfig" {
+			nagiosURL.WriteString("&applyconfig=1&force=1")
+		}
 	}
 
 	log.Printf("[DEBUG] Nagios URL - %s", c.scrubToken(nagiosURL.String())) // TODO: Need to scrub API key from logs
@@ -177,10 +191,15 @@ func (c *Client) post(data *url.Values, nagiosURL string) ([]byte, error) {
 	}
 
 	body, err := c.sendRequest(request)
-	// log.Printf("[DEBUG] Response from Nagios - %s", string(body))
 
 	if err != nil {
 		log.Printf("[ERROR] Error sending request: %s", err.Error())
+		return nil, err
+	}
+
+	err = c.commandResponse(body)
+
+	if err != nil {
 		return nil, err
 	}
 
@@ -203,6 +222,12 @@ func (c *Client) put(data *url.Values, nagiosURL string) ([]byte, error) {
 		return nil, err
 	}
 
+	err = c.commandResponse(body)
+
+	if err != nil {
+		return nil, err
+	}
+
 	return body, nil
 }
 
@@ -221,7 +246,31 @@ func (c *Client) delete(data *url.Values, nagiosURL string) ([]byte, error) {
 		return nil, err
 	}
 
+	err = c.commandResponse(body)
+
+	if err != nil {
+		return nil, err
+	}
+
 	return body, nil
+}
+
+func (c *Client) applyConfig() error {
+	nagiosURL, err := c.buildURL("applyconfig", "POST", "", "", "")
+
+	if err != nil {
+		return err
+	}
+
+	data := &url.Values{}
+
+	_, err = c.post(data, nagiosURL)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // Function maps the elements of a string array to a single string with each value separated by commas
