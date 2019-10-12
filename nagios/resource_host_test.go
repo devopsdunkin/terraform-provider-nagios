@@ -66,7 +66,7 @@ func TestAccHost_createAfterManualDestroy(t *testing.T) {
 				PreConfig: func() {
 					client := testAccProvider.Meta().(*Client)
 
-					_, err := client.DeleteHost(host.Name)
+					_, err := client.deleteHost(host.Name)
 					if err != nil {
 						t.Fatal(err)
 					}
@@ -146,7 +146,7 @@ func testAccCheckHostDestroy() resource.TestCheckFunc {
 
 			conn := testAccProvider.Meta().(*Client)
 
-			host, _ := conn.GetHost(name)
+			host, _ := conn.getHost(name)
 			if host.Name != "" {
 				return fmt.Errorf("Host %s still exists", name)
 			}
@@ -177,7 +177,7 @@ func getHostFromState(s *terraform.State, rName string) (*Host, error) {
 	name := rs.Primary.Attributes["name"]
 	log.Printf("[DEBUG] Name value from state - %s", name)
 
-	host, err := nagiosClient.GetHost(name)
+	host, err := nagiosClient.getHost(name)
 
 	if err != nil {
 		return nil, fmt.Errorf("error getting host with name %s: %s", name, err)
