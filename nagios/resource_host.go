@@ -2,6 +2,7 @@ package nagios
 
 import (
 	"log"
+	"strconv"
 
 	"github.com/hashicorp/terraform/helper/schema"
 )
@@ -28,7 +29,7 @@ type Host struct {
 	ActionURL                  string        `json:"action_url" schema:"action_url"`
 	InitialState               string        `json:"initial_state" schema:"initial_state"`
 	RetryInterval              string        `json:"retry_interval" schema:"retry_interval"`
-	PassiveChecksEnabled       string        `json:"passive_checks_enabled" schema:"passive_checks_enabled"`
+	PassiveChecksEnabled       bool          `json:"passive_checks_enabled" schema:"passive_checks_enabled"`
 	ActiveChecksEnabled        string        `json:"active_checks_enabled" schema:"active_checks_enabled"`
 	ObsessOverHost             string        `json:"obsess_over_host" schema:"obsess_over_host"`
 	EventHandler               string        `json:"event_handler" schema:"event_handler"`
@@ -150,9 +151,8 @@ func resourceHost() *schema.Resource {
 				Description: "How frequent Nagios should retry checking a host",
 			},
 			"passive_checks_enabled": {
-				Type:        schema.TypeString,
+				Type:        schema.TypeBool,
 				Optional:    true,
-				Default:     "",
 				Description: "",
 			},
 			"active_checks_enabled": {
@@ -296,9 +296,7 @@ func resourceCreateHost(d *schema.ResourceData, m interface{}) error {
 
 	host := setHostFromSchema(d)
 
-	log.Printf("[DEBUG] CreateHost - After calling setHostFromSchema() - %s", host)
-
-	_, err := nagiosClient.NewHost(host)
+	_, err := nagiosClient.newHost(host)
 
 	if err != nil {
 		return err
@@ -313,7 +311,7 @@ func resourceCreateHost(d *schema.ResourceData, m interface{}) error {
 func resourceReadHost(d *schema.ResourceData, m interface{}) error {
 	nagiosClient := m.(*Client)
 
-	host, err := nagiosClient.GetHost(d.Id())
+	host, err := nagiosClient.getHost(d.Id())
 
 	if err != nil {
 		log.Printf("[ERROR] Error reading host - %s", err.Error())
@@ -339,8 +337,6 @@ func resourceUpdateHost(d *schema.ResourceData, m interface{}) error {
 
 	host := setHostFromSchema(d)
 
-	log.Printf("[DEBUG] Host after setting it with setHostFromSchema - %s", host)
-
 	oldVal, _ := d.GetChange("name")
 
 	if oldVal == "" { // No change, but perhaps the resource was manually deleted and need to update it so pass in the same name
@@ -348,7 +344,7 @@ func resourceUpdateHost(d *schema.ResourceData, m interface{}) error {
 		log.Printf("[DEBUG] resourceUpdateHost => oldVal was blank, so should be same name as current - %s", oldVal)
 	}
 
-	err := nagiosClient.UpdateHost(host, oldVal)
+	err := nagiosClient.updateHost(host, oldVal)
 
 	if err != nil {
 		log.Printf("[ERROR] Error updating host in Nagios - %s", err.Error())
@@ -367,7 +363,7 @@ func resourceUpdateHost(d *schema.ResourceData, m interface{}) error {
 func resourceDeleteHost(d *schema.ResourceData, m interface{}) error {
 	nagiosClient := m.(*Client)
 
-	_, err := nagiosClient.DeleteHost(d.Id())
+	_, err := nagiosClient.deleteHost(d.Id())
 
 	if err != nil {
 		log.Printf("[ERROR] Error trying to delete resource - %s", err.Error())
@@ -426,9 +422,9 @@ func setDataFromHost(d *schema.ResourceData, host *Host) {
 		log.Printf("[DEBUG] Just seeing if we hit inside if statement - RetryInterval - %s", host.RetryInterval)
 	}
 
-	if host.PassiveChecksEnabled != "" {
+	if strconv.FormatBool(host.PassiveChecksEnabled) != "" {
 		d.Set("passive_checks_enabled", host.PassiveChecksEnabled)
-		log.Printf("[DEBUG] Just seeing if we hit inside if statement - PassiveChecksEnabled - %s", host.PassiveChecksEnabled)
+		log.Printf("[DEBUG] Just seeing if we hit inside if statement - PassiveChecksEnabled - %s", strconv.FormatBool(host.PassiveChecksEnabled))
 	}
 
 	if host.ActiveChecksEnabled != "" {
@@ -548,7 +544,7 @@ func setHostFromSchema(d *schema.ResourceData) *Host {
 		ActionURL:                  d.Get("action_url").(string),
 		InitialState:               d.Get("initial_state").(string),
 		RetryInterval:              d.Get("retry_interval").(string),
-		PassiveChecksEnabled:       d.Get("passive_checks_enabled").(string),
+		PassiveChecksEnabled:       d.Get("passive_checks_enabled").(bool),
 		ActiveChecksEnabled:        d.Get("active_checks_enabled").(string),
 		ObsessOverHost:             d.Get("obsess_over_host").(string),
 		EventHandler:               d.Get("event_handler").(string),
@@ -575,4 +571,12 @@ func setHostFromSchema(d *schema.ResourceData) *Host {
 	}
 
 	return host
+}
+
+func boolToInt(source bool) int {
+	if source {
+		return 1
+	} else {
+		return 0
+	}
 }

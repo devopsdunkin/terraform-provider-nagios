@@ -6,7 +6,7 @@ import (
 )
 
 // NewHostgroup initiates the HTTP POST to the Nagios API to create a hostgroup
-func (c *Client) NewHostgroup(hostgroup *Hostgroup) ([]byte, error) {
+func (c *Client) newHostgroup(hostgroup *Hostgroup) ([]byte, error) {
 	nagiosURL, err := c.buildURL("hostgroup", "POST", "", "", "")
 
 	if err != nil {
@@ -31,7 +31,7 @@ func (c *Client) NewHostgroup(hostgroup *Hostgroup) ([]byte, error) {
 	return body, nil
 }
 
-func (c *Client) GetHostgroup(name string) (*Hostgroup, error) {
+func (c *Client) getHostgroup(name string) (*Hostgroup, error) {
 	var hostgroupArray = []Hostgroup{}
 	var hostgroup Hostgroup
 
@@ -64,7 +64,7 @@ func (c *Client) GetHostgroup(name string) (*Hostgroup, error) {
 	return &hostgroup, nil
 }
 
-func (c *Client) UpdateHostgroup(hostgroup *Hostgroup, oldVal interface{}) error {
+func (c *Client) updateHostgroup(hostgroup *Hostgroup, oldVal interface{}) error {
 	nagiosURL, err := c.buildURL("hostgroup", "PUT", "hostgroup_name", hostgroup.Name, oldVal.(string))
 
 	if err != nil {
@@ -92,7 +92,7 @@ func (c *Client) UpdateHostgroup(hostgroup *Hostgroup, oldVal interface{}) error
 	return nil
 }
 
-func (c *Client) DeleteHostgroup(name string) ([]byte, error) {
+func (c *Client) deleteHostgroup(name string) ([]byte, error) {
 	nagiosURL, err := c.buildURL("hostgroup", "DELETE", "hostgroup_name", name, "")
 
 	if err != nil {

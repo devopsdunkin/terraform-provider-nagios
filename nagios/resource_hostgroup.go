@@ -59,7 +59,7 @@ func resourceCreateHostGroup(d *schema.ResourceData, m interface{}) error {
 		Members: d.Get("members").(*schema.Set).List(),
 	}
 
-	_, err := nagiosClient.NewHostgroup(hostgroup)
+	_, err := nagiosClient.newHostgroup(hostgroup)
 
 	if err != nil {
 		return err
@@ -74,7 +74,7 @@ func resourceCreateHostGroup(d *schema.ResourceData, m interface{}) error {
 func resourceReadHostGroup(d *schema.ResourceData, m interface{}) error {
 	nagiosClient := m.(*Client)
 
-	hostgroup, err := nagiosClient.GetHostgroup(d.Id())
+	hostgroup, err := nagiosClient.getHostgroup(d.Id())
 
 	if err != nil {
 		log.Printf("[ERROR] Error reading hostgroup - %s", err.Error())
@@ -112,7 +112,7 @@ func resourceUpdateHostGroup(d *schema.ResourceData, m interface{}) error {
 		oldVal = d.Get("name").(string)
 	}
 
-	err := nagiosClient.UpdateHostgroup(hostgroup, oldVal)
+	err := nagiosClient.updateHostgroup(hostgroup, oldVal)
 
 	if err != nil {
 		log.Printf("[ERROR] Error updating hostgroup in Nagios - %s", err.Error())
@@ -130,7 +130,7 @@ func resourceUpdateHostGroup(d *schema.ResourceData, m interface{}) error {
 func resourceDeleteHostGroup(d *schema.ResourceData, m interface{}) error {
 	nagiosClient := m.(*Client)
 
-	_, err := nagiosClient.DeleteHostgroup(d.Id())
+	_, err := nagiosClient.deleteHostgroup(d.Id())
 
 	if err != nil {
 		log.Printf("[ERROR] Error trying to delete resource - %s", err.Error())

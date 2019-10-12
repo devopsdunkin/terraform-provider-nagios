@@ -3,6 +3,7 @@ package nagios
 import (
 	"log"
 	"net/url"
+	"strconv"
 	"strings"
 )
 
@@ -12,7 +13,7 @@ type UpdateResponse struct {
 }
 
 // TODO: Need to figure out how most of the funcs should be scoped. Thinking we don't need to expose most of these globally
-func (c *Client) NewHost(host *Host) ([]byte, error) {
+func (c *Client) newHost(host *Host) ([]byte, error) {
 	nagiosURL, err := c.buildURL("host", "POST", "", "", "")
 
 	if err != nil {
@@ -46,7 +47,7 @@ func (c *Client) NewHost(host *Host) ([]byte, error) {
 }
 
 // TODO: Need to refactor get, update and delete to accomodtae contacts being an array
-func (c *Client) GetHost(name string) (*Host, error) {
+func (c *Client) getHost(name string) (*Host, error) {
 	var hostArray = []Host{}
 	var host Host
 
@@ -116,7 +117,7 @@ func (c *Client) GetHost(name string) (*Host, error) {
 	return &host, nil
 }
 
-func (c *Client) UpdateHost(host *Host, oldVal interface{}) error {
+func (c *Client) updateHost(host *Host, oldVal interface{}) error {
 	nagiosURL, err := c.buildURL("host", "PUT", "host_name", host.Name, oldVal.(string))
 
 	if err != nil {
@@ -160,7 +161,7 @@ func (c *Client) UpdateHost(host *Host, oldVal interface{}) error {
 		// and create a new host, then we can proceed on. Otherwise, we
 		// can return the error and exit
 		if strings.Contains(err.Error(), "Does the host exist?") {
-			c.NewHost(host)
+			c.newHost(host)
 		} else {
 			log.Printf("[ERROR] Error during HTTP PUT - %s", err.Error())
 			return err
@@ -176,7 +177,7 @@ func (c *Client) UpdateHost(host *Host, oldVal interface{}) error {
 	return nil
 }
 
-func (c *Client) DeleteHost(name string) ([]byte, error) {
+func (c *Client) deleteHost(name string) ([]byte, error) {
 	nagiosURL, err := c.buildURL("host", "DELETE", "host_name", name, "")
 
 	if err != nil {
@@ -243,8 +244,8 @@ func setURLValuesFromHost(host *Host) *url.Values {
 		data.Set("retry_interval", host.RetryInterval)
 	}
 
-	if host.PassiveChecksEnabled != "" {
-		data.Set("passive_checks_enabled", host.PassiveChecksEnabled)
+	if strconv.FormatBool(host.PassiveChecksEnabled) != "" {
+		data.Set("passive_checks_enabled", string(boolToInt(host.PassiveChecksEnabled)))
 	}
 
 	if host.ActiveChecksEnabled != "" {
@@ -381,9 +382,9 @@ func setUpdateURLParams(originalURL string, host *Host) string {
 		nagiosURL.WriteString(host.RetryInterval)
 	}
 
-	if host.PassiveChecksEnabled != "" {
+	if strconv.FormatBool(host.PassiveChecksEnabled) != "" {
 		nagiosURL.WriteString("&passive_checks_enabled=")
-		nagiosURL.WriteString(host.PassiveChecksEnabled)
+		nagiosURL.WriteString(strconv.FormatBool(host.PassiveChecksEnabled))
 	}
 
 	if host.ActiveChecksEnabled != "" {
