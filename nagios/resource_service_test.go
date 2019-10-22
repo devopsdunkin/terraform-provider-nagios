@@ -88,7 +88,7 @@ func TestAccService_createAfterManualDestroy(t *testing.T) {
 func TestAccService_updateName(t *testing.T) {
 	firstServiceName := "tf_" + acctest.RandString(10)
 	secondServiceName := "tf_" + acctest.RandString(10)
-	serviceHostName := "tf_" + acctest.RandString(10)
+	serviceHostName := "localhost"
 	serviceDescription := "tf_" + acctest.RandString(50)
 	serviceCheckCommand := "check_ping\\!3000,80%\\!5000,100%"
 	serviceMaxCheckAttempts := "2"
