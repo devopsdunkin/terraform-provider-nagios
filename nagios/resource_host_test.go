@@ -117,19 +117,31 @@ func TestAccHost_updateName(t *testing.T) {
 func testAccHostResource_basic(name, alias, address, maxCheckAttempts, checkPeriod, notificationInterval, notificationPeriod, contacts, templates string) string {
 	return fmt.Sprintf(`
 resource "nagios_host" "host" {
-	name = "%s"
-	alias = "%s"
-	address = "%s"
-	max_check_attempts = "%s"
-	check_period = "%s"
-	notification_interval = "%s"
-	notification_period = "%s"
-	contacts = [
-		"%s"
-	]
-	templates = [
-		"%s"
-	]
+	name					= "%s"
+	alias					= "%s"
+	address					= "%s"
+	max_check_attempts		= "%s"
+	check_command			= "check-host-alive!3000.0!80%%!5000.0!100%%!!!!"
+	check_period			= "%s"
+	notification_interval	= "%s"
+	notification_period		= "%s"
+	contacts				= [
+						  		"%s"
+							]
+	templates				= [
+						  		"%s"
+							]
+	notes					= "I am adding notes"
+	notes_url				= "https://docs.company.local"
+	action_url				= "https://docs.company.local"
+	initial_state			= "o"
+	retry_interval			= "10"
+	passive_checks_enabled	= true
+	active_checks_enabled	= true
+	obsess_over_host		= false
+	notification_options	= "d,u,"
+	notifications_enabled	= true
+	icon_image				= "icon1.jpg"
 }
 	`, name, alias, address, maxCheckAttempts, checkPeriod, notificationInterval, notificationPeriod, contacts, templates)
 }

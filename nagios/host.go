@@ -1,39 +1,24 @@
 package nagios
 
 import (
-	"log"
+	"fmt"
 	"net/url"
-	"strconv"
 	"strings"
 )
 
-type UpdateResponse struct {
-	StatusError   string `json:"error"`
-	StatusSuccess string `json:"success"`
-}
-
 // TODO: Need to figure out how most of the funcs should be scoped. Thinking we don't need to expose most of these globally
 func (c *Client) newHost(host *Host) ([]byte, error) {
-	nagiosURL, err := c.buildURL("host", "POST", "", "", "")
+	nagiosURL, err := c.buildURL("host", "POST", "", "", "", "")
 
 	if err != nil {
-		log.Printf("[ERROR] %s", err.Error())
 		return nil, err
 	}
-
-	// contactList := mapArrayToString(host.Contacts)
-	// templatesList := mapArrayToString(host.Templates)
-	// contactGroupsList := mapArrayToString(host.ContactGroups)
-	// flapDetectionOptionsList := mapArrayToString(host.FlapDetectionOptions)
-	// notificationOptionsList := mapArrayToString(host.NotificationOptions)
-	// stalkingOptionsList := mapArrayToString(host.StalkingOptions)
 
 	data := setURLValuesFromHost(host)
 
 	body, err := c.post(data, nagiosURL)
 
 	if err != nil {
-		log.Printf("[ERROR] Error occurred during HTTP POST - %s", err.Error())
 		return nil, err
 	}
 
@@ -51,10 +36,9 @@ func (c *Client) getHost(name string) (*Host, error) {
 	var hostArray = []Host{}
 	var host Host
 
-	nagiosURL, err := c.buildURL("host", "GET", "host_name", name, "")
+	nagiosURL, err := c.buildURL("host", "GET", "host_name", name, "", "")
 
 	if err != nil {
-		log.Printf("[ERROR] %s", err.Error())
 		return nil, err
 	}
 
@@ -64,7 +48,6 @@ func (c *Client) getHost(name string) (*Host, error) {
 	err = c.get(data, &hostArray, nagiosURL)
 
 	if err != nil {
-		log.Printf("[ERROR] Error getting hostgroup from Nagios - %s", err.Error())
 		return nil, err
 	}
 
@@ -78,6 +61,7 @@ func (c *Client) getHost(name string) (*Host, error) {
 		host.NotificationPeriod = hostArray[i].NotificationPeriod
 		host.Contacts = hostArray[i].Contacts
 		host.Templates = hostArray[i].Templates
+		host.CheckCommand = hostArray[i].CheckCommand
 		host.ContactGroups = hostArray[i].ContactGroups
 		host.Notes = hostArray[i].Notes
 		host.NotesURL = hostArray[i].NotesURL
@@ -118,43 +102,15 @@ func (c *Client) getHost(name string) (*Host, error) {
 }
 
 func (c *Client) updateHost(host *Host, oldVal interface{}) error {
-	nagiosURL, err := c.buildURL("host", "PUT", "host_name", host.Name, oldVal.(string))
+	nagiosURL, err := c.buildURL("host", "PUT", "host_name", host.Name, oldVal.(string), "")
 
 	if err != nil {
-		log.Printf("[ERROR] %s", err.Error())
 		return err
 	}
 
-	// contactList := mapArrayToString(host.Contacts)
-	// templatesList := mapArrayToString(host.Templates)
-	// contactGroupsList := mapArrayToString(host.ContactGroups)
-	// flapDetectionOptionsList := mapArrayToString(host.FlapDetectionOptions)
-	// notificationOptionsList := mapArrayToString(host.NotificationOptions)
-	// stalkingOptionsList := mapArrayToString(host.StalkingOptions)
+	nagiosURL = setUpdateURLHostParams(nagiosURL, host)
 
-	// TODO: Unsure if this should go to buildURL function or not. If we can find a way to pass it in through parameters via an interface
-	// TODO: Need to build a function that could generate this dynamically based on passing in a struct
-	// nagiosURL = nagiosURL + "&host_name=" + host.Name + "&alias=" + host.Alias + "&address=" + host.Address + "&max_check_attempts=" + host.MaxCheckAttempts +
-	// 	"&check_period=" + host.CheckPeriod + "&notification_interval=" + host.NotificationInterval +
-	// 	"&notification_period=" + host.NotificationPeriod + "&contacts=" + contactList + "&use=" + templatesList + "&contact_groups=" + contactGroupsList +
-	// 	"&notes=" + host.Notes + "&notes_url=" + host.NotesURL + "&action_url=" + host.ActionURL + "&initial_state=" + host.InitialState +
-	// 	"&retry_interval=" + host.RetryInterval + "&passive_checks_enabled=" + host.PassiveChecksEnabled + "&active_checks_enabled=" +
-	// 	host.ActiveChecksEnabled + "&obsess_over_host=" + host.ObsessOverHost + "&event_handler=" + host.EventHandler +
-	// 	"&event_handler_enabled=" + host.EventHandlerEnabled + "&flap_detection_enabled=" + host.FlapDetectionEnabled +
-	// 	"&flap_detection_options=" + flapDetectionOptionsList + "&low_flap_threshold=" + host.LowFlapThreshold + "&high_flap_threshold=" + host.HighFlapThreshold +
-	// 	"&process_perf_data=" + host.ProcessPerfData + "&retain_status_information=" + host.RetainStatusInformation + "&retain_nonstatus_information=" +
-	// 	host.RetainNonstatusInformation + "&check_freshness=" + host.CheckFreshness + "&freshness_threshold=" + host.FreshnessThreshold +
-	// 	"&first_notification_delay=" + host.FirstNotificationDelay + "&notification_options=" + notificationOptionsList + "&notifications_enabled=" +
-	// 	host.NotificationsEnabled + "&stalking_options=" + stalkingOptionsList + "&icon_image=" + host.IconImage + "&icon_image_alt=" +
-	// 	host.IconImageAlt + "&vrml_imag=" + host.VRMLImage + "&statusmap_image=" + host.StatusMapImage + "&2d_coords=" + host.TwoDCoords + "&3d_coords=" + host.ThreeDCoords
-
-	nagiosURL = setUpdateURLParams(nagiosURL, host)
-
-	// TODO: Want to dynamically set the URL encoded values based on passing the struct in to another func
-	// For an update, we don't see to set any values in url.Values. We just pass in an empty one. The updates are handled through URL params defined above
-	data := &url.Values{}
-
-	_, err = c.put(data, nagiosURL)
+	_, err = c.put(nagiosURL)
 
 	if err != nil {
 		// If the error is this specific message, we want to "catch" it
@@ -163,7 +119,6 @@ func (c *Client) updateHost(host *Host, oldVal interface{}) error {
 		if strings.Contains(err.Error(), "Does the host exist?") {
 			c.newHost(host)
 		} else {
-			log.Printf("[ERROR] Error during HTTP PUT - %s", err.Error())
 			return err
 		}
 	}
@@ -178,10 +133,9 @@ func (c *Client) updateHost(host *Host, oldVal interface{}) error {
 }
 
 func (c *Client) deleteHost(name string) ([]byte, error) {
-	nagiosURL, err := c.buildURL("host", "DELETE", "host_name", name, "")
+	nagiosURL, err := c.buildURL("host", "DELETE", "host_name", name, "", "")
 
 	if err != nil {
-		log.Printf("[ERROR] %s", err.Error())
 		return nil, err
 	}
 
@@ -191,7 +145,6 @@ func (c *Client) deleteHost(name string) ([]byte, error) {
 	body, err := c.delete(data, nagiosURL)
 
 	if err != nil {
-		log.Printf("[ERROR] Error during HTTP DELETE - %s", err.Error())
 		return nil, err
 	}
 
@@ -214,11 +167,16 @@ func setURLValuesFromHost(host *Host) *url.Values {
 	data.Set("notification_interval", host.NotificationInterval)
 	data.Set("notification_period", host.NotificationPeriod)
 	data.Set("contacts", mapArrayToString(host.Contacts))
-	data.Set("templates", mapArrayToString(host.Templates))
 
 	// Optional attributes
+	if host.Templates != nil {
+		data.Set("use", mapArrayToString(host.Templates))
+	}
 	if host.Alias != "" {
 		data.Set("alias", host.Alias)
+	}
+	if host.CheckCommand != "" {
+		data.Set("check_command", host.CheckCommand)
 	}
 	if host.ContactGroups != nil {
 		data.Set("contact_groups", mapArrayToString(host.ContactGroups))
@@ -244,8 +202,8 @@ func setURLValuesFromHost(host *Host) *url.Values {
 		data.Set("retry_interval", host.RetryInterval)
 	}
 
-	if strconv.FormatBool(host.PassiveChecksEnabled) != "" {
-		data.Set("passive_checks_enabled", string(boolToInt(host.PassiveChecksEnabled)))
+	if host.PassiveChecksEnabled != "" {
+		data.Set("passive_checks_enabled", host.PassiveChecksEnabled)
 	}
 
 	if host.ActiveChecksEnabled != "" {
@@ -304,16 +262,16 @@ func setURLValuesFromHost(host *Host) *url.Values {
 		data.Set("first_notification_delay", host.FirstNotificationDelay)
 	}
 
-	if host.NotificationOptions != nil {
-		data.Set("notification_options", mapArrayToString(host.NotificationOptions))
+	if host.NotificationOptions != "" {
+		data.Set("notification_options", host.NotificationOptions)
 	}
 
 	if host.NotificationsEnabled != "" {
 		data.Set("notifications_enabled", host.NotificationsEnabled)
 	}
 
-	if host.StalkingOptions != nil {
-		data.Set("stalking_options", mapArrayToString(host.StalkingOptions))
+	if host.StalkingOptions != "" {
+		data.Set("stalking_options", host.StalkingOptions)
 	}
 
 	if host.IconImage != "" {
@@ -343,7 +301,7 @@ func setURLValuesFromHost(host *Host) *url.Values {
 	return data
 }
 
-func setUpdateURLParams(originalURL string, host *Host) string {
+func setUpdateURLHostParams(originalURL string, host *Host) string {
 	var nagiosURL strings.Builder
 
 	nagiosURL.WriteString(originalURL)
@@ -352,6 +310,15 @@ func setUpdateURLParams(originalURL string, host *Host) string {
 		"&notification_period=" + host.NotificationPeriod + "&contacts=" + mapArrayToString(host.Contacts))
 
 	// Optional attributes
+	if host.Templates != nil {
+		nagiosURL.WriteString("&use=")
+		nagiosURL.WriteString(mapArrayToString(host.Templates))
+	}
+	if host.CheckCommand != "" {
+		nagiosURL.WriteString("&check_command=")
+		nagiosURL.WriteString(fmt.Sprint(host.CheckCommand))
+	}
+
 	if host.ContactGroups != nil {
 		nagiosURL.WriteString("&contact_groups=")
 		nagiosURL.WriteString(mapArrayToString(host.ContactGroups))
@@ -382,9 +349,9 @@ func setUpdateURLParams(originalURL string, host *Host) string {
 		nagiosURL.WriteString(host.RetryInterval)
 	}
 
-	if strconv.FormatBool(host.PassiveChecksEnabled) != "" {
+	if host.PassiveChecksEnabled != "" {
 		nagiosURL.WriteString("&passive_checks_enabled=")
-		nagiosURL.WriteString(strconv.FormatBool(host.PassiveChecksEnabled))
+		nagiosURL.WriteString(host.PassiveChecksEnabled)
 	}
 
 	if host.ActiveChecksEnabled != "" {
@@ -457,9 +424,9 @@ func setUpdateURLParams(originalURL string, host *Host) string {
 		nagiosURL.WriteString(host.FirstNotificationDelay)
 	}
 
-	if host.NotificationOptions != nil {
+	if host.NotificationOptions != "" {
 		nagiosURL.WriteString("&notification_options=")
-		nagiosURL.WriteString(mapArrayToString(host.NotificationOptions))
+		nagiosURL.WriteString(host.NotificationOptions)
 	}
 
 	if host.NotificationsEnabled != "" {
@@ -467,9 +434,9 @@ func setUpdateURLParams(originalURL string, host *Host) string {
 		nagiosURL.WriteString(host.NotificationsEnabled)
 	}
 
-	if host.StalkingOptions != nil {
+	if host.StalkingOptions != "" {
 		nagiosURL.WriteString("&stalking_options=")
-		nagiosURL.WriteString(mapArrayToString(host.StalkingOptions))
+		nagiosURL.WriteString(host.StalkingOptions)
 	}
 
 	if host.IconImage != "" {
@@ -501,10 +468,6 @@ func setUpdateURLParams(originalURL string, host *Host) string {
 		nagiosURL.WriteString("&3d_coords=")
 		nagiosURL.WriteString(host.ThreeDCoords)
 	}
-
-	nagiosURL.WriteString("&force=1")
-
-	log.Printf("[DEBUG] Performing Update, URL - %s", nagiosURL.String())
 
 	return nagiosURL.String()
 }

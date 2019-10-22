@@ -26,6 +26,7 @@ resource "nagios_host" "host1" {
     ]
     alias                           = "host1"
     templates                       = "generic-host"
+    check_command                   = "check_icmp"
     contact_groups                  = [
         "noc_staff"
     ]
@@ -59,28 +60,41 @@ Below is a brief description of what each field is used for in Nagios. Refer to 
 `contacts` (required): The list of users that Nagios should alert when a host is down
 `alias`: A longer name to describe the host
 `templates`: A list of Nagios templates to apply to the host
+`check_command`: The name of the command that should be used to check if the host is up or down
 `contact_groups`: A list of the contact groups that should be notified if the host goes down
 `notes`: Notes about the host that may assist with troubleshooting
 `notes_url`: URL to a third-party documentation respoitory containing more information about the host
 `action_url`: URL to a third-party documentation repository containing actions to take in the event the host goes down
-`initial_state`: The state of the host when it is first added to Nagios
+`initial_state`: The state of the host when it is first added to Nagios. Valid options are:
+    - s = UP
+    - d = DOWN
+    - u = UNREACHABLE
 `retry_interval`: How often should Nagios try to check the host after the initial down alert
 `passive_checks_enabled`: Sets whether or not passive checks are enabled for the host
 `active_checks_enabled`: Sets whether or not active checks are enabled for the host
-`obsess_over_host`: Sets whether or not Nagios "obsesses" over the host using the ochp_command
+`obsess_over_host`: Sets whether or not Nagios 'obsesses' over the host using the ochp_command
 `event_handler`: The command that should be run whenver a change in the state of the host is detected
 `event_handler_enabled`: Sets whether or not event handlers should be enabled for the host
 `flap_detection_enabled`: Sets whether or not flap detection is enabled for the host
-`flap_detection_options`: Determines what flap detection logic will be used for the host. Valid options for this attribute are o = UP, d = DOWN and u = UNREACHABLE
+`flap_detection_options`: Determines what flap detection logic will be used for the host. One or more of the following valid options can be provided:
+    - o = UP
+    - d = DOWN
+    - u = UNREACHABLE
 `low_flap_threshold`: The minimum threshold that should be used when detecting if flapping is occurring
 `high_flap_threshold`: The maximum threshold that should be used when detecting if flapping is occurring
-`process_perf_data`: Determines if Nagios should process performance dat
+`process_perf_data`: Determines if Nagios should process performance data
 `retain_status_information`: Sets whether or not status related information should be kept for the host
 `retain_nonstatus_information`: Sets whether or not non-status related information should be kept for the host
 `check_freshness`: Sets whether or not freshness checks are enabled for the host
 `freshness_threshold`: The freshness threshold used for the host
 `first_notification_delay`: The amount of time to wait to send out the first notification when a host enters a non-UP state
-`notification_options`: A list of notification options. Determines if Nagios should alert if a host is down, up, or unreachable
+`notification_options`: Determines when Nagios should alert if a host is one or more of the following option:
+    - o = UP
+    - d = DOWN
+    - u = UNREACHABLE
+    - r = RECOVERY
+    - f = FLAPPING
+    - s = SCHEDULED DOWNTIME
 `notifications_enabled`: Determines if Nagios should send notifications
 `stalking_options`: A list of options to determine which states, if any, should be stalked by Nagios. Refer to the [Nagios documentation](https://assets.nagios.com/downloads/nagioscore/docs/nagioscore/3/en/stalking.html) for more information on stalking
 `icon_image`: The icon to display in Nagios
