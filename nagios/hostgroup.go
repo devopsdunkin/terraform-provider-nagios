@@ -7,7 +7,7 @@ import (
 
 // NewHostgroup initiates the HTTP POST to the Nagios API to create a hostgroup
 func (c *Client) newHostgroup(hostgroup *Hostgroup) ([]byte, error) {
-	nagiosURL, err := c.buildURL("hostgroup", "POST", "", "", "")
+	nagiosURL, err := c.buildURL("hostgroup", "POST", "", "", "", "")
 
 	if err != nil {
 		log.Printf("[ERROR] %s", err.Error())
@@ -35,7 +35,7 @@ func (c *Client) getHostgroup(name string) (*Hostgroup, error) {
 	var hostgroupArray = []Hostgroup{}
 	var hostgroup Hostgroup
 
-	nagiosURL, err := c.buildURL("hostgroup", "GET", "hostgroup_name", name, "")
+	nagiosURL, err := c.buildURL("hostgroup", "GET", "hostgroup_name", name, "", "")
 
 	if err != nil {
 		log.Printf("[ERROR] %s", err.Error())
@@ -65,7 +65,7 @@ func (c *Client) getHostgroup(name string) (*Hostgroup, error) {
 }
 
 func (c *Client) updateHostgroup(hostgroup *Hostgroup, oldVal interface{}) error {
-	nagiosURL, err := c.buildURL("hostgroup", "PUT", "hostgroup_name", hostgroup.Name, oldVal.(string))
+	nagiosURL, err := c.buildURL("hostgroup", "PUT", "hostgroup_name", hostgroup.Name, oldVal.(string), "")
 
 	if err != nil {
 		log.Printf("[ERROR] %s", err.Error())
@@ -82,7 +82,7 @@ func (c *Client) updateHostgroup(hostgroup *Hostgroup, oldVal interface{}) error
 	data.Set("alias", hostgroup.Alias)
 	data.Set("members", hostGroupMemberList)
 
-	_, err = c.put(data, nagiosURL)
+	_, err = c.put(nagiosURL)
 
 	if err != nil {
 		log.Printf("[ERROR] Error during HTTP PUT - %s", err.Error())
@@ -93,7 +93,7 @@ func (c *Client) updateHostgroup(hostgroup *Hostgroup, oldVal interface{}) error
 }
 
 func (c *Client) deleteHostgroup(name string) ([]byte, error) {
-	nagiosURL, err := c.buildURL("hostgroup", "DELETE", "hostgroup_name", name, "")
+	nagiosURL, err := c.buildURL("hostgroup", "DELETE", "hostgroup_name", name, "", "")
 
 	if err != nil {
 		log.Printf("[ERROR] %s", err.Error())
