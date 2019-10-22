@@ -90,7 +90,7 @@ func TestAccService_updateName(t *testing.T) {
 	secondServiceName := "tf_" + acctest.RandString(10)
 	serviceHostName := "localhost"
 	serviceDescription := "tf_" + acctest.RandString(50)
-	serviceCheckCommand := "check_ping\\!3000,80%\\!5000,100%"
+	serviceCheckCommand := "check_ping\\!3000,80%!!5000,100%"
 	serviceMaxCheckAttempts := "2"
 	serviceCheckInterval := "5"
 	serviceRetryInterval := "5"
