@@ -2,6 +2,7 @@ package nagios
 
 import (
 	"github.com/hashicorp/terraform/helper/schema"
+	"github.com/hashicorp/terraform/helper/validation"
 )
 
 // servicegroup contains all info needed to create a servicegroup in Nagios
@@ -26,14 +27,15 @@ func resourceServiceGroup() *schema.Resource {
 				Description: "The name of the Nagios servicegroup",
 			},
 			"alias": {
-				Type:        schema.TypeString,
-				Required:    true,
-				Description: "The description or other name that the servicegroup may be called. This field can be longer and more descriptive",
+				Type:         schema.TypeString,
+				Required:     true,
+				Description:  "The description or other name that the servicegroup may be called. This field can be longer and more descriptive",
+				ValidateFunc: validation.StringLenBetween(1, 255),
 			},
 			"members": {
 				Type:        schema.TypeSet,
 				Optional:    true,
-				Description: "A list of hosts and/or services that should be members of the servicegroup. The members must be valid hosts and services within Nagios and must be active",
+				Description: "A list of services and/or service groups that should be members of the service group. The members must be valid services and service groups within Nagios and must be active",
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
 				},

@@ -2,6 +2,7 @@ package nagios
 
 import (
 	"github.com/hashicorp/terraform/helper/schema"
+	"github.com/hashicorp/terraform/helper/validation"
 )
 
 // Service contains all info needed to create a service in Nagios
@@ -75,9 +76,10 @@ func resourceService() *schema.Resource {
 				},
 			},
 			"description": {
-				Type:        schema.TypeString,
-				Required:    true,
-				Description: "Defines the description of the service. It may contain spaces, dashes and colons (avoid using semicolons, apostrophes and quotation marks)",
+				Type:         schema.TypeString,
+				Required:     true,
+				Description:  "Defines the description of the service. It may contain spaces, dashes and colons (avoid using semicolons, apostrophes and quotation marks)",
+				ValidateFunc: validation.StringLenBetween(1, 255),
 			},
 			"check_command": {
 				Type:        schema.TypeString,
