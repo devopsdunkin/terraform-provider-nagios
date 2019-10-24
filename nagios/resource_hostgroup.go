@@ -56,6 +56,14 @@ func resourceHostGroup() *schema.Resource {
 				Optional:    true,
 				Description: "URL to a third-party documentation repository containing actions to take in the event the servicegroup goes down",
 			},
+			"members": {
+				Type:        schema.TypeSet,
+				Optional:    true,
+				Description: "List of hosts to be members of this hostgroup",
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
+			},
 		},
 		Create: resourceCreateHostGroup,
 		Read:   resourceReadHostGroup,

@@ -124,9 +124,9 @@ func (c *Client) buildURL(objectType, method, objectName, name, oldVal, objectDe
 			return "", errors.New("[ERROR] A value for oldVal must be provided when attempting a PUT")
 		}
 
-		if objectType == "service" {
-			nagiosURL.WriteString("/" + objectDescription)
-		}
+		// if objectType == "service" {
+		// 	nagiosURL.WriteString("/" + objectDescription)
+		// }
 
 		nagiosURL.WriteString("?apikey=")
 		nagiosURL.WriteString(c.token)
@@ -193,6 +193,12 @@ func (c *Client) post(data *url.Values, nagiosURL string) ([]byte, error) {
 		return nil, err
 	}
 
+	err = c.commandResponse(body)
+
+	if err != nil {
+		return nil, err
+	}
+
 	return body, nil
 }
 
@@ -218,6 +224,12 @@ func (c *Client) put(nagiosURL string) ([]byte, error) {
 		return nil, err
 	}
 
+	err = c.commandResponse(body)
+
+	if err != nil {
+		return nil, err
+	}
+
 	return body, nil
 }
 
@@ -229,6 +241,12 @@ func (c *Client) delete(data *url.Values, nagiosURL string) ([]byte, error) {
 	}
 
 	body, err := c.sendRequest(request)
+
+	if err != nil {
+		return nil, err
+	}
+
+	err = c.commandResponse(body)
 
 	if err != nil {
 		return nil, err

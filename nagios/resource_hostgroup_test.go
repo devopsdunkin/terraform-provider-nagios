@@ -185,6 +185,7 @@ func testAccCheckHostgroupDestroy() resource.TestCheckFunc {
 				conn := testAccProvider.Meta().(*Client)
 
 				hostgroup, _ := conn.getHostgroup(name)
+
 				if hostgroup.Name != "" {
 					return fmt.Errorf("Hostgroup %s still exists", name)
 				}
@@ -194,6 +195,7 @@ func testAccCheckHostgroupDestroy() resource.TestCheckFunc {
 				conn := testAccProvider.Meta().(*Client)
 
 				host, _ := conn.getHost(name)
+        
 				if host.Name != "" {
 					return fmt.Errorf("Host %s still exists", name)
 				}
