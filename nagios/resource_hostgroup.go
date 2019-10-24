@@ -2,6 +2,7 @@ package nagios
 
 import (
 	"github.com/hashicorp/terraform/helper/schema"
+	"github.com/hashicorp/terraform/helper/validation"
 )
 
 // Hostgroup contains all info needed to create a hostgroup in Nagios
@@ -21,16 +22,16 @@ func resourceHostGroup() *schema.Resource {
 	return &schema.Resource{
 		Schema: map[string]*schema.Schema{
 			"name": {
-				Type:        schema.TypeString,
-				Required:    true,
-				Description: "The name of the hostgroup. It can be up to 255 characters long.",
-				// ValidateFunc: validation.StringLenBetween(1, 255),
+				Type:         schema.TypeString,
+				Required:     true,
+				Description:  "The name of the hostgroup. It can be up to 255 characters long.",
+				ValidateFunc: validation.StringLenBetween(1, 255),
 			},
 			"alias": {
-				Type:        schema.TypeString,
-				Required:    true,
-				Description: "The description of the hostgroup",
-				// ValidateFunc: validation.StringLenBetween(1, 255),
+				Type:         schema.TypeString,
+				Required:     true,
+				Description:  "The description of the hostgroup",
+				ValidateFunc: validation.StringLenBetween(1, 255),
 			},
 			"members": {
 				Type:        schema.TypeSet,
