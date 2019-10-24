@@ -24,8 +24,7 @@ func TestAccService_basic(t *testing.T) {
 	serviceNotificationPeriod := "24x7"
 	serviceContacts := "nagiosadmin"
 	serviceTemplates := "generic-service"
-	serviceResourceName := "service1"
-	rName := "nagios_service." + serviceResourceName
+	rName := "nagios_service.service"
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
