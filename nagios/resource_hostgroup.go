@@ -9,9 +9,12 @@ import (
 // EWe tag with both JSON and schema because a POST uses URL encoding to send data
 // A GET returns data in JSON format
 type Hostgroup struct {
-	Name    string        `json:"hostgroup_name" schema:"hostgroup_name"`
-	Alias   string        `json:"alias" schema:"alias"`
-	Members []interface{} `json:"members" schema:"members"`
+	Name      string        `json:"hostgroup_name" schema:"hostgroup_name"`
+	Alias     string        `json:"alias" schema:"alias"`
+	Members   []interface{} `json:"members" schema:"members"`
+	Notes     string        `json:"notes" schema:"notes"`
+	NotesURL  string        `json:"notes_url" schema:"notes_url"`
+	ActionURL string        `json:"action_url" schema:"action_url"`
 }
 
 func resourceHostGroup() *schema.Resource {
@@ -37,6 +40,21 @@ func resourceHostGroup() *schema.Resource {
 					Type: schema.TypeString,
 				},
 			},
+			"notes": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Description: "Notes about the servicegroup that may assist with troubleshooting",
+			},
+			"notes_url": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Description: "URL to a third-party documentation repository containing more information about the servicegroup",
+			},
+			"action_url": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Description: "URL to a third-party documentation repository containing actions to take in the event the servicegroup goes down",
+			},
 		},
 		Create: resourceCreateHostGroup,
 		Read:   resourceReadHostGroup,
@@ -51,11 +69,7 @@ func resourceHostGroup() *schema.Resource {
 func resourceCreateHostGroup(d *schema.ResourceData, m interface{}) error {
 	nagiosClient := m.(*Client)
 
-	hostgroup := &Hostgroup{
-		Name:    d.Get("name").(string),
-		Alias:   d.Get("alias").(string),
-		Members: d.Get("members").(*schema.Set).List(),
-	}
+	hostgroup := setHostgroupFromSchema(d)
 
 	_, err := nagiosClient.newHostgroup(hostgroup)
 
@@ -84,9 +98,7 @@ func resourceReadHostGroup(d *schema.ResourceData, m interface{}) error {
 		return nil
 	}
 
-	d.Set("name", hostgroup.Name)
-	d.Set("alias", hostgroup.Alias)
-	d.Set("members", hostgroup.Members)
+	setDataFromHostgroup(d, hostgroup)
 
 	return nil
 }
@@ -94,11 +106,7 @@ func resourceReadHostGroup(d *schema.ResourceData, m interface{}) error {
 func resourceUpdateHostGroup(d *schema.ResourceData, m interface{}) error {
 	nagiosClient := m.(*Client)
 
-	hostgroup := &Hostgroup{
-		Name:    d.Get("name").(string),
-		Alias:   d.Get("alias").(string),
-		Members: d.Get("members").(*schema.Set).List(),
-	}
+	hostgroup := setHostgroupFromSchema(d)
 
 	oldVal, _ := d.GetChange("name")
 
@@ -112,10 +120,7 @@ func resourceUpdateHostGroup(d *schema.ResourceData, m interface{}) error {
 		return err
 	}
 
-	d.SetId(hostgroup.Name)
-	d.Set("name", hostgroup.Name)
-	d.Set("alias", hostgroup.Alias)
-	d.Set("members", hostgroup.Members)
+	setDataFromHostgroup(d, hostgroup)
 
 	return resourceReadHostGroup(d, m)
 }
@@ -130,4 +135,41 @@ func resourceDeleteHostGroup(d *schema.ResourceData, m interface{}) error {
 	}
 
 	return nil
+}
+
+func setDataFromHostgroup(d *schema.ResourceData, hostgroup *Hostgroup) {
+	// required attributes
+	d.SetId(hostgroup.Name)
+	d.Set("name", hostgroup.Name)
+	d.Set("alias", hostgroup.Alias)
+
+	// optional attributes
+	if hostgroup.Members != nil {
+		d.Set("members", hostgroup.Members)
+	}
+
+	if hostgroup.Notes != "" {
+		d.Set("notes", hostgroup.Notes)
+	}
+
+	if hostgroup.NotesURL != "" {
+		d.Set("notes_url", hostgroup.NotesURL)
+	}
+
+	if hostgroup.ActionURL != "" {
+		d.Set("action_url", hostgroup.ActionURL)
+	}
+}
+
+func setHostgroupFromSchema(d *schema.ResourceData) *Hostgroup {
+	hostgroup := &Hostgroup{
+		Name:      d.Get("name").(string),
+		Alias:     d.Get("alias").(string),
+		Members:   d.Get("members").(*schema.Set).List(),
+		Notes:     d.Get("notes").(string),
+		NotesURL:  d.Get("notes_url").(string),
+		ActionURL: d.Get("action_url").(string),
+	}
+
+	return hostgroup
 }

@@ -1,8 +1,6 @@
 package nagios
 
 import (
-	"log"
-
 	"github.com/hashicorp/terraform/helper/schema"
 )
 
@@ -11,9 +9,12 @@ import (
 // EWe tag with both JSON and schema because a POST uses URL encoding to send data
 // A GET returns data in JSON format
 type Servicegroup struct {
-	Name    string        `json:"servicegroup_name" schema:"servicegroup_name"`
-	Alias   string        `json:"alias" schema:"alias"`
-	Members []interface{} `json:"members" schema:"members"`
+	Name      string        `json:"servicegroup_name" schema:"servicegroup_name"`
+	Alias     string        `json:"alias" schema:"alias"`
+	Members   []interface{} `json:"members" schema:"members"`
+	Notes     string        `json:"notes" schema:"notes"`
+	NotesURL  string        `json:"notes_url" schema:"notes_url"`
+	ActionURL string        `json:"action_url" schema:"action_url"`
 }
 
 func resourceServiceGroup() *schema.Resource {
@@ -22,27 +23,41 @@ func resourceServiceGroup() *schema.Resource {
 			"name": {
 				Type:        schema.TypeString,
 				Required:    true,
-				Description: "The name of the servicegroup",
+				Description: "The name of the Nagios servicegroup",
 			},
 			"alias": {
 				Type:        schema.TypeString,
 				Required:    true,
-				Description: "The description of the servicegroup",
+				Description: "The description or other name that the servicegroup may be called. This field can be longer and more descriptive",
 			},
 			"members": {
 				Type:        schema.TypeSet,
 				Optional:    true,
-				Description: "The hosts that the grouping of services should run on",
+				Description: "A list of hosts and/or services that should be members of the servicegroup. The members must be valid hosts and services within Nagios and must be active",
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
 				},
+			},
+			"notes": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Description: "Notes about the servicegroup that may assist with troubleshooting",
+			},
+			"notes_url": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Description: "URL to a third-party documentation repository containing more information about the servicegroup",
+			},
+			"action_url": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Description: "URL to a third-party documentation repository containing actions to take in the event the servicegroup goes down",
 			},
 		},
 		Create: resourceCreateServiceGroup,
 		Read:   resourceReadServiceGroup,
 		Update: resourceUpdateServiceGroup,
 		Delete: resourceDeleteServiceGroup,
-		// Exists: resourceExistsServiceGroup,  // TODO: Need to figure out how to define this
 		// Importer: &schema.ResourceImporter{ // TODO: Need to figure out what is needed here
 		// 	State: schema.ImportStatePassthrough,
 		// },
@@ -52,11 +67,7 @@ func resourceServiceGroup() *schema.Resource {
 func resourceCreateServiceGroup(d *schema.ResourceData, m interface{}) error {
 	nagiosClient := m.(*Client)
 
-	servicegroup := &Servicegroup{
-		Name:    d.Get("name").(string),
-		Alias:   d.Get("alias").(string),
-		Members: d.Get("members").(*schema.Set).List(),
-	}
+	servicegroup := setServicegroupFromSchema(d)
 
 	_, err := nagiosClient.newServicegroup(servicegroup)
 
@@ -84,10 +95,7 @@ func resourceReadServiceGroup(d *schema.ResourceData, m interface{}) error {
 		return nil
 	}
 
-	d.SetId(servicegroup.Name)
-	d.Set("name", servicegroup.Name)
-	d.Set("alias", servicegroup.Alias)
-	d.Set("members", servicegroup.Members)
+	setDataFromServicegroup(d, servicegroup)
 
 	return nil
 }
@@ -95,11 +103,7 @@ func resourceReadServiceGroup(d *schema.ResourceData, m interface{}) error {
 func resourceUpdateServiceGroup(d *schema.ResourceData, m interface{}) error {
 	nagiosClient := m.(*Client)
 
-	servicegroup := &Servicegroup{
-		Name:    d.Get("name").(string),
-		Alias:   d.Get("alias").(string),
-		Members: d.Get("members").(*schema.Set).List(),
-	}
+	servicegroup := setServicegroupFromSchema(d)
 
 	oldVal, _ := d.GetChange("name")
 
@@ -110,10 +114,7 @@ func resourceUpdateServiceGroup(d *schema.ResourceData, m interface{}) error {
 	}
 
 	// TODO: name and alias are not getting set.
-	d.SetId(servicegroup.Name)
-	d.Set("name", servicegroup.Name)
-	d.Set("alias", servicegroup.Alias)
-	d.Set("members", servicegroup.Members)
+	setDataFromServicegroup(d, servicegroup)
 
 	return resourceReadServiceGroup(d, m)
 }
@@ -124,12 +125,45 @@ func resourceDeleteServiceGroup(d *schema.ResourceData, m interface{}) error {
 	_, err := nagiosClient.deleteServicegroup(d.Id())
 
 	if err != nil {
-		log.Printf("[ERROR] Error trying to delete resource - %s", err.Error())
 		return err
 	}
 
-	// Update Terraform state that we have deleted the resource
-	d.SetId("")
-
 	return nil
+}
+
+func setDataFromServicegroup(d *schema.ResourceData, servicegroup *Servicegroup) {
+	// required attributes
+	d.SetId(servicegroup.Name)
+	d.Set("name", servicegroup.Name)
+	d.Set("alias", servicegroup.Alias)
+
+	// optional attributes
+	if servicegroup.Members != nil {
+		d.Set("members", servicegroup.Members)
+	}
+
+	if servicegroup.Notes != "" {
+		d.Set("notes", servicegroup.Notes)
+	}
+
+	if servicegroup.NotesURL != "" {
+		d.Set("notes_url", servicegroup.NotesURL)
+	}
+
+	if servicegroup.ActionURL != "" {
+		d.Set("action_url", servicegroup.ActionURL)
+	}
+}
+
+func setServicegroupFromSchema(d *schema.ResourceData) *Servicegroup {
+	servicegroup := &Servicegroup{
+		Name:      d.Get("name").(string),
+		Alias:     d.Get("alias").(string),
+		Members:   d.Get("members").(*schema.Set).List(),
+		Notes:     d.Get("notes").(string),
+		NotesURL:  d.Get("notes_url").(string),
+		ActionURL: d.Get("action_url").(string),
+	}
+
+	return servicegroup
 }
