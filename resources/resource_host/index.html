@@ -192,22 +192,26 @@
 <code>notes</code>: Notes about the host that may assist with troubleshooting<br />
 <code>notes_url</code>: URL to a third-party documentation respoitory containing more information about the host<br />
 <code>action_url</code>: URL to a third-party documentation repository containing actions to take in the event the host goes down<br />
-<code>initial_state</code>: The state of the host when it is first added to Nagios. Valid options are:<br />
-    - s = UP<br />
-    - d = DOWN<br />
-    - u = UNREACHABLE<br />
-<code>retry_interval</code>: How often should Nagios try to check the host after the initial down alert<br />
+<code>initial_state</code>: The state of the host when it is first added to Nagios. Valid options are:<br /></p>
+<pre><code>s = UP
+d = DOWN
+u = UNREACHABLE
+</code></pre>
+
+<p><code>retry_interval</code>: How often should Nagios try to check the host after the initial down alert<br />
 <code>passive_checks_enabled</code>: Sets whether or not passive checks are enabled for the host<br />
 <code>active_checks_enabled</code>: Sets whether or not active checks are enabled for the host<br />
 <code>obsess_over_host</code>: Sets whether or not Nagios 'obsesses' over the host using the ochp_command<br />
 <code>event_handler</code>: The command that should be run whenver a change in the state of the host is detected<br />
 <code>event_handler_enabled</code>: Sets whether or not event handlers should be enabled for the host<br />
 <code>flap_detection_enabled</code>: Sets whether or not flap detection is enabled for the host<br />
-<code>flap_detection_options</code>: Determines what flap detection logic will be used for the host. One or more of the following valid options can be provided:<br />
-    - o = UP<br />
-    - d = DOWN<br />
-    - u = UNREACHABLE<br />
-<code>low_flap_threshold</code>: The minimum threshold that should be used when detecting if flapping is occurring<br />
+<code>flap_detection_options</code>: Determines what flap detection logic will be used for the host. One or more of the following valid options can be provided:<br /></p>
+<pre><code>o = UP
+d = DOWN
+u = UNREACHABLE
+</code></pre>
+
+<p><code>low_flap_threshold</code>: The minimum threshold that should be used when detecting if flapping is occurring<br />
 <code>high_flap_threshold</code>: The maximum threshold that should be used when detecting if flapping is occurring<br />
 <code>process_perf_data</code>: Determines if Nagios should process performance data<br />
 <code>retain_status_information</code>: Sets whether or not status related information should be kept for the host<br />
