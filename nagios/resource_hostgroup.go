@@ -1,8 +1,6 @@
 package nagios
 
 import (
-	"log"
-
 	"github.com/hashicorp/terraform/helper/schema"
 )
 
@@ -77,8 +75,6 @@ func resourceReadHostGroup(d *schema.ResourceData, m interface{}) error {
 	hostgroup, err := nagiosClient.getHostgroup(d.Id())
 
 	if err != nil {
-		log.Printf("[ERROR] Error reading hostgroup - %s", err.Error())
-
 		return err
 	}
 
@@ -98,8 +94,6 @@ func resourceReadHostGroup(d *schema.ResourceData, m interface{}) error {
 func resourceUpdateHostGroup(d *schema.ResourceData, m interface{}) error {
 	nagiosClient := m.(*Client)
 
-	log.Printf("[DEBUG] name - %s", d.Get("name").(string))
-
 	hostgroup := &Hostgroup{
 		Name:    d.Get("name").(string),
 		Alias:   d.Get("alias").(string),
@@ -115,7 +109,6 @@ func resourceUpdateHostGroup(d *schema.ResourceData, m interface{}) error {
 	err := nagiosClient.updateHostgroup(hostgroup, oldVal)
 
 	if err != nil {
-		log.Printf("[ERROR] Error updating hostgroup in Nagios - %s", err.Error())
 		return err
 	}
 
@@ -133,14 +126,8 @@ func resourceDeleteHostGroup(d *schema.ResourceData, m interface{}) error {
 	_, err := nagiosClient.deleteHostgroup(d.Id())
 
 	if err != nil {
-		log.Printf("[ERROR] Error trying to delete resource - %s", err.Error())
 		return err
 	}
 
 	return nil
 }
-
-// TODO: Need to determine if this needs implemented. Need more understanding of this
-// func resourceExistsHostGroup(d *schema.ResourceData, m interface{}) error {
-// 	return resourceReadHostGroup(d, m)
-// }

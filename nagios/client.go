@@ -197,7 +197,6 @@ func (c *Client) post(data *url.Values, nagiosURL string) ([]byte, error) {
 }
 
 func (c *Client) put(nagiosURL string) ([]byte, error) {
-	// request, err := http.NewRequest(http.MethodPut, nagiosURL, strings.NewReader(data.Encode()))
 	if strings.Contains(nagiosURL, " ") {
 		nagiosURL = strings.Replace(nagiosURL, " ", "%20", -1)
 	}

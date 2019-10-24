@@ -17,10 +17,6 @@ func (c *Client) newService(service *Service) ([]byte, error) {
 
 	data := setURLValuesFromService(service)
 
-	log.Printf("[DEBUG] setURLValuesFromService complete. Doing a POST next")
-	log.Printf("[DEBUG] nagiosURL: %s", nagiosURL)
-	log.Printf("[DEBUG] data: %s", data)
-
 	body, err := c.post(data, nagiosURL)
 
 	if err != nil {
@@ -32,8 +28,6 @@ func (c *Client) newService(service *Service) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-
-	log.Printf("[DEBUG] Made it through newService. Returning body")
 
 	return body, nil
 }
@@ -52,8 +46,6 @@ func (c *Client) getService(name string) (*Service, error) {
 
 	data := &url.Values{}
 	data.Set("config_name", name)
-
-	log.Printf("[DEBUG] getService, nagiosURL: %s", nagiosURL)
 
 	err = c.get(data, &serviceArray, nagiosURL)
 
@@ -115,8 +107,6 @@ func (c *Client) updateService(service *Service, oldVal, oldDesc interface{}) er
 		return err
 	}
 
-	log.Printf("[DEBUG] updateService, nagiosURL: %s", nagiosURL)
-
 	nagiosURL = setUpdateURLServiceParams(nagiosURL, service)
 
 	_, err = c.put(nagiosURL)
@@ -126,7 +116,6 @@ func (c *Client) updateService(service *Service, oldVal, oldDesc interface{}) er
 		// and create a new service, then we can proceed on. Otherwise, we
 		// can return the error and exit
 		if strings.Contains(err.Error(), "Does the service exist?") {
-			log.Printf("[DEBUG] updateService, inside err check. Error: %s", err.Error())
 			c.newService(service)
 		} else {
 			return err
@@ -150,9 +139,6 @@ func (c *Client) deleteService(hostName, serviceDescription string) ([]byte, err
 	}
 
 	nagiosURL = nagiosURL + "&service_description=" + strings.Replace(serviceDescription, " ", "%20", -1)
-
-	log.Printf("[DEBUG] deleteService, nagiosURL: %s", nagiosURL)
-	log.Printf("[DEBUG[ deleteService, appending service_description: %s", serviceDescription)
 
 	data := &url.Values{}
 	data.Set("host_name", hostName)

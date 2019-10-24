@@ -1,8 +1,6 @@
 package nagios
 
 import (
-	"log"
-
 	"github.com/hashicorp/terraform/helper/schema"
 )
 
@@ -283,17 +281,9 @@ func resourceService() *schema.Resource {
 func resourceCreateService(d *schema.ResourceData, m interface{}) error {
 	nagiosClient := m.(*Client)
 
-	log.Printf("[DEBUG] Right before calling setServiceFromSchema")
-
 	service := setServiceFromSchema(d)
-	log.Printf("[DEBUG] Completed setServiceFromSchema")
 
-	// if service.HostName == "" {
-	// TODO: Need to add hostgroup membership to schema. Then we will check if hostgroup has been provided or is a member in Nagios
-	// }
-
-	body, err := nagiosClient.newService(service)
-	log.Printf("[DEBUG] newService completed. Body: %s", body)
+	_, err := nagiosClient.newService(service)
 
 	if err != nil {
 		return err
@@ -301,12 +291,9 @@ func resourceCreateService(d *schema.ResourceData, m interface{}) error {
 
 	d.SetId(service.ServiceName)
 
-	log.Printf("[DEBUG] Service struct - %s", service)
-
 	return resourceReadService(d, m)
 }
 
-// TODO: When no changes are done, it still says "apply complete". Believe it should say "Infrastructure up-to-date"
 func resourceReadService(d *schema.ResourceData, m interface{}) error {
 	nagiosClient := m.(*Client)
 
@@ -315,8 +302,6 @@ func resourceReadService(d *schema.ResourceData, m interface{}) error {
 	if err != nil {
 		return err
 	}
-
-	log.Printf("[DEBUG] getService, post call. service: %s", service)
 
 	if service == nil {
 		// service not found in Nagios. Update terraform state
@@ -346,7 +331,6 @@ func resourceUpdateService(d *schema.ResourceData, m interface{}) error {
 	}
 
 	// HTTP PUT for a Nagios service is weirder than the rest. Requires /api/v1/config/service/<service_name>/<service_description>?<rest of url>
-
 	err := nagiosClient.updateService(service, oldVal, oldDesc)
 
 	if err != nil {
@@ -496,44 +480,6 @@ func setDataFromService(d *schema.ResourceData, service *Service) {
 }
 
 func setServiceFromSchema(d *schema.ResourceData) *Service {
-	log.Printf("[DEBUG] ServiceName: %s", d.Get("service_name").(string))
-	log.Printf("[DEBUG] HostName: %s", d.Get("host_name").(*schema.Set).List())
-	log.Printf("[DEBUG] Description: %s", d.Get("description").(string))
-	log.Printf("[DEBUG] CheckCommand: %s", d.Get("check_command").(string))
-	log.Printf("[DEBUG] MaxCheckAttempts: %s", d.Get("max_check_attempts").(string))
-	log.Printf("[DEBUG] CheckInterval: %s", d.Get("check_interval").(string))
-	log.Printf("[DEBUG] RetryInterval: %s", d.Get("retry_interval").(string))
-	log.Printf("[DEBUG] CheckPeriod: %s", d.Get("check_period").(string))
-	log.Printf("[DEBUG] NotificationInterval: %s", d.Get("notification_interval").(string))
-	log.Printf("[DEBUG] NotificationPeriod: %s", d.Get("notification_period").(string))
-	log.Printf("[DEBUG] Contacts: %s", d.Get("contacts").(*schema.Set).List())
-	log.Printf("[DEBUG] Templates: %s", d.Get("templates").(*schema.Set).List())
-	log.Printf("[DEBUG] IsVolatile: %s", convertBoolToIntToString(d.Get("is_volatile").(bool)))
-	log.Printf("[DEBUG] InitialState: %s", d.Get("initial_state").(string))
-	log.Printf("[DEBUG] ActiveChecksEnabled: %s", convertBoolToIntToString(d.Get("active_checks_enabled").(bool)))
-	log.Printf("[DEBUG] PassiveChecksEnabled: %s", convertBoolToIntToString(d.Get("passive_checks_enabled").(bool)))
-	log.Printf("[DEBUG] ObsessOverService: %s", convertBoolToIntToString(d.Get("obsess_over_service").(bool)))
-	log.Printf("[DEBUG] CheckFreshness: %s", convertBoolToIntToString(d.Get("check_freshness").(bool)))
-	log.Printf("[DEBUG] FreshnessThreshold: %s", d.Get("freshness_threshold").(string))
-	log.Printf("[DEBUG] EventHandler: %s", d.Get("event_handler").(string))
-	log.Printf("[DEBUG] EventHandlerEnabled: %s", convertBoolToIntToString(d.Get("event_handler_enabled").(bool)))
-	log.Printf("[DEBUG] LowFlapThreshold: %s", d.Get("low_flap_threshold").(string))
-	log.Printf("[DEBUG] HighFlapThreshold: %s", d.Get("high_flap_threshold").(string))
-	log.Printf("[DEBUG] FlapDetectionEnabled: %s", convertBoolToIntToString(d.Get("flap_detection_enabled").(bool)))
-	log.Printf("[DEBUG] FlapDetectionOptions: %s", d.Get("flap_detection_options").(*schema.Set).List())
-	log.Printf("[DEBUG] ProcessPerfData: %s", convertBoolToIntToString(d.Get("process_perf_data").(bool)))
-	log.Printf("[DEBUG] RetainStatusInformation: %s", convertBoolToIntToString(d.Get("retain_status_information").(bool)))
-	log.Printf("[DEBUG] RetainNonstatusInformation: %s", convertBoolToIntToString(d.Get("retain_nonstatus_information").(bool)))
-	log.Printf("[DEBUG] FirstNotificationDelay: %s", d.Get("first_notification_delay").(string))
-	log.Printf("[DEBUG] NotificationOptions: %s", d.Get("notification_options").(*schema.Set).List())
-	log.Printf("[DEBUG] NotificationsEnabled: %s", convertBoolToIntToString(d.Get("notifications_enabled").(bool)))
-	log.Printf("[DEBUG] ContactGroups: %s", d.Get("contact_groups").(*schema.Set).List())
-	log.Printf("[DEBUG] Notes: %s", d.Get("notes").(string))
-	log.Printf("[DEBUG] NotesURL: %s", d.Get("notes_url").(string))
-	log.Printf("[DEBUG] ActionURL: %s", d.Get("action_url").(string))
-	log.Printf("[DEBUG] IconImage: %s", d.Get("icon_image").(string))
-	log.Printf("[DEBUG] IconImageAlt: %s", d.Get("icon_image_alt").(string))
-
 	service := &Service{
 		ServiceName:                d.Get("service_name").(string),
 		HostName:                   d.Get("host_name").(*schema.Set).List(),
