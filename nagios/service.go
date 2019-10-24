@@ -173,7 +173,6 @@ func setURLValuesFromService(service *Service) *url.Values {
 	data.Set("config_name", service.ServiceName)
 	data.Set("host_name", mapArrayToString(service.HostName))
 	data.Set("service_description", service.Description)
-	data.Set("check_command", service.CheckCommand)
 	data.Set("max_check_attempts", service.MaxCheckAttempts)
 	data.Set("check_interval", service.CheckInterval)
 	data.Set("retry_interval", service.RetryInterval)
@@ -184,6 +183,10 @@ func setURLValuesFromService(service *Service) *url.Values {
 	data.Set("templates", mapArrayToString(service.Templates))
 
 	// optionsl attributes
+	if service.CheckCommand != "" {
+		data.Set("check_command", service.CheckCommand)
+	}
+
 	if service.Templates != nil {
 		data.Set("use", mapArrayToString(service.Templates))
 	}
@@ -301,6 +304,11 @@ func setUpdateURLServiceParams(originalURL string, service *Service) string {
 
 	// TODO: NEed to reorder these so they match the same order as the setURLValuesFromService func and the struct
 	// Optional attributes
+	if service.CheckCommand != "" {
+		nagiosURL.WriteString("&check_command=")
+		nagiosURL.WriteString(service.CheckCommand)
+	}
+
 	if service.Templates != nil {
 		nagiosURL.WriteString("&use=")
 		nagiosURL.WriteString(mapArrayToString(service.Templates))

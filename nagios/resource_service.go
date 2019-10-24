@@ -292,8 +292,8 @@ func resourceCreateService(d *schema.ResourceData, m interface{}) error {
 	// TODO: Need to add hostgroup membership to schema. Then we will check if hostgroup has been provided or is a member in Nagios
 	// }
 
-	_, err := nagiosClient.newService(service)
-	log.Printf("[DEBUG] newService completed")
+	body, err := nagiosClient.newService(service)
+	log.Printf("[DEBUG] newService completed. Body: %s", body)
 
 	if err != nil {
 		return err
@@ -315,6 +315,8 @@ func resourceReadService(d *schema.ResourceData, m interface{}) error {
 	if err != nil {
 		return err
 	}
+
+	log.Printf("[DEBUG] getService, post call. service: %s", service)
 
 	if service == nil {
 		// service not found in Nagios. Update terraform state
@@ -376,7 +378,6 @@ func setDataFromService(d *schema.ResourceData, service *Service) {
 	d.Set("service_name", service.ServiceName)
 	d.Set("host_name", service.HostName)
 	d.Set("description", service.Description)
-	d.Set("check_command", service.CheckCommand)
 	d.Set("max_check_attempts", service.MaxCheckAttempts)
 	d.Set("check_interval", service.CheckInterval)
 	d.Set("retry_interval", service.RetryInterval)
@@ -386,6 +387,9 @@ func setDataFromService(d *schema.ResourceData, service *Service) {
 	d.Set("contacts", service.Contacts)
 
 	// optionsl attributes
+	if service.CheckCommand != "" {
+		d.Set("check_command", service.CheckCommand)
+	}
 	if service.Templates != nil {
 		d.Set("templates", service.Templates)
 	}
