@@ -199,57 +199,57 @@
 
 <h2 id="arguments">arguments</h2>
 <p>Below is a brief description of what each field is used for in Nagios. Refer to the <a href="https://assets.nagios.com/downloads/nagioscore/docs/nagioscore/3/en/objectdefinitions.html">official Nagios documentation</a> for more detail</p>
-<p><code>service_name</code> (required): The name of the service
-<code>host_name</code> (required): The hosts that the service should run on
-<code>description</code> (required): Defines the description of the service. It may contain spaces, dashes and colons (avoid using semicolons, apostrophes and quotation marks).f
-<code>display_name</code>: Another name for the service that will be displayed in the web interface. If left blank, the value from <code>description</code> will be displayed
-<code>check_command</code> (required): The name of the command that should be used to check the status of the service
-<code>max_check_attempts</code> (required): How many times to retry the service check before alerting when the state is anything other than OK
-<code>templates</code>: A list of Nagios templates to apply to the service
-<code>is_volatile</code>: Determines if the service is "volatile". Services typically are not volatile and this should be disabled. This accepts either <code>true</code> or <code>false</code>. The default value is <code>false</code>
-<code>initial_state</code>: By default, Nagios will assume the service are in an OK state. Valid options are:
+<p><code>service_name</code> (required): The name of the service</p>
+<p><code>host_name</code> (required): The hosts that the service should run on</p>
+<p><code>description</code> (required): Defines the description of the service. It may contain spaces, dashes and colons (avoid using semicolons, apostrophes and quotation marks).f</p>
+<p><code>display_name</code>: Another name for the service that will be displayed in the web interface. If left blank, the value from <code>description</code> will be displayed</p>
+<p><code>check_command</code> (required): The name of the command that should be used to check the status of the service</p>
+<p><code>max_check_attempts</code> (required): How many times to retry the service check before alerting when the state is anything other than OK</p>
+<p><code>templates</code>: A list of Nagios templates to apply to the service</p>
+<p><code>is_volatile</code>: Determines if the service is "volatile". Services typically are not volatile and this should be disabled. This accepts either <code>true</code> or <code>false</code>. The default value is <code>false</code></p>
+<p><code>initial_state</code>: By default, Nagios will assume the service are in an OK state. Valid options are:
     - s = UP
     - d = DOWN
-    - u = UNREACHABLE
-<code>check_interval</code>: The number of minutes to wait until the next regular check of the service
-<code>retry_interval</code>: The number of minutes to wait until re-checking the service
-<code>active_checks_enabled</code>: Sets whether or not active checks are enabled for the service
-<code>passive_checks_enabled</code>: Sets whether or not passive checks are enabled for the service
-<code>check_period</code> (required): The time period during which active checks of the service can be made
-<code>obsess_over_service</code>: Sets whether or not Nagios 'obsesses' over the service using the ocsp_command
-<code>check_freshness</code>: Sets whether or not freshness checks are enabled for the service
-<code>freshness_threshold</code>: The freshness threshold used for the service
-<code>event_handler</code>: The command that should be run whenver a change in the state of the service is detected
-<code>event_handler_enabled</code>: Sets whether or not event handlers should be enabled for the service
-<code>low_flap_threshold</code>: The minimum threshold that should be used when detecting if flapping is occurring
-<code>high_flap_threshold</code>: The maximum threshold that should be used when detecting if flapping is occurring
-<code>flap_detection_enabled</code>: Sets whether or not flap detection is enabled for the service
-<code>flap_detection_options</code>: Determines what flap detection logic will be used for the service. One or more of the following valid options can be provided:
+    - u = UNREACHABLE</p>
+<p><code>check_interval</code>: The number of minutes to wait until the next regular check of the service</p>
+<p><code>retry_interval</code>: The number of minutes to wait until re-checking the service</p>
+<p><code>active_checks_enabled</code>: Sets whether or not active checks are enabled for the service</p>
+<p><code>passive_checks_enabled</code>: Sets whether or not passive checks are enabled for the service</p>
+<p><code>check_period</code> (required): The time period during which active checks of the service can be made</p>
+<p><code>obsess_over_service</code>: Sets whether or not Nagios 'obsesses' over the service using the ocsp_command</p>
+<p><code>check_freshness</code>: Sets whether or not freshness checks are enabled for the service</p>
+<p><code>freshness_threshold</code>: The freshness threshold used for the service</p>
+<p><code>event_handler</code>: The command that should be run whenver a change in the state of the service is detected</p>
+<p><code>event_handler_enabled</code>: Sets whether or not event handlers should be enabled for the service</p>
+<p><code>low_flap_threshold</code>: The minimum threshold that should be used when detecting if flapping is occurring</p>
+<p><code>high_flap_threshold</code>: The maximum threshold that should be used when detecting if flapping is occurring</p>
+<p><code>flap_detection_enabled</code>: Sets whether or not flap detection is enabled for the service</p>
+<p><code>flap_detection_options</code>: Determines what flap detection logic will be used for the service. One or more of the following valid options can be provided:
     - o = UP
     - d = DOWN
-    - u = UNREACHABLE
-<code>process_perf_data</code>: Determines if Nagios should process performance data
-<code>retain_status_information</code>: Sets whether or not status related information should be kept for the service
-<code>retain_nonstatus_information</code>: Sets whether or not non-status related information should be kept for the service
-<code>notification_interval</code> (required): How long to wait before sending another notification to a contact that the service is down
-<code>first_notification_delay</code>: The amount of time to wait to send out the first notification when a service enters a non-UP state
-<code>notification_period</code> (required): The time period during which notifications can be sent for a service alert
-<code>notification_options</code>: Determines when Nagios should alert if a host is one or more of the following options:
+    - u = UNREACHABLE</p>
+<p><code>process_perf_data</code>: Determines if Nagios should process performance data</p>
+<p><code>retain_status_information</code>: Sets whether or not status related information should be kept for the service</p>
+<p><code>retain_nonstatus_information</code>: Sets whether or not non-status related information should be kept for the service</p>
+<p><code>notification_interval</code> (required): How long to wait before sending another notification to a contact that the service is down</p>
+<p><code>first_notification_delay</code>: The amount of time to wait to send out the first notification when a service enters a non-UP state</p>
+<p><code>notification_period</code> (required): The time period during which notifications can be sent for a service alert</p>
+<p><code>notification_options</code>: Determines when Nagios should alert if a host is one or more of the following options:
     - o = UP
     - d = DOWN
     - u = UNREACHABLE
     - r = RECOVERY
     - f = FLAPPING
-    - s = SCHEDULED DOWNTIME
-<code>notifications_enabled</code>: Determines if Nagios should send notifications
-<code>contacts</code> (required): The list of users that Nagios should alert when a service is down
-<code>contact_groups</code>: A list of the contact groups that should be notified if the service goes down
-<code>stalking_options</code>: A list of options to determine which states, if any, should be stalked by Nagios. Refer to the <a href="https://assets.nagios.com/downloads/nagioscore/docs/nagioscore/3/en/stalking.html">Nagios documentation</a> for more information on stalking
-<code>notes</code>: Notes about the service that may assist with troubleshooting
-<code>notes_url</code>: URL to a third-party documentation respoitory containing more information about the service
-<code>action_url</code>: URL to a third-party documentation repository containing actions to take in the event the service goes down
-<code>icon_image</code>: The icon to display in Nagios
-<code>icon_image_alt</code>:  The text to display when hovering over the <code>icon_image</code> or the text to display if the <code>icon_image</code> is unavailable</p>
+    - s = SCHEDULED DOWNTIME</p>
+<p><code>notifications_enabled</code>: Determines if Nagios should send notifications</p>
+<p><code>contacts</code> (required): The list of users that Nagios should alert when a service is down</p>
+<p><code>contact_groups</code>: A list of the contact groups that should be notified if the service goes down</p>
+<p><code>stalking_options</code>: A list of options to determine which states, if any, should be stalked by Nagios. Refer to the <a href="https://assets.nagios.com/downloads/nagioscore/docs/nagioscore/3/en/stalking.html">Nagios documentation</a> for more information on stalking</p>
+<p><code>notes</code>: Notes about the service that may assist with troubleshooting</p>
+<p><code>notes_url</code>: URL to a third-party documentation respoitory containing more information about the service</p>
+<p><code>action_url</code>: URL to a third-party documentation repository containing actions to take in the event the service goes down</p>
+<p><code>icon_image</code>: The icon to display in Nagios</p>
+<p><code>icon_image_alt</code>:  The text to display when hovering over the <code>icon_image</code> or the text to display if the <code>icon_image</code> is unavailable</p>
               
             </div>
           </div>
