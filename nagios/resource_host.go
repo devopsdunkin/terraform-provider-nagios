@@ -2,6 +2,7 @@ package nagios
 
 import (
 	"github.com/hashicorp/terraform/helper/schema"
+	"github.com/hashicorp/terraform/helper/validation"
 )
 
 // Host contains all info needed to create a host in Nagios
@@ -107,9 +108,10 @@ func resourceHost() *schema.Resource {
 				},
 			},
 			"alias": {
-				Type:        schema.TypeString,
-				Optional:    true,
-				Description: "A longer name to describe the host",
+				Type:         schema.TypeString,
+				Optional:     true,
+				Description:  "A longer name to describe the host",
+				ValidateFunc: validation.StringLenBetween(1, 255),
 			},
 			"templates": {
 				Type:        schema.TypeSet,
