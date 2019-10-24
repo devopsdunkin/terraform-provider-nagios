@@ -115,8 +115,6 @@ func (c *Client) buildURL(objectType, method, objectName, name, oldVal, objectDe
 		} else {
 			nagiosURL.WriteString(name)
 		}
-
-		nagiosURL.WriteString("&force=1")
 	} else if method == "PUT" {
 		nagiosURL.WriteString("/")
 
