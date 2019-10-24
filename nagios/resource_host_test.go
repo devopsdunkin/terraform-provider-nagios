@@ -213,7 +213,134 @@ func testAccCheckHostFetch(rName string, host *Host) resource.TestCheckFunc {
 		host.NotificationInterval = returnedHost.NotificationInterval
 		host.NotificationPeriod = returnedHost.NotificationPeriod
 		host.Contacts = returnedHost.Contacts
-		host.Templates = returnedHost.Templates
+
+		// Optional attributes
+		if returnedHost.Templates != nil {
+			host.Templates = returnedHost.Templates
+		}
+		if returnedHost.CheckCommand != "" {
+			host.CheckCommand = returnedHost.CheckCommand
+		}
+
+		if returnedHost.ContactGroups != nil {
+			host.ContactGroups = returnedHost.ContactGroups
+		}
+
+		if returnedHost.Notes != "" {
+			host.Notes = returnedHost.Notes
+		}
+
+		if returnedHost.NotesURL != "" {
+			host.NotesURL = returnedHost.NotesURL
+		}
+
+		if returnedHost.ActionURL != "" {
+			host.ActionURL = returnedHost.ActionURL
+		}
+
+		if returnedHost.InitialState != "" {
+			host.InitialState = returnedHost.InitialState
+		}
+
+		if returnedHost.RetryInterval != "" {
+			host.RetryInterval = returnedHost.RetryInterval
+		}
+
+		if returnedHost.PassiveChecksEnabled != "" {
+			host.PassiveChecksEnabled = returnedHost.PassiveChecksEnabled
+		}
+
+		if returnedHost.ActiveChecksEnabled != "" {
+			host.ActiveChecksEnabled = returnedHost.ActiveChecksEnabled
+		}
+
+		if returnedHost.ObsessOverHost != "" {
+			host.ObsessOverHost = returnedHost.ObsessOverHost
+		}
+
+		if returnedHost.EventHandler != "" {
+			host.EventHandler = returnedHost.EventHandler
+		}
+
+		if returnedHost.EventHandlerEnabled != "" {
+			host.EventHandlerEnabled = returnedHost.EventHandlerEnabled
+		}
+
+		if returnedHost.FlapDetectionEnabled != "" {
+			host.FlapDetectionEnabled = returnedHost.FlapDetectionEnabled
+		}
+
+		if returnedHost.FlapDetectionOptions != nil {
+			host.FlapDetectionOptions = returnedHost.FlapDetectionOptions
+		}
+
+		if returnedHost.LowFlapThreshold != "" {
+			host.LowFlapThreshold = returnedHost.LowFlapThreshold
+		}
+
+		if returnedHost.HighFlapThreshold != "" {
+			host.HighFlapThreshold = returnedHost.HighFlapThreshold
+		}
+
+		if returnedHost.ProcessPerfData != "" {
+			host.ProcessPerfData = returnedHost.ProcessPerfData
+		}
+
+		if returnedHost.RetainStatusInformation != "" {
+			host.RetainStatusInformation = returnedHost.RetainStatusInformation
+		}
+
+		if returnedHost.RetainNonstatusInformation != "" {
+			host.RetainNonstatusInformation = returnedHost.RetainNonstatusInformation
+		}
+
+		if returnedHost.CheckFreshness != "" {
+			host.CheckFreshness = returnedHost.CheckFreshness
+		}
+
+		if returnedHost.FreshnessThreshold != "" {
+			host.FreshnessThreshold = returnedHost.FreshnessThreshold
+		}
+
+		if returnedHost.FirstNotificationDelay != "" {
+			host.FirstNotificationDelay = returnedHost.FirstNotificationDelay
+		}
+
+		if returnedHost.NotificationOptions != "" {
+			host.NotificationOptions = returnedHost.NotificationOptions
+		}
+
+		if returnedHost.NotificationsEnabled != "" {
+			host.NotificationsEnabled = returnedHost.NotificationsEnabled
+		}
+
+		if returnedHost.StalkingOptions != "" {
+			host.StalkingOptions = returnedHost.StalkingOptions
+		}
+
+		if returnedHost.IconImage != "" {
+			host.IconImage = returnedHost.IconImage
+		}
+
+		if returnedHost.IconImageAlt != "" {
+			host.IconImageAlt = returnedHost.IconImageAlt
+		}
+
+		if returnedHost.VRMLImage != "" {
+			host.VRMLImage = returnedHost.VRMLImage
+		}
+
+		if returnedHost.StatusMapImage != "" {
+			host.StatusMapImage = returnedHost.StatusMapImage
+		}
+
+		if returnedHost.TwoDCoords != "" {
+			host.TwoDCoords = returnedHost.TwoDCoords
+		}
+
+		if returnedHost.ThreeDCoords != "" {
+			host.ThreeDCoords = returnedHost.ThreeDCoords
+		}
 
 		return nil
 	}
