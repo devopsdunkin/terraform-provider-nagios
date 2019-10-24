@@ -1,7 +1,7 @@
 package nagios
 
 import (
-	"github.com/hashicorp/terraform/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
 
 // Host contains all info needed to create a host in Nagios

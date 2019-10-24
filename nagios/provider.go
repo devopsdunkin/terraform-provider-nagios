@@ -4,7 +4,7 @@ import (
 	"errors"
 	"log"
 
-	"github.com/hashicorp/terraform/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
 
 // Provider function defines the schema and resources for this Nagios provider

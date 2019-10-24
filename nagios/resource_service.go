@@ -1,7 +1,7 @@
 package nagios
 
 import (
-	"github.com/hashicorp/terraform/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
 
 // Service contains all info needed to create a service in Nagios
