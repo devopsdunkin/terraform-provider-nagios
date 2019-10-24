@@ -127,7 +127,7 @@ func TestAccService_updateName(t *testing.T) {
 
 func testAccServiceResource_basic(serviceName, hostName, description, checkCommand, maxCheckAttempts, checkInterval, retryInterval, checkPeriod, notificationInterval, notificationPeriod, contacts, templates string) string {
 	return fmt.Sprintf(`
-resource "nagios_service" "%s" {
+resource "nagios_service" "service" {
 	service_name = "%s"
 	host_name = [
 		"%s"
