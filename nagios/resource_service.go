@@ -66,12 +66,12 @@ func resourceService() *schema.Resource {
 			"service_name": {
 				Type:        schema.TypeString,
 				Required:    true,
-				Description: "The name of the service that provides a general idea of what the service is checking",
+				Description: "The name of the service",
 			},
 			"host_name": {
 				Type:        schema.TypeSet,
 				Required:    true,
-				Description: "List of hosts that the service runs on",
+				Description: "The hosts that the service should run on",
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
 				},
@@ -79,47 +79,47 @@ func resourceService() *schema.Resource {
 			"description": {
 				Type:        schema.TypeString,
 				Required:    true,
-				Description: "The description of the service",
+				Description: "Defines the description of the service. It may contain spaces, dashes and colons (avoid using semicolons, apostrophes and quotation marks)",
 			},
 			"check_command": {
 				Type:        schema.TypeString,
 				Required:    true,
-				Description: "The command to run to perform a check of the service",
+				Description: "The name of the command that should be used to check the status of the service",
 			},
 			"max_check_attempts": {
 				Type:        schema.TypeString,
 				Required:    true,
-				Description: "The maximum number of times it will check the service", // TODO: Need clarification of this description and what this attr does
+				Description: "How many times to retry the service check before alerting when the state is anything other than OK",
 			},
 			"check_interval": {
 				Type:        schema.TypeString,
 				Required:    true,
-				Description: "How often should a check be performed on the service",
+				Description: "The number of minutes to wait until the next regular check of the service",
 			},
 			"retry_interval": {
 				Type:        schema.TypeString,
 				Required:    true,
-				Description: "How often should we retry the check while the service is down",
+				Description: "The number of minutes to wait until re-checking the service",
 			},
 			"check_period": {
 				Type:        schema.TypeString,
 				Required:    true,
-				Description: "What time period should the service be checked",
+				Description: "The time period during which active checks of the service can be made",
 			},
 			"notification_interval": {
 				Type:        schema.TypeString,
 				Required:    true,
-				Description: "How frequent should we notify that the service is down",
+				Description: "How long to wait before sending another notification to a contact that the service is down",
 			},
 			"notification_period": {
 				Type:        schema.TypeString,
 				Required:    true,
-				Description: "What time period should the service be alerted on",
+				Description: "The time period during which notifications can be sent for a service alert",
 			},
 			"contacts": {
 				Type:        schema.TypeSet,
 				Required:    true,
-				Description: "List of users or groups to notify when an alert is triggered",
+				Description: "The list of users that Nagios should alert when a service is down",
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
 				},
@@ -127,7 +127,7 @@ func resourceService() *schema.Resource {
 			"templates": {
 				Type:        schema.TypeSet,
 				Optional:    true,
-				Description: "List of templates to apply to the service",
+				Description: "A list of service templates to apply to the service",
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
 				},
@@ -136,69 +136,69 @@ func resourceService() *schema.Resource {
 				Type:        schema.TypeBool,
 				Optional:    true,
 				Default:     false,
-				Description: "",
+				Description: "Determines if the service is 'volatile'. Services typically are not volatile and this should be disabled. This accepts either true or false. The deault value is false",
 			},
 			"initial_state": {
 				Type:        schema.TypeString,
 				Optional:    true,
-				Description: "",
+				Description: "By default, Nagios will assume the service are in an OK state. Valid options are: 'd' down, 's' up or 'u' unreachable",
 			},
 			"active_checks_enabled": {
 				Type:        schema.TypeBool,
 				Optional:    true,
 				Default:     true,
-				Description: "",
+				Description: "Sets whether or not active checks are enabled for the service",
 			},
 			"passive_checks_enabled": {
 				Type:        schema.TypeBool,
 				Optional:    true,
 				Default:     true,
-				Description: "",
+				Description: "Sets whether or not passive checks are enabled for the service",
 			},
 			"obsess_over_service": {
 				Type:        schema.TypeBool,
 				Optional:    true,
-				Description: "",
+				Description: "Sets whether or not Nagios 'obsesses' over the service using the ocsp_command",
 			},
 			"check_freshness": {
 				Type:        schema.TypeBool,
 				Optional:    true,
-				Description: "",
+				Description: "Sets whether ot not freshness checks are enabled for the service",
 			},
 			"freshness_threshold": {
 				Type:        schema.TypeString,
 				Optional:    true,
-				Description: "",
+				Description: "The freshness threshold used for the service",
 			},
 			"event_handler": {
 				Type:        schema.TypeString,
 				Optional:    true,
-				Description: "",
+				Description: "The command that should be run whenever a change in the state of the service is detected",
 			},
 			"event_handler_enabled": {
 				Type:        schema.TypeBool,
 				Optional:    true,
-				Description: "",
+				Description: "Sets whether or not event handlers should be enabled for the service",
 			},
 			"low_flap_threshold": {
 				Type:        schema.TypeString,
 				Optional:    true,
-				Description: "",
+				Description: "The minimum threshold that should be used when detecting if flapping is occurring",
 			},
 			"high_flap_threshold": {
 				Type:        schema.TypeString,
 				Optional:    true,
-				Description: "",
+				Description: "The maximum threshold that should be used when detecting if flapping is occurring",
 			},
 			"flap_detection_enabled": {
 				Type:        schema.TypeBool,
 				Optional:    true,
-				Description: "",
+				Description: "Sets whether or not flap detection is enabled for the service",
 			},
 			"flap_detection_options": {
 				Type:        schema.TypeSet,
 				Optional:    true,
-				Description: "",
+				Description: "Determines what flap detection logic will be used for the service. One or more of the following valid options can be provided: 'd' down, 'o' up, or 'u' unreachable",
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
 				},
@@ -206,27 +206,27 @@ func resourceService() *schema.Resource {
 			"process_perf_data": {
 				Type:        schema.TypeBool,
 				Optional:    true,
-				Description: "",
+				Description: "Determines if Nagios should process performance data",
 			},
 			"retain_status_information": {
 				Type:        schema.TypeBool,
 				Optional:    true,
-				Description: "",
+				Description: "Sets whether or not status related information should be kept for the service",
 			},
 			"retain_nonstatus_information": {
 				Type:        schema.TypeBool,
 				Optional:    true,
-				Description: "",
+				Description: "Sets whether or not non-status related information should be kept for the service",
 			},
 			"first_notification_delay": {
 				Type:        schema.TypeString,
 				Optional:    true,
-				Description: "",
+				Description: "The amount of time to wait to send out the first notification when a service enters a non-UP state",
 			},
 			"notification_options": {
 				Type:        schema.TypeSet,
 				Optional:    true,
-				Description: "",
+				Description: "Determines when Nagios should alert if a host is one or more of the following options: 'o' up, 'd' down, 'u' unreachable, 'r' recovery, 'f' flapping or 's' scheduled downtime",
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
 				},
@@ -234,12 +234,12 @@ func resourceService() *schema.Resource {
 			"notifications_enabled": {
 				Type:        schema.TypeBool,
 				Optional:    true,
-				Description: "",
+				Description: "Determines if Nagios should send notifications",
 			},
 			"contact_groups": {
 				Type:        schema.TypeSet,
 				Optional:    true,
-				Description: "",
+				Description: "A list of the contact groups that should be notified if the service goes down",
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
 				},
@@ -247,27 +247,27 @@ func resourceService() *schema.Resource {
 			"notes": {
 				Type:        schema.TypeString,
 				Optional:    true,
-				Description: "",
+				Description: "Notes about the service that may assist with troubleshooting",
 			},
 			"notes_url": {
 				Type:        schema.TypeString,
 				Optional:    true,
-				Description: "",
+				Description: "URL to a third-party documentation repository containing more information about the service",
 			},
 			"action_url": {
 				Type:        schema.TypeString,
 				Optional:    true,
-				Description: "",
+				Description: "URL to a third-party documentation repository containing actions to take in the event the service goes down",
 			},
 			"icon_image": {
 				Type:        schema.TypeString,
 				Optional:    true,
-				Description: "",
+				Description: "The icon to display in Nagios",
 			},
 			"icon_image_alt": {
 				Type:        schema.TypeString,
 				Optional:    true,
-				Description: "",
+				Description: "The text to display when hovering over the icon_image or the text to display if the icon_image is unavailable",
 			},
 		},
 		Create: resourceCreateService,

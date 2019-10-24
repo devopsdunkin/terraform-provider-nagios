@@ -1,4 +1,4 @@
-# Resource: Hostgroup
+# Resource: Host
 
 ## Overview
 
@@ -8,7 +8,7 @@ Refer to the object definition for [hosts](https://assets.nagios.com/downloads/n
 
 ## Best practices
 
-This resource allows you to configure any attribute on a host, however, we recommend to manually create a host template that contains shared settings for the hosts, and then use the host resource to create your hosts and set host specific attributes. 
+This resource allows you to configure any attribute on a host, however, we recommend to manually create a host template that contains common settings for the hosts, and then use the host resource to create your hosts and set host specific attributes. 
 
 ## Example
 
@@ -25,7 +25,9 @@ resource "nagios_host" "host1" {
         "nagiosadmin"
     ]
     alias                           = "host1"
-    templates                       = "generic-host"
+    templates                       = [
+        "generic-host"
+    ]
     check_command                   = "check_icmp"
     contact_groups                  = [
         "noc_staff"
@@ -56,10 +58,10 @@ Below is a brief description of what each field is used for in Nagios. Refer to 
 `max_check_attempts` (required): How many times to retry the host check before alerting when the state is anything other than OK
 `check_period` (required): The time period during which active checks of the host can be made
 `notification_interval` (required): How long to wait before sending another notification to a contact that the host is down
-`notification_period` (requireD): The time period during which notifications can be sent for a host alert
+`notification_period` (required): The time period during which notifications can be sent for a host alert
 `contacts` (required): The list of users that Nagios should alert when a host is down
 `alias`: A longer name to describe the host
-`templates`: A list of Nagios templates to apply to the host
+`templates`: A list of host templates to apply to the host
 `check_command`: The name of the command that should be used to check if the host is up or down
 `contact_groups`: A list of the contact groups that should be notified if the host goes down
 `notes`: Notes about the host that may assist with troubleshooting
@@ -88,7 +90,7 @@ Below is a brief description of what each field is used for in Nagios. Refer to 
 `check_freshness`: Sets whether or not freshness checks are enabled for the host
 `freshness_threshold`: The freshness threshold used for the host
 `first_notification_delay`: The amount of time to wait to send out the first notification when a host enters a non-UP state
-`notification_options`: Determines when Nagios should alert if a host is one or more of the following option:
+`notification_options`: Determines when Nagios should alert if a host is one or more of the following options:
     - o = UP
     - d = DOWN
     - u = UNREACHABLE
