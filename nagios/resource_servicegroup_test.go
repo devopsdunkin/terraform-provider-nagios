@@ -26,12 +26,6 @@ func TestAccservicegroup_basic(t *testing.T) {
 					testAccCheckServicegroupExists(rName),
 				),
 			},
-			// {
-			// 	ResourceName:        rName,
-			// 	ImportState:         false,
-			// 	ImportStateVerify:   false,
-			// 	ImportStateIdPrefix: sgName + "/",
-			// },
 		},
 	})
 }
@@ -58,7 +52,7 @@ func TestAccservicegroup_createAfterManualDestroy(t *testing.T) {
 				PreConfig: func() {
 					client := testAccProvider.Meta().(*Client)
 
-					_, err := client.DeleteServicegroup(servicegroup.Name)
+					_, err := client.deleteServicegroup(servicegroup.Name)
 					if err != nil {
 						t.Fatal(err)
 					}
@@ -120,7 +114,7 @@ func testAccCheckservicegroupDestroy() resource.TestCheckFunc {
 
 			conn := testAccProvider.Meta().(*Client)
 
-			servicegroup, _ := conn.GetServicegroup(name)
+			servicegroup, _ := conn.getServicegroup(name)
 			if servicegroup.Name != "" {
 				return fmt.Errorf("servicegroup %s still exists", name)
 			}
@@ -152,7 +146,7 @@ func getServicegroupFromState(s *terraform.State, rName string) (*Servicegroup, 
 
 	name := rs.Primary.Attributes["name"]
 
-	servicegroup, err := nagiosClient.GetServicegroup(name)
+	servicegroup, err := nagiosClient.getServicegroup(name)
 
 	if err != nil {
 		return nil, fmt.Errorf("error getting servicegroup with name %s: %s", name, err)

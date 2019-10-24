@@ -43,9 +43,9 @@ func TestAccService_basic(t *testing.T) {
 
 func TestAccService_createAfterManualDestroy(t *testing.T) {
 	var service = &Service{}
-	serviceServiceName := "tf_" + acctest.RandString((10))
+	serviceServiceName := "camd_" + acctest.RandString(10)
 	serviceHostName := "localhost"
-	serviceDescription := "tf_" + acctest.RandString(50)
+	serviceDescription := "This is a description"
 	serviceCheckCommand := "check_http"
 	serviceMaxCheckAttempts := "2"
 	serviceCheckInterval := "5"
@@ -73,7 +73,7 @@ func TestAccService_createAfterManualDestroy(t *testing.T) {
 				PreConfig: func() {
 					client := testAccProvider.Meta().(*Client)
 
-					_, err := client.deleteService(service.ServiceName, service.Description)
+					_, err := client.deleteService(mapArrayToString(service.HostName), service.Description)
 					if err != nil {
 						t.Fatal(err)
 					}
@@ -88,9 +88,9 @@ func TestAccService_createAfterManualDestroy(t *testing.T) {
 func TestAccService_updateName(t *testing.T) {
 	firstServiceName := "tf_" + acctest.RandString(10)
 	secondServiceName := "tf_" + acctest.RandString(10)
-	serviceHostName := "tf_" + acctest.RandString(10)
+	serviceHostName := "localhost"
 	serviceDescription := "tf_" + acctest.RandString(50)
-	serviceCheckCommand := "check_ping\\!3000,80%\\!5000,100%"
+	serviceCheckCommand := "check_ping!3000.0!80%!5000.0!100%!!!!"
 	serviceMaxCheckAttempts := "2"
 	serviceCheckInterval := "5"
 	serviceRetryInterval := "5"
@@ -110,14 +110,14 @@ func TestAccService_updateName(t *testing.T) {
 				Config: testAccServiceResource_basic(firstServiceName, serviceHostName, serviceDescription, serviceCheckCommand, serviceMaxCheckAttempts, serviceCheckInterval, serviceRetryInterval, serviceCheckPeriod, serviceNotificationInterval, serviceNotificationPeriod, serviceContacts, serviceTemplates),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckServiceExists(rName),
-					resource.TestCheckResourceAttr(rName, "name", firstServiceName),
+					resource.TestCheckResourceAttr(rName, "service_name", firstServiceName),
 				),
 			},
 			{
 				Config: testAccServiceResource_basic(secondServiceName, serviceHostName, serviceDescription, serviceCheckCommand, serviceMaxCheckAttempts, serviceCheckInterval, serviceRetryInterval, serviceCheckPeriod, serviceNotificationInterval, serviceNotificationPeriod, serviceContacts, serviceTemplates),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckServiceExists(rName),
-					resource.TestCheckResourceAttr(rName, "name", secondServiceName),
+					resource.TestCheckResourceAttr(rName, "service_name", secondServiceName),
 				),
 			},
 		},
@@ -163,7 +163,7 @@ func testAccCheckServiceDestroy() resource.TestCheckFunc {
 
 			service, _ := conn.getService(name)
 			if service.ServiceName != "" {
-				return fmt.Errorf("Service %s still exists", service.ServiceName)
+				return fmt.Errorf("Service %s still exists", name)
 			}
 		}
 
@@ -173,10 +173,12 @@ func testAccCheckServiceDestroy() resource.TestCheckFunc {
 
 func testAccCheckServiceExists(resourceName string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
-		_, err := getServiceFromState(s, resourceName)
+		service, err := getServiceFromState(s, resourceName)
 		if err != nil {
 			return err
 		}
+
+		log.Printf("[DEBUG] testAccCheckServiceExists, service: %s", service)
 
 		return nil
 	}
@@ -190,7 +192,6 @@ func getServiceFromState(s *terraform.State, rName string) (*Service, error) {
 	}
 
 	name := rs.Primary.Attributes["service_name"]
-	log.Printf("[DEBUG] Name value from state - %s", name)
 
 	service, err := nagiosClient.getService(name)
 
@@ -219,7 +220,110 @@ func testAccCheckServiceFetch(rName string, service *Service) resource.TestCheck
 		service.NotificationInterval = returnedService.NotificationInterval
 		service.NotificationPeriod = returnedService.NotificationPeriod
 		service.Contacts = returnedService.Contacts
-		service.Templates = returnedService.Templates
+
+		if returnedService.Templates != nil {
+			service.Templates = returnedService.Templates
+		}
+
+		if returnedService.IsVolatile != "" {
+			service.IsVolatile = returnedService.IsVolatile
+		}
+
+		if returnedService.InitialState != "" {
+			service.InitialState = returnedService.InitialState
+		}
+
+		if returnedService.ActiveChecksEnabled != "" {
+			service.ActiveChecksEnabled = returnedService.ActiveChecksEnabled
+		}
+
+		if returnedService.PassiveChecksEnabled != "" {
+			service.PassiveChecksEnabled = returnedService.PassiveChecksEnabled
+		}
+
+		if returnedService.ObsessOverService != "" {
+			service.ObsessOverService = returnedService.ObsessOverService
+		}
+
+		if returnedService.CheckFreshness != "" {
+			service.CheckFreshness = returnedService.CheckFreshness
+		}
+
+		if returnedService.FreshnessThreshold != "" {
+			service.FreshnessThreshold = returnedService.FreshnessThreshold
+		}
+
+		if returnedService.EventHandler != "" {
+			service.EventHandler = returnedService.EventHandler
+		}
+
+		if returnedService.EventHandlerEnabled != "" {
+			service.EventHandlerEnabled = returnedService.EventHandlerEnabled
+		}
+
+		if returnedService.LowFlapThreshold != "" {
+			service.LowFlapThreshold = returnedService.LowFlapThreshold
+		}
+
+		if returnedService.HighFlapThreshold != "" {
+			service.HighFlapThreshold = returnedService.HighFlapThreshold
+		}
+
+		if returnedService.FlapDetectionEnabled != "" {
+			service.FlapDetectionEnabled = returnedService.FlapDetectionEnabled
+		}
+
+		if returnedService.FlapDetectionOptions != nil {
+			service.FlapDetectionOptions = returnedService.FlapDetectionOptions
+		}
+
+		if returnedService.ProcessPerfData != "" {
+			service.ProcessPerfData = returnedService.ProcessPerfData
+		}
+
+		if returnedService.RetainStatusInformation != "" {
+			service.RetainStatusInformation = returnedService.RetainStatusInformation
+		}
+
+		if returnedService.RetainNonStatusInformation != "" {
+			service.RetainNonStatusInformation = returnedService.RetainNonStatusInformation
+		}
+
+		if returnedService.FirstNotificationDelay != "" {
+			service.FirstNotificationDelay = returnedService.FirstNotificationDelay
+		}
+
+		if returnedService.NotificationOptions != nil {
+			service.NotificationOptions = returnedService.NotificationOptions
+		}
+
+		if returnedService.NotificationsEnabled != "" {
+			service.NotificationsEnabled = returnedService.NotificationsEnabled
+		}
+
+		if returnedService.ContactGroups != nil {
+			service.ContactGroups = returnedService.ContactGroups
+		}
+
+		if returnedService.Notes != "" {
+			service.Notes = returnedService.Notes
+		}
+
+		if returnedService.NotesURL != "" {
+			service.NotesURL = returnedService.NotesURL
+		}
+
+		if returnedService.ActionURL != "" {
+			service.ActionURL = returnedService.ActionURL
+		}
+
+		if returnedService.IconImage != "" {
+			service.IconImage = returnedService.IconImage
+		}
+
+		if returnedService.IconImageAlt != "" {
+			service.IconImageAlt = returnedService.IconImageAlt
+		}
 
 		return nil
 	}

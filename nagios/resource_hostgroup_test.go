@@ -81,7 +81,7 @@ func TestAccHostgroup_createAfterManualDestroy(t *testing.T) {
 				PreConfig: func() {
 					client := testAccProvider.Meta().(*Client)
 
-					_, err := client.DeleteHostgroup(hostgroup.Name)
+					_, err := client.deleteHostgroup(hostgroup.Name)
 					if err != nil {
 						t.Fatal(err)
 					}
@@ -184,7 +184,8 @@ func testAccCheckHostgroupDestroy() resource.TestCheckFunc {
 
 				conn := testAccProvider.Meta().(*Client)
 
-				hostgroup, _ := conn.GetHostgroup(name)
+				hostgroup, _ := conn.getHostgroup(name)
+
 				if hostgroup.Name != "" {
 					return fmt.Errorf("Hostgroup %s still exists", name)
 				}
@@ -193,7 +194,8 @@ func testAccCheckHostgroupDestroy() resource.TestCheckFunc {
 
 				conn := testAccProvider.Meta().(*Client)
 
-				host, _ := conn.GetHost(name)
+				host, _ := conn.getHost(name)
+        
 				if host.Name != "" {
 					return fmt.Errorf("Host %s still exists", name)
 				}
@@ -224,7 +226,7 @@ func getHostgroupFromState(s *terraform.State, rName string) (*Hostgroup, error)
 
 	name := rs.Primary.Attributes["name"]
 
-	hostgroup, err := nagiosClient.GetHostgroup(name)
+	hostgroup, err := nagiosClient.getHostgroup(name)
 
 	if err != nil {
 		return nil, fmt.Errorf("error getting hostgroup with name %s: %s", name, err)

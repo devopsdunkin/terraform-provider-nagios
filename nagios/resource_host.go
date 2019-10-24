@@ -1,9 +1,8 @@
 package nagios
 
 import (
-	"log"
-
 	"github.com/hashicorp/terraform/helper/schema"
+	"github.com/hashicorp/terraform/helper/validation"
 )
 
 // Host contains all info needed to create a host in Nagios
@@ -22,6 +21,7 @@ type Host struct {
 	Contacts                   []interface{} `json:"contacts" schema:"contacts"`
 	Alias                      string        `json:"alias" schema:"alias"`
 	Templates                  []interface{} `json:"use" schema:"use"`
+	CheckCommand               string        `json:"check_command" schema:"check_command"`
 	ContactGroups              []interface{} `json:"contact_groups" schema:"contact_groups"`
 	Notes                      string        `json:"notes" schema:"notes"`
 	NotesURL                   string        `json:"notes_url" schema:"notes_url"`
@@ -43,9 +43,9 @@ type Host struct {
 	CheckFreshness             string        `json:"check_freshness" schema:"check_freshness"`
 	FreshnessThreshold         string        `json:"freshness_threshold" schema:"freshness_threshold"`
 	FirstNotificationDelay     string        `json:"first_notification_delay" schema:"first_notification_delay"`
-	NotificationOptions        []interface{} `json:"notification_options" schema:"notification_options"`
+	NotificationOptions        string        `json:"notification_options" schema:"notification_options"`
 	NotificationsEnabled       string        `json:"notifications_enabled" schema:"notifications_enabled"`
-	StalkingOptions            []interface{} `json:"stalking_options" schema:"stalking_options"`
+	StalkingOptions            string        `json:"stalking_options" schema:"stalking_options"`
 	IconImage                  string        `json:"icon_image" schema:"icon_image"`
 	IconImageAlt               string        `json:"icon_image_alt" schema:"icon_image_alt"`
 	VRMLImage                  string        `json:"vrml_image" schema:"vrml_image"`
@@ -53,6 +53,13 @@ type Host struct {
 	TwoDCoords                 string        `json:"2d_coords" schema:"2d_coords"`
 	ThreeDCoords               string        `json:"3d_coords" schema:"3d_coords"`
 }
+
+/*
+	For any bool value, we allow the user to provide a true/false value, but you will notice
+	that we immediately convert it to its integer form and then to a string. We want to provide
+	the user with an easy to use schema, but Nagios wants the data as a one or zero in string format.
+	This seemed to be the easiest way to accomplish that and I wanted to note why it was done that way.
+*/
 
 func resourceHost() *schema.Resource {
 	return &schema.Resource{
@@ -70,53 +77,60 @@ func resourceHost() *schema.Resource {
 			"display_name": {
 				Type:        schema.TypeString,
 				Optional:    true,
-				Description: "The display name of the host",
+				Description: "Another name for the host that will be displayed in the web interface. If left blank, the value from `name` will be displayed",
 			},
 			"max_check_attempts": {
 				Type:        schema.TypeString,
 				Required:    true,
-				Description: "The maximum number of times it will check the host",
+				Description: "How many times to retry the host check before alerting when the state is anything other than OK",
 			},
 			"check_period": {
 				Type:        schema.TypeString,
 				Required:    true,
-				Description: "The check period that the host should belong to",
+				Description: "The time period during which active checks of the host can be made",
 			},
 			"notification_interval": {
 				Type:        schema.TypeString,
 				Required:    true,
-				Description: "How often the host should be checked",
+				Description: "How long to wait before sending another notification to a contact that the host is down",
 			},
 			"notification_period": {
 				Type:        schema.TypeString,
 				Required:    true,
-				Description: "What time periods should the host be alerted on",
+				Description: "The time period during which notifications can be sent for a host alert",
 			},
 			"contacts": {
 				Type:        schema.TypeSet,
 				Required:    true,
-				Description: "List of users or groups to notify when an alert is triggered",
+				Description: "The list of users that Nagios should alert when a host is down",
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
 				},
 			},
 			"alias": {
-				Type:        schema.TypeString,
-				Optional:    true,
-				Description: "The alias of the host",
+				Type:         schema.TypeString,
+				Optional:     true,
+				Description:  "A longer name to describe the host",
+				ValidateFunc: validation.StringLenBetween(1, 255),
 			},
 			"templates": {
 				Type:        schema.TypeSet,
 				Optional:    true,
-				Description: "List of templates to apply to the host",
+				Description: "A list of Nagios templates to apply to the host",
+				Default:     nil,
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
 				},
 			},
+			"check_command": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Description: "The name of the command that should be used to check if the host is up or down",
+			},
 			"contact_groups": {
 				Type:        schema.TypeSet,
 				Optional:    true,
-				Description: "List of contact groups to apply to the host",
+				Description: "A list of the contact groups that should be notified if the host goes down",
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
 				},
@@ -125,66 +139,69 @@ func resourceHost() *schema.Resource {
 				Type:        schema.TypeString,
 				Optional:    true,
 				Default:     nil,
-				Description: "Notes that mmay provide additional operational information about the host",
+				Description: "Notes about the host that may assist with troubleshooting",
 			},
 			"notes_url": {
 				Type:        schema.TypeString,
 				Optional:    true,
 				Default:     "",
-				Description: "URL that may link to additional operational information about the host",
+				Description: "URL to a third-party documentation respoitory containing more information about the host",
 			},
 			"action_url": {
 				Type:        schema.TypeString,
 				Optional:    true,
 				Default:     "",
-				Description: "URL that can link to steps to perform in the event of a host alert or event",
+				Description: "URL to a third-party documentation repository containing actions to take in the event the host goes down",
 			},
 			"initial_state": {
 				Type:        schema.TypeString,
 				Optional:    true,
-				Description: "The initial state of the host when it is first added to Nagios. It should be one of three values: 'd' (down), 's' (up) or 'u' (unreachable)",
+				Description: "The state of the host when it is first added to Nagios. Valid options are: 'd' down, 's' up or 'u' unreachable",
 			},
 			"retry_interval": {
 				Type:        schema.TypeString,
 				Optional:    true,
-				Description: "How frequent Nagios should retry checking a host",
+				Description: "How often should Nagios try to check the host after the initial down alert",
 			},
 			"passive_checks_enabled": {
-				Type:        schema.TypeString,
+				Type:        schema.TypeBool,
 				Optional:    true,
-				Default:     "",
-				Description: "",
+				Default:     true,
+				Description: "Sets whether or not passive checks are enabled for the host",
 			},
 			"active_checks_enabled": {
-				Type:        schema.TypeString,
+				Type:        schema.TypeBool,
 				Optional:    true,
-				Default:     "",
-				Description: "",
+				Default:     true,
+				Description: "Sets whether or not active checks are enabled for the host",
 			},
 			"obsess_over_host": {
-				Type:        schema.TypeString,
+				Type:        schema.TypeBool,
 				Optional:    true,
-				Description: "",
+				Default:     false,
+				Description: "Sets whether or not Nagios 'obsesses' over the host using the ochp_command",
 			},
 			"event_handler": {
 				Type:        schema.TypeString,
 				Optional:    true,
-				Description: "",
+				Description: "The command that should be run whenver a change in the state of the host is detected",
 			},
 			"event_handler_enabled": {
-				Type:        schema.TypeString,
+				Type:        schema.TypeBool,
 				Optional:    true,
-				Description: "Determines if an event handler should be enabled for the host",
+				Default:     false,
+				Description: "Sets whether or not event handlers should be enabled for the host",
 			},
 			"flap_detection_enabled": {
-				Type:        schema.TypeString,
+				Type:        schema.TypeBool,
 				Optional:    true,
-				Description: "Determines if flap detection should be enabled for the host",
+				Default:     false,
+				Description: "Sets whether or not flap detection is enabled for the host",
 			},
-			"flap_detection_options": { // TODO: Unsure if this should be a list or comma separated value
+			"flap_detection_options": {
 				Type:        schema.TypeSet,
 				Optional:    true,
-				Description: "u - unreachable, d - down, o - up (Can be multiple options)",
+				Description: "Determines what flap detection logic will be used for the host. One or more of the following valid options can be provided: 'd' down, 'o' up, or 'u' unreachable.",
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
 				},
@@ -192,93 +209,92 @@ func resourceHost() *schema.Resource {
 			"low_flap_threshold": {
 				Type:        schema.TypeString,
 				Optional:    true,
-				Description: "",
+				Description: "The minimum threshold that should be used when detecting if flapping is occurring",
 			},
 			"high_flap_threshold": {
 				Type:        schema.TypeString,
 				Optional:    true,
-				Description: "",
+				Description: "The maximum threshold that should be used when detecting if flapping is occurring",
 			},
 			"process_perf_data": {
-				Type:        schema.TypeString,
+				Type:        schema.TypeBool,
 				Optional:    true,
-				Description: "Determines if Nagios should process performance data for the host",
+				Default:     true,
+				Description: "Determines if Nagios should process performance data",
 			},
 			"retain_status_information": {
-				Type:        schema.TypeString,
+				Type:        schema.TypeBool,
 				Optional:    true,
-				Description: "",
+				Default:     true,
+				Description: "Sets whether or not status related information should be kept for the host",
 			},
 			"retain_nonstatus_information": {
-				Type:        schema.TypeString,
+				Type:        schema.TypeBool,
 				Optional:    true,
-				Description: "",
+				Default:     true,
+				Description: "Sets whether or not non-status related information should be kept for the host",
 			},
 			"check_freshness": {
-				Type:        schema.TypeString,
+				Type:        schema.TypeBool,
 				Optional:    true,
-				Description: "",
+				Default:     true,
+				Description: "Sets whether or not freshness checks are enabled for the host",
 			},
 			"freshness_threshold": {
 				Type:        schema.TypeString,
 				Optional:    true,
-				Description: "",
+				Description: "The freshness threshold used for the host",
 			},
 			"first_notification_delay": {
 				Type:        schema.TypeString,
 				Optional:    true,
-				Description: "",
+				Description: "The amount of time to wait to send out the first notification when a host enters a non-UP state",
 			},
 			"notification_options": {
-				Type:        schema.TypeSet,
-				Optional:    true,
-				Description: "d - down, u - unreachable, r - recovery, f - flapping, s - scheduled downtime (Can be multiple options)",
-				Elem: &schema.Schema{
-					Type: schema.TypeString,
-				},
-			},
-			"notifications_enabled": {
 				Type:        schema.TypeString,
 				Optional:    true,
-				Description: "",
+				Description: "Determines when Nagios should alert if a host is one or more of the following option: 'o' up, 'd' down, 'u' unreachable, 'r' recovery, 'f' flapping or 's' scheduled downtime",
+			},
+			"notifications_enabled": {
+				Type:        schema.TypeBool,
+				Optional:    true,
+				Default:     true,
+				Description: "Determines if Nagios should send notifications",
 			},
 			"stalking_options": {
-				Type:        schema.TypeSet,
+				Type:        schema.TypeString,
 				Optional:    true,
-				Description: "d - down, o - up, u - unreachable, N - notification, n - none (Can be multiple options)",
-				Elem: &schema.Schema{
-					Type: schema.TypeString,
-				},
+				Description: "A list of options to determine which states, if any, should be stalked by Nagios. Refer to the [Nagios documentation](https://assets.nagios.com/downloads/nagioscore/docs/nagioscore/3/en/stalking.html) for more information on stalking",
 			},
 			"icon_image": {
 				Type:        schema.TypeString,
 				Optional:    true,
-				Description: "The icon image to display in Nagios for the host",
+				Description: "The icon to display in Nagios",
 			},
 			"icon_image_alt": {
 				Type:        schema.TypeString,
 				Optional:    true,
-				Description: "The alernative text to display when hovering over the icon image, or when the icon image is not available",
+				Description: "The text to display when hovering over the ",
 			},
 			"vrml_image": {
 				Type:        schema.TypeString,
 				Optional:    true,
-				Description: "",
+				Description: "The image that will be used as a texture map for the specified host",
 			},
 			"statusmap_image": {
 				Type:        schema.TypeString,
 				Optional:    true,
-				Description: "",
+				Description: "The name of the image that should be used in the statusmap CGI in Nagios",
 			},
 			"2d_coords": {
 				Type:        schema.TypeString,
 				Optional:    true,
-				Description: "",
+				Description: "The coordinates to use when drawing the host in the statusmap CGI",
 			},
 			"3d_coords": {
 				Type:        schema.TypeString,
 				Optional:    true,
-				Description: "",
+				Description: "The coordinates to use when drawing the host in the statuswrl CGI",
 			},
 		},
 		Create: resourceCreateHost,
@@ -296,9 +312,7 @@ func resourceCreateHost(d *schema.ResourceData, m interface{}) error {
 
 	host := setHostFromSchema(d)
 
-	log.Printf("[DEBUG] CreateHost - After calling setHostFromSchema() - %s", host)
-
-	_, err := nagiosClient.NewHost(host)
+	_, err := nagiosClient.newHost(host)
 
 	if err != nil {
 		return err
@@ -313,11 +327,9 @@ func resourceCreateHost(d *schema.ResourceData, m interface{}) error {
 func resourceReadHost(d *schema.ResourceData, m interface{}) error {
 	nagiosClient := m.(*Client)
 
-	host, err := nagiosClient.GetHost(d.Id())
+	host, err := nagiosClient.getHost(d.Id())
 
 	if err != nil {
-		log.Printf("[ERROR] Error reading host - %s", err.Error())
-
 		return err
 	}
 
@@ -335,31 +347,21 @@ func resourceReadHost(d *schema.ResourceData, m interface{}) error {
 func resourceUpdateHost(d *schema.ResourceData, m interface{}) error {
 	nagiosClient := m.(*Client)
 
-	log.Printf("[DEBUG] resourceUpdateHost => name - %s", d.Get("name").(string))
-
 	host := setHostFromSchema(d)
-
-	log.Printf("[DEBUG] Host after setting it with setHostFromSchema - %s", host)
 
 	oldVal, _ := d.GetChange("name")
 
 	if oldVal == "" { // No change, but perhaps the resource was manually deleted and need to update it so pass in the same name
 		oldVal = d.Get("name").(string)
-		log.Printf("[DEBUG] resourceUpdateHost => oldVal was blank, so should be same name as current - %s", oldVal)
 	}
 
-	err := nagiosClient.UpdateHost(host, oldVal)
+	err := nagiosClient.updateHost(host, oldVal)
 
 	if err != nil {
-		log.Printf("[ERROR] Error updating host in Nagios - %s", err.Error())
 		return err
 	}
 
-	log.Printf("[DEBUG] Right before calling setDataFromHost()")
-
 	setDataFromHost(d, host)
-
-	log.Printf("[DEBUG] Right after returning from setDataFromHost()")
 
 	return resourceReadHost(d, m)
 }
@@ -367,10 +369,9 @@ func resourceUpdateHost(d *schema.ResourceData, m interface{}) error {
 func resourceDeleteHost(d *schema.ResourceData, m interface{}) error {
 	nagiosClient := m.(*Client)
 
-	_, err := nagiosClient.DeleteHost(d.Id())
+	_, err := nagiosClient.deleteHost(d.Id())
 
 	if err != nil {
-		log.Printf("[ERROR] Error trying to delete resource - %s", err.Error())
 		return err
 	}
 
@@ -393,77 +394,65 @@ func setDataFromHost(d *schema.ResourceData, host *Host) {
 	d.Set("contacts", host.Contacts)
 	d.Set("templates", host.Templates)
 
-	log.Printf("[DEBUG] setDataFromHost() - Right before optional attributes")
-
 	// Optional attributes
+	if host.CheckCommand != "" {
+		d.Set("check_command", host.CheckCommand)
+	}
+
 	if host.ContactGroups != nil {
 		d.Set("contact_groups", host.ContactGroups)
-		log.Printf("[DEBUG] Just seeing if we hit inside if statement - ContactGroups")
 	}
 
 	if host.Notes != "" {
 		d.Set("notes", host.Notes)
-		log.Printf("[DEBUG] Just seeing if we hit inside if statement - Notes - %s", host.Notes)
 	}
 
 	if host.NotesURL != "" {
 		d.Set("notes_url", host.NotesURL)
-		log.Printf("[DEBUG] Just seeing if we hit inside if statement - NotesURL - %s", host.NotesURL)
 	}
 
 	if host.ActionURL != "" {
 		d.Set("action_url", host.ActionURL)
-		log.Printf("[DEBUG] Just seeing if we hit inside if statement - ActionURL - %s", host.ActionURL)
 	}
 
 	if host.InitialState != "" {
 		d.Set("initial_state", host.InitialState)
-		log.Printf("[DEBUG] Just seeing if we hit inside if statement - InitialState - %s", host.InitialState)
 	}
 
 	if host.RetryInterval != "" {
 		d.Set("retry_interval", host.RetryInterval)
-		log.Printf("[DEBUG] Just seeing if we hit inside if statement - RetryInterval - %s", host.RetryInterval)
 	}
 
 	if host.PassiveChecksEnabled != "" {
 		d.Set("passive_checks_enabled", host.PassiveChecksEnabled)
-		log.Printf("[DEBUG] Just seeing if we hit inside if statement - PassiveChecksEnabled - %s", host.PassiveChecksEnabled)
 	}
 
 	if host.ActiveChecksEnabled != "" {
 		d.Set("active_checks_enabled", host.ActiveChecksEnabled)
-		log.Printf("[DEBUG] Just seeing if we hit inside if statement - ActiveChecksEnabled - %s", host.ActiveChecksEnabled)
 	}
 
 	if host.ObsessOverHost != "" {
 		d.Set("obsess_over_host", host.ObsessOverHost)
-		log.Printf("[DEBUG] Just seeing if we hit inside if statement - ObsessOverHost - %s", host.ObsessOverHost)
 	}
 
 	if host.EventHandler != "" {
 		d.Set("event_handler", host.EventHandler)
-		log.Printf("[DEBUG] Just seeing if we hit inside if statement - EventHandler - %s", host.EventHandler)
 	}
 
 	if host.EventHandlerEnabled != "" {
 		d.Set("event_handler_enabled", host.EventHandlerEnabled)
-		log.Printf("[DEBUG] Just seeing if we hit inside if statement - EventHandlerEnabled - %s", host.EventHandlerEnabled)
 	}
 
 	if host.FlapDetectionEnabled != "" {
 		d.Set("flap_detection_enabled", host.FlapDetectionEnabled)
-		log.Printf("[DEBUG] Just seeing if we hit inside if statement - FlapDetectionEnabled - %s", host.FlapDetectionEnabled)
 	}
 
 	if host.FlapDetectionOptions != nil {
 		d.Set("flap_detection_options", host.FlapDetectionOptions)
-		log.Printf("[DEBUG] Just seeing if we hit inside if statement - FlapDetectionOptions - %s", host.FlapDetectionOptions)
 	}
 
 	if host.LowFlapThreshold != "" {
 		d.Set("low_flap_threshold", host.LowFlapThreshold)
-		log.Printf("[DEBUG] Just seeing if we hit inside if statement - ContactGroups")
 	}
 
 	if host.HighFlapThreshold != "" {
@@ -494,7 +483,7 @@ func setDataFromHost(d *schema.ResourceData, host *Host) {
 		d.Set("first_notification_delay", host.FirstNotificationDelay)
 	}
 
-	if host.NotificationOptions != nil {
+	if host.NotificationOptions != "" {
 		d.Set("notification_options", host.NotificationOptions)
 	}
 
@@ -502,7 +491,7 @@ func setDataFromHost(d *schema.ResourceData, host *Host) {
 		d.Set("notifications_enabled", host.NotificationsEnabled)
 	}
 
-	if host.StalkingOptions != nil {
+	if host.StalkingOptions != "" {
 		d.Set("stalking_options", host.StalkingOptions)
 	}
 
@@ -542,30 +531,31 @@ func setHostFromSchema(d *schema.ResourceData) *Host {
 		NotificationPeriod:         d.Get("notification_period").(string),
 		Contacts:                   d.Get("contacts").(*schema.Set).List(),
 		Templates:                  d.Get("templates").(*schema.Set).List(),
+		CheckCommand:               d.Get("check_command").(string),
 		ContactGroups:              d.Get("contact_groups").(*schema.Set).List(),
 		Notes:                      d.Get("notes").(string),
 		NotesURL:                   d.Get("notes_url").(string),
 		ActionURL:                  d.Get("action_url").(string),
 		InitialState:               d.Get("initial_state").(string),
 		RetryInterval:              d.Get("retry_interval").(string),
-		PassiveChecksEnabled:       d.Get("passive_checks_enabled").(string),
-		ActiveChecksEnabled:        d.Get("active_checks_enabled").(string),
-		ObsessOverHost:             d.Get("obsess_over_host").(string),
+		PassiveChecksEnabled:       convertBoolToIntToString(d.Get("passive_checks_enabled").(bool)),
+		ActiveChecksEnabled:        convertBoolToIntToString(d.Get("active_checks_enabled").(bool)),
+		ObsessOverHost:             convertBoolToIntToString(d.Get("obsess_over_host").(bool)),
 		EventHandler:               d.Get("event_handler").(string),
-		EventHandlerEnabled:        d.Get("event_handler_enabled").(string),
-		FlapDetectionEnabled:       d.Get("flap_detection_enabled").(string),
+		EventHandlerEnabled:        convertBoolToIntToString(d.Get("event_handler_enabled").(bool)),
+		FlapDetectionEnabled:       convertBoolToIntToString(d.Get("flap_detection_enabled").(bool)),
 		FlapDetectionOptions:       d.Get("flap_detection_options").(*schema.Set).List(),
 		LowFlapThreshold:           d.Get("low_flap_threshold").(string),
 		HighFlapThreshold:          d.Get("high_flap_threshold").(string),
-		ProcessPerfData:            d.Get("process_perf_data").(string),
-		RetainStatusInformation:    d.Get("retain_status_information").(string),
-		RetainNonstatusInformation: d.Get("retain_nonstatus_information").(string),
-		CheckFreshness:             d.Get("check_freshness").(string),
+		ProcessPerfData:            convertBoolToIntToString(d.Get("process_perf_data").(bool)),
+		RetainStatusInformation:    convertBoolToIntToString(d.Get("retain_status_information").(bool)),
+		RetainNonstatusInformation: convertBoolToIntToString(d.Get("retain_nonstatus_information").(bool)),
+		CheckFreshness:             convertBoolToIntToString(d.Get("check_freshness").(bool)),
 		FreshnessThreshold:         d.Get("freshness_threshold").(string),
 		FirstNotificationDelay:     d.Get("first_notification_delay").(string),
-		NotificationOptions:        d.Get("notification_options").(*schema.Set).List(),
-		NotificationsEnabled:       d.Get("notifications_enabled").(string),
-		StalkingOptions:            d.Get("stalking_options").(*schema.Set).List(),
+		NotificationOptions:        d.Get("notification_options").(string),
+		NotificationsEnabled:       convertBoolToIntToString(d.Get("notifications_enabled").(bool)),
+		StalkingOptions:            d.Get("stalking_options").(string),
 		IconImage:                  d.Get("icon_image").(string),
 		IconImageAlt:               d.Get("icon_image_alt").(string),
 		VRMLImage:                  d.Get("vrml_image").(string),

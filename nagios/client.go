@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"errors"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"net/url"
 	"strings"
@@ -40,7 +39,6 @@ func (c *Client) sendRequest(httpRequest *http.Request) ([]byte, error) {
 
 	// TODO: Need to validate that when Nagios is unavailable, this err check will catch it
 	if err != nil {
-		log.Printf("[ERROR] Error occurred completing HTTP request: %s", err.Error())
 		return nil, err
 	}
 
@@ -49,14 +47,16 @@ func (c *Client) sendRequest(httpRequest *http.Request) ([]byte, error) {
 	body, err := ioutil.ReadAll(response.Body)
 
 	if err != nil {
-		log.Printf("[ERROR] Error occurred reading body: %s", err.Error())
 		return nil, err
 	}
 
 	return body, nil
 }
 
-func (c *Client) buildURL(objectType, method, objectName, name, oldVal string) (string, error) {
+// buildURL generates the appropriate URL to interact with the Nagios XI API
+func (c *Client) buildURL(objectType, method, objectName, name, oldVal, objectDescription string) (string, error) {
+	// TODO: This func has really become a mess...but it works. Plan is to revisit after building functionality
+	// out for other objects in Nagios.
 	var nagiosURL strings.Builder
 
 	var apiURL string
@@ -96,7 +96,6 @@ func (c *Client) buildURL(objectType, method, objectName, name, oldVal string) (
 
 		if name == "" {
 			errMsg := "Name must be provided when using the " + method + " method"
-			log.Printf("[ERROR] %s", errMsg)
 			return "", errors.New(errMsg)
 		} else {
 			nagiosURL.WriteString(name)
@@ -112,13 +111,10 @@ func (c *Client) buildURL(objectType, method, objectName, name, oldVal string) (
 
 		if name == "" {
 			errMsg := "Name must be provided when using the " + method + " method"
-			log.Printf("[ERROR] %s", errMsg)
 			return "", errors.New(errMsg)
 		} else {
 			nagiosURL.WriteString(name)
 		}
-
-		nagiosURL.WriteString("&force=1&applyconfig=1")
 	} else if method == "PUT" {
 		nagiosURL.WriteString("/")
 
@@ -134,17 +130,15 @@ func (c *Client) buildURL(objectType, method, objectName, name, oldVal string) (
 
 		nagiosURL.WriteString("?apikey=")
 		nagiosURL.WriteString(c.token)
-		nagiosURL.WriteString("&pretty=1&applyconfig=1&force=1")
+		nagiosURL.WriteString("&pretty=1&force=1")
 	} else if method == "POST" {
 		nagiosURL.WriteString("?apikey=")
 		nagiosURL.WriteString(c.token)
 
 		if objectType != "applyconfig" {
-			nagiosURL.WriteString("&applyconfig=1&force=1")
+			nagiosURL.WriteString("&force=1")
 		}
 	}
-
-	log.Printf("[DEBUG] Nagios URL - %s", c.scrubToken(nagiosURL.String())) // TODO: Need to scrub API key from logs
 
 	return nagiosURL.String(), nil
 }
@@ -159,7 +153,7 @@ func (c *Client) scrubToken(url string) string {
 
 func (c *Client) addRequestHeaders(request *http.Request) {
 	request.Header.Add("Content-Type", "application/x-www-form-urlencoded")
-	request.Header.Add("Accept", "/") // TODO: Remove this. Per documentation, sounds like this is not needed
+	request.Header.Add("Accept", "/")
 
 	return
 }
@@ -168,14 +162,12 @@ func (c *Client) get(data *url.Values, resourceInfo interface{}, nagiosURL strin
 	request, err := http.NewRequest(http.MethodGet, nagiosURL, strings.NewReader(data.Encode()))
 
 	if err != nil {
-		log.Printf("[ERROR] Error occurred during request: %s", err.Error())
 		return err
 	}
 
 	body, err := c.sendRequest(request)
 
 	if err != nil {
-		log.Printf("[ERROR] Error occurred sending request: %s", err.Error())
 		return err
 	}
 
@@ -186,14 +178,18 @@ func (c *Client) post(data *url.Values, nagiosURL string) ([]byte, error) {
 	request, err := http.NewRequest(http.MethodPost, nagiosURL, strings.NewReader(data.Encode()))
 
 	if err != nil {
-		log.Printf("[ERROR] Error creating HTTP request - %s", err.Error())
 		return nil, err
 	}
 
 	body, err := c.sendRequest(request)
 
 	if err != nil {
-		log.Printf("[ERROR] Error sending request: %s", err.Error())
+		return nil, err
+	}
+
+	err = c.commandResponse(body)
+
+	if err != nil {
 		return nil, err
 	}
 
@@ -206,19 +202,25 @@ func (c *Client) post(data *url.Values, nagiosURL string) ([]byte, error) {
 	return body, nil
 }
 
-func (c *Client) put(data *url.Values, nagiosURL string) ([]byte, error) {
-	// request, err := http.NewRequest(http.MethodPut, nagiosURL, strings.NewReader(data.Encode()))
+func (c *Client) put(nagiosURL string) ([]byte, error) {
+	if strings.Contains(nagiosURL, " ") {
+		nagiosURL = strings.Replace(nagiosURL, " ", "%20", -1)
+	}
 	request, err := http.NewRequest(http.MethodPut, nagiosURL, nil)
 
 	if err != nil {
-		log.Printf("[ERROR] Error creating HTTP request - %s", err.Error())
 		return nil, err
 	}
 
 	body, err := c.sendRequest(request)
 
 	if err != nil {
-		log.Printf("[ERROR] Error sending request - %s", err.Error())
+		return nil, err
+	}
+
+	err = c.commandResponse(body)
+
+	if err != nil {
 		return nil, err
 	}
 
@@ -235,14 +237,18 @@ func (c *Client) delete(data *url.Values, nagiosURL string) ([]byte, error) {
 	request, err := http.NewRequest(http.MethodDelete, nagiosURL, strings.NewReader(data.Encode()))
 
 	if err != nil {
-		log.Printf("[ERROR] Error creating HTTP request - %s", err.Error())
 		return nil, err
 	}
 
 	body, err := c.sendRequest(request)
 
 	if err != nil {
-		log.Printf("[ERROR] Error sending request - %s", err.Error())
+		return nil, err
+	}
+
+	err = c.commandResponse(body)
+
+	if err != nil {
 		return nil, err
 	}
 
@@ -256,7 +262,7 @@ func (c *Client) delete(data *url.Values, nagiosURL string) ([]byte, error) {
 }
 
 func (c *Client) applyConfig() error {
-	nagiosURL, err := c.buildURL("applyconfig", "POST", "", "", "")
+	nagiosURL, err := c.buildURL("applyconfig", "POST", "", "", "", "")
 
 	if err != nil {
 		return err
@@ -289,4 +295,12 @@ func mapArrayToString(sourceArray []interface{}) string {
 	}
 
 	return destString.String()
+}
+
+// Function takes any boolean value, converts to integer and returns in string format
+func convertBoolToIntToString(sourceVal bool) string {
+	if sourceVal {
+		return "1"
+	}
+	return "0"
 }

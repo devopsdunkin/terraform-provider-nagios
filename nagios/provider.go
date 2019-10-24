@@ -2,7 +2,6 @@ package nagios
 
 import (
 	"errors"
-	"log"
 
 	"github.com/hashicorp/terraform/helper/schema"
 )
@@ -26,8 +25,10 @@ func NagiosProvider() *schema.Provider {
 			},
 		},
 		ResourcesMap: map[string]*schema.Resource{
-			"nagios_hostgroup": resourceHostGroup(),
-			"nagios_host":      resourceHost(),
+			"nagios_hostgroup":    resourceHostGroup(),
+			"nagios_host":         resourceHost(),
+			"nagios_service":      resourceService(),
+			"nagios_servicegroup": resourceServiceGroup(),
 		},
 		ConfigureFunc: providerConfigure,
 	}
@@ -37,9 +38,12 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 	url := d.Get("url").(string)
 	token := d.Get("token").(string)
 
-	if url == "" || token == "" {
-		log.Printf("[ERROR] Invalid or no value supplied for URL or token")
-		return nil, errors.New("Invalid or no value supplied for URL or token")
+	if url == "" {
+		return nil, errors.New("Invalid or no value supplied for URL")
+	}
+
+	if token == "" {
+		return nil, errors.New("Invalid or no value supplied for token")
 	}
 
 	return NewClient(url, token), nil
