@@ -1,7 +1,7 @@
 package nagios
 
 import (
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/hashicorp/terraform/helper/schema"
 )
 
 // servicegroup contains all info needed to create a servicegroup in Nagios
