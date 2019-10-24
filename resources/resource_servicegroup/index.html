@@ -74,16 +74,16 @@
     <a class="current" href="./">resource_servicegroup</a>
     <ul class="subnav">
             
-    <li class="toctree-l3"><a href="#resource-servicegroup">Resource: Servicegroup</a></li>
+    <li class="toctree-l3"><a href="#resource-servicegroup">resource: servicegroup</a></li>
     
 
-    <li class="toctree-l3"><a href="#overview">Overview</a></li>
+    <li class="toctree-l3"><a href="#overview">overview</a></li>
     
         <ul>
         
-            <li><a class="toctree-l4" href="#example">Example</a></li>
+            <li><a class="toctree-l4" href="#example">example</a></li>
         
-            <li><a class="toctree-l4" href="#arguments">Arguments</a></li>
+            <li><a class="toctree-l4" href="#arguments">arguments</a></li>
         
         </ul>
     
@@ -132,11 +132,11 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="resource-servicegroup">Resource: Servicegroup</h1>
-<h1 id="overview">Overview</h1>
+                <h1 id="resource-servicegroup">resource: servicegroup</h1>
+<h1 id="overview">overview</h1>
 <p>This resource manages Nagios servicegroups. Servicegroups are used to logically group services together that may share a
 similar function or provide checks for a specific type of server. Refer to the object definition for <a href="https://assets.nagios.com/downloads/nagioscore/docs/nagioscore/3/en/objectdefinitions.html#servicegroup">servicegroups</a> from Nagios to learn more</p>
-<h2 id="example">Example</h2>
+<h2 id="example">example</h2>
 <pre><code class="hcl">resource &quot;nagios_servicegroup&quot; &quot;servicegroup1&quot; {
     name    = &quot;servicegroup1&quot;
     alias   = &quot;This is an example servicegroup&quot;
@@ -150,7 +150,7 @@ similar function or provide checks for a specific type of server. Refer to the o
 }
 </code></pre>
 
-<h2 id="arguments">Arguments</h2>
+<h2 id="arguments">arguments</h2>
 <p><code>name</code>: The name of the Nagios service group
 <code>alias</code>: The description or other name that the servicegroup may be called. This field can be longer and more descriptive
 <code>members</code>: A list of services and other service groups that should be members of the service group. The members must be valid services and service groups within Nagios and must be active. The provider will NOT validate that the object is correctly configured in Nagios. The reason for this is, if the membership grows to hundreds or thousands of hosts, querying for each one of those would create performance issues.

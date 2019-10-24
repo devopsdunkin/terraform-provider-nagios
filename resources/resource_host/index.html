@@ -62,17 +62,17 @@
     <a class="current" href="./">rsource_host</a>
     <ul class="subnav">
             
-    <li class="toctree-l3"><a href="#resource-host">Resource: Host</a></li>
+    <li class="toctree-l3"><a href="#resource-host">resource: host</a></li>
     
         <ul>
         
-            <li><a class="toctree-l4" href="#overview">Overview</a></li>
+            <li><a class="toctree-l4" href="#overview">overview</a></li>
         
-            <li><a class="toctree-l4" href="#best-practices">Best practices</a></li>
+            <li><a class="toctree-l4" href="#best-practices">best practices</a></li>
         
-            <li><a class="toctree-l4" href="#example">Example</a></li>
+            <li><a class="toctree-l4" href="#example">example</a></li>
         
-            <li><a class="toctree-l4" href="#arguments">Arguments</a></li>
+            <li><a class="toctree-l4" href="#arguments">arguments</a></li>
         
         </ul>
     
@@ -133,13 +133,13 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="resource-host">Resource: Host</h1>
-<h2 id="overview">Overview</h2>
+                <h1 id="resource-host">resource: host</h1>
+<h2 id="overview">overview</h2>
 <p>This resource manages Nagios hosts. Nagios monitors hosts based off health checks defined by an administrator.</p>
 <p>Refer to the object definition for <a href="https://assets.nagios.com/downloads/nagioscore/docs/nagioscore/3/en/objectdefinitions.html#host">hosts</a> from Nagios to learn more</p>
-<h2 id="best-practices">Best practices</h2>
+<h2 id="best-practices">best practices</h2>
 <p>This resource allows you to configure any attribute on a host, however, we recommend to manually create a host template that contains common settings for the hosts, and then use the host resource to create your hosts and set host specific attributes. </p>
-<h2 id="example">Example</h2>
+<h2 id="example">example</h2>
 <pre><code class="hcl">resource &quot;nagios_host&quot; &quot;host1&quot; {
     name                            = &quot;host1&quot;
     address                         = &quot;127.0.0.1&quot;
@@ -175,7 +175,7 @@
 }
 </code></pre>
 
-<h2 id="arguments">Arguments</h2>
+<h2 id="arguments">arguments</h2>
 <p>Below is a brief description of what each field is used for in Nagios. Refer to the <a href="https://assets.nagios.com/downloads/nagioscore/docs/nagioscore/3/en/objectdefinitions.html">official Nagios documentation</a> for more detail</p>
 <p><code>name</code> (required): The name of the host
 <code>address</code> (required): The IP address of the host

@@ -70,17 +70,17 @@
     <a class="current" href="./">resource_service</a>
     <ul class="subnav">
             
-    <li class="toctree-l3"><a href="#resource-service">Resource: Service</a></li>
+    <li class="toctree-l3"><a href="#resource-service">resource: service</a></li>
     
         <ul>
         
-            <li><a class="toctree-l4" href="#overview">Overview</a></li>
+            <li><a class="toctree-l4" href="#overview">overview</a></li>
         
-            <li><a class="toctree-l4" href="#best-practices">Best practices</a></li>
+            <li><a class="toctree-l4" href="#best-practices">best practices</a></li>
         
-            <li><a class="toctree-l4" href="#example">Example</a></li>
+            <li><a class="toctree-l4" href="#example">example</a></li>
         
-            <li><a class="toctree-l4" href="#arguments">Arguments</a></li>
+            <li><a class="toctree-l4" href="#arguments">arguments</a></li>
         
         </ul>
     
@@ -133,13 +133,13 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="resource-service">Resource: Service</h1>
-<h2 id="overview">Overview</h2>
+                <h1 id="resource-service">resource: service</h1>
+<h2 id="overview">overview</h2>
 <p>This resource manages Nagios services. Nagios monitors services based off health checks defined by an administrator.</p>
 <p>Refer to the object definition for <a href="https://assets.nagios.com/downloads/nagioscore/docs/nagioscore/3/en/objectdefinitions.html#service">services</a> from Nagios to learn more</p>
-<h2 id="best-practices">Best practices</h2>
+<h2 id="best-practices">best practices</h2>
 <p>This resource allows you to configure any attribute for a service, however, we recommend to manually create a service template that contains common settings for the service, and then use this resource to create your services and set service or host specific attributes.</p>
-<h2 id="example">Example</h2>
+<h2 id="example">example</h2>
 <pre><code class="hcl">resource &quot;nagios_service&quot; &quot;service1&quot; {
     service_name                    = &quot;ping&quot;
     host_name                       = [
@@ -197,7 +197,7 @@
 }
 </code></pre>
 
-<h2 id="arguments">Arguments</h2>
+<h2 id="arguments">arguments</h2>
 <p>Below is a brief description of what each field is used for in Nagios. Refer to the <a href="https://assets.nagios.com/downloads/nagioscore/docs/nagioscore/3/en/objectdefinitions.html">official Nagios documentation</a> for more detail</p>
 <p><code>service_name</code> (required): The name of the service
 <code>host_name</code> (required): The hosts that the service should run on
