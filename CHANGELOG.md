@@ -7,6 +7,8 @@ FEATURES:
 
 IMPROVEMENTS:
 
+* Cleans up unused code [$49](https://github.com/devopsdunkin/terraform-provider-nagios/pull/49)
+
 BUG FIXES:
 
 * Fixed syntax errors in documentation
