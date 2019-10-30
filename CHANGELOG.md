@@ -2,8 +2,8 @@
 
 FEATURES:
 
-* Adds CHANGELOG ([#49](https://github.com/devopsdunkin/terraform-provider-nagios/pull/49))
-* Adds CircleCI pipeline ([#49](https://github.com/devopsdunkin/terraform-provider-nagios/pull/49))
+* Adds CHANGELOG ([#49](https://github.com/devopsdunkin/terraform-provider-nagios/pull/51))
+* Adds test job to pipeline ([#49](https://github.com/devopsdunkin/terraform-provider-nagios/pull/51))
 
 IMPROVEMENTS:
 
