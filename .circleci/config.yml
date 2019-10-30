@@ -1,6 +1,12 @@
 # Golang CircleCI 2.0 configuration file
 #
 version: 2
+workflows:
+  version: 2
+  test:
+    jobs:
+      - test
+
 jobs:
   test:
     docker:
