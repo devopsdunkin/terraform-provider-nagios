@@ -11,7 +11,7 @@ jobs:
   test:
     docker:
       - image: circleci/golang:1.9
-      - image: devopsdunkin/docker-nagiosxi:ci-tests
+      - image: devopsdunkin/docker-nagiosxi
     working_directory: /go/src/github.com/devopsdunkin/terraform-provider-nagios
     steps:
       - checkout
