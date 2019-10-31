@@ -1,13 +1,13 @@
-## 1.1.0 (October 25, 2019)
+## 1.1.0 (October 30, 2019)
 
 FEATURES:
 
-* Adds CHANGELOG ([#49](https://github.com/devopsdunkin/terraform-provider-nagios/pull/51))
-* Adds test job to pipeline ([#49](https://github.com/devopsdunkin/terraform-provider-nagios/pull/51))
+* Adds CHANGELOG ([#52](https://github.com/devopsdunkin/terraform-provider-nagios/pull/52))
+* Adds test job to pipeline ([#52](https://github.com/devopsdunkin/terraform-provider-nagios/pull/52))
 
 IMPROVEMENTS:
 
-* Cleans up unused code ([#49](https://github.com/devopsdunkin/terraform-provider-nagios/pull/49))
+* Cleans up unused code ([#52](https://github.com/devopsdunkin/terraform-provider-nagios/pull/52))
 
 BUG FIXES:
 
