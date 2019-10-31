@@ -124,9 +124,9 @@ func (c *Client) buildURL(objectType, method, objectName, name, oldVal, objectDe
 			return "", errors.New("[ERROR] A value for oldVal must be provided when attempting a PUT")
 		}
 
-		// if objectType == "service" {
-		// 	nagiosURL.WriteString("/" + objectDescription)
-		// }
+		if objectType == "service" {
+			nagiosURL.WriteString("/" + objectDescription)
+		}
 
 		nagiosURL.WriteString("?apikey=")
 		nagiosURL.WriteString(c.token)
