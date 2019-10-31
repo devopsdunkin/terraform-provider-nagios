@@ -286,9 +286,10 @@ func setUpdateURLServiceParams(originalURL string, service *Service) string {
 	nagiosURL.WriteString(originalURL)
 	nagiosURL.WriteString("&config_name=" + service.ServiceName + "&host_name=" + mapArrayToString(service.HostName) +
 		"&max_check_attempts=" + service.MaxCheckAttempts + "&check_period=" + service.CheckPeriod + "&notification_interval=" + service.NotificationInterval +
-		"&notification_period=" + service.NotificationPeriod + "&contacts=" + mapArrayToString(service.Contacts))
+		"&notification_period=" + service.NotificationPeriod + "&contacts=" + mapArrayToString(service.Contacts) +
+		"&service_description=" + strings.Replace(service.Description, " ", "%20", -1))
 
-	// TODO: NEed to reorder these so they match the same order as the setURLValuesFromService func and the struct
+	// TODO: Need to reorder these so they match the same order as the setURLValuesFromService func and the struct
 	// Optional attributes
 	if service.CheckCommand != "" {
 		nagiosURL.WriteString("&check_command=")

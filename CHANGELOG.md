@@ -1,3 +1,20 @@
+<<<<<<< HEAD
+## 1.1.1 (October 30, 2019)
+
+FEATURES:
+
+* None
+
+IMPROVEMENTS:
+
+* None
+
+BUG FIXES:
+
+* Fixes syntax issue with adding service description in when performing update to a service ([#53](https://github.com/devopsdunkin/terraform-provider-nagios/pull/53))
+* Fixes syntax issue with replacing spaces with `%20` for attributes when performing an update ([#53](https://github.com/devopsdunkin/terraform-provider-nagios/pull/53))
+* Fixes issue where service description was not getting passed as a URL parameter, so it would not update ([#53](https://github.com/devopsdunkin/terraform-provider-nagios/pull/53))
+
 ## 1.1.0 (October 30, 2019)
 
 FEATURES:
@@ -7,6 +24,17 @@ FEATURES:
 
 IMPROVEMENTS:
 
+=======
+## 1.1.0 (October 30, 2019)
+
+FEATURES:
+
+* Adds CHANGELOG ([#52](https://github.com/devopsdunkin/terraform-provider-nagios/pull/52))
+* Adds test job to pipeline ([#52](https://github.com/devopsdunkin/terraform-provider-nagios/pull/52))
+
+IMPROVEMENTS:
+
+>>>>>>> origin
 * Cleans up unused code ([#52](https://github.com/devopsdunkin/terraform-provider-nagios/pull/52))
 
 BUG FIXES:
