@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ## 1.1.1 (October 30, 2019)
 
 FEATURES:
@@ -23,6 +24,17 @@ FEATURES:
 
 IMPROVEMENTS:
 
+=======
+## 1.1.0 (October 30, 2019)
+
+FEATURES:
+
+* Adds CHANGELOG ([#52](https://github.com/devopsdunkin/terraform-provider-nagios/pull/52))
+* Adds test job to pipeline ([#52](https://github.com/devopsdunkin/terraform-provider-nagios/pull/52))
+
+IMPROVEMENTS:
+
+>>>>>>> origin
 * Cleans up unused code ([#52](https://github.com/devopsdunkin/terraform-provider-nagios/pull/52))
 
 BUG FIXES:
