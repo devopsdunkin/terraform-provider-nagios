@@ -15,4 +15,14 @@
      <lastmod>2019-11-03</lastmod>
      <changefreq>daily</changefreq>
     </url>
+    <url>
+     <loc>https://devopsdunkin.github.io/terraform-propvider-nagios/resources/resource_service/</loc>
+     <lastmod>2019-11-03</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+    <url>
+     <loc>https://devopsdunkin.github.io/terraform-propvider-nagios/resources/resource_servicegroup/</loc>
+     <lastmod>2019-11-03</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
 </urlset>
