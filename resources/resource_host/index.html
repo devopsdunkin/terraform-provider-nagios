@@ -177,59 +177,59 @@
 
 <h2 id="arguments">Arguments</h2>
 <p>Below is a brief description of what each field is used for in Nagios. Refer to the <a href="https://assets.nagios.com/downloads/nagioscore/docs/nagioscore/3/en/objectdefinitions.html">official Nagios documentation</a> for more detail</p>
-<p><code>name</code> (required): The name of the host
-<code>address</code> (required): The IP address of the host
-<code>display_name</code>: Another name for the host that will be displayed in the web interface. If left blank, the value from <code>name</code> will be displayed
-<code>max_check_attempts</code> (required): How many times to retry the host check before alerting when the state is anything other than OK
-<code>check_period</code> (required): The time period during which active checks of the host can be made
-<code>notification_interval</code> (required): How long to wait before sending another notification to a contact that the host is down
-<code>notification_period</code> (required): The time period during which notifications can be sent for a host alert
-<code>contacts</code> (required): The list of users that Nagios should alert when a host is down
-<code>alias</code>: A longer name to describe the host
-<code>templates</code>: A list of host templates to apply to the host
-<code>check_command</code>: The name of the command that should be used to check if the host is up or down
-<code>contact_groups</code>: A list of the contact groups that should be notified if the host goes down
-<code>notes</code>: Notes about the host that may assist with troubleshooting
-<code>notes_url</code>: URL to a third-party documentation respoitory containing more information about the host
-<code>action_url</code>: URL to a third-party documentation repository containing actions to take in the event the host goes down
-<code>initial_state</code>: The state of the host when it is first added to Nagios. Valid options are:
+<p><code>name</code> (required): The name of the host<br />
+<code>address</code> (required): The IP address of the host<br />
+<code>display_name</code>: Another name for the host that will be displayed in the web interface. If left blank, the value from <code>name</code> will be displayed<br />
+<code>max_check_attempts</code> (required): How many times to retry the host check before alerting when the state is anything other than OK<br />
+<code>check_period</code> (required): The time period during which active checks of the host can be made<br />
+<code>notification_interval</code> (required): How long to wait before sending another notification to a contact that the host is down<br />
+<code>notification_period</code> (required): The time period during which notifications can be sent for a host alert<br />
+<code>contacts</code> (required): The list of users that Nagios should alert when a host is down<br />
+<code>alias</code>: A longer name to describe the host<br />
+<code>templates</code>: A list of host templates to apply to the host<br />
+<code>check_command</code>: The name of the command that should be used to check if the host is up or down<br />
+<code>contact_groups</code>: A list of the contact groups that should be notified if the host goes down<br />
+<code>notes</code>: Notes about the host that may assist with troubleshooting<br />
+<code>notes_url</code>: URL to a third-party documentation respoitory containing more information about the host<br />
+<code>action_url</code>: URL to a third-party documentation repository containing actions to take in the event the host goes down<br />
+<code>initial_state</code>: The state of the host when it is first added to Nagios. Valid options are:<br />
     - s = UP
     - d = DOWN
     - u = UNREACHABLE
-<code>retry_interval</code>: How often should Nagios try to check the host after the initial down alert
-<code>passive_checks_enabled</code>: Sets whether or not passive checks are enabled for the host
-<code>active_checks_enabled</code>: Sets whether or not active checks are enabled for the host
-<code>obsess_over_host</code>: Sets whether or not Nagios 'obsesses' over the host using the ochp_command
-<code>event_handler</code>: The command that should be run whenver a change in the state of the host is detected
-<code>event_handler_enabled</code>: Sets whether or not event handlers should be enabled for the host
-<code>flap_detection_enabled</code>: Sets whether or not flap detection is enabled for the host
-<code>flap_detection_options</code>: Determines what flap detection logic will be used for the host. One or more of the following valid options can be provided:
+<code>retry_interval</code>: How often should Nagios try to check the host after the initial down alert<br />
+<code>passive_checks_enabled</code>: Sets whether or not passive checks are enabled for the host<br />
+<code>active_checks_enabled</code>: Sets whether or not active checks are enabled for the host<br />
+<code>obsess_over_host</code>: Sets whether or not Nagios 'obsesses' over the host using the ochp_command<br />
+<code>event_handler</code>: The command that should be run whenver a change in the state of the host is detected<br />
+<code>event_handler_enabled</code>: Sets whether or not event handlers should be enabled for the host<br />
+<code>flap_detection_enabled</code>: Sets whether or not flap detection is enabled for the host<br />
+<code>flap_detection_options</code>: Determines what flap detection logic will be used for the host. One or more of the following valid options can be provided:<br />
     - o = UP
     - d = DOWN
     - u = UNREACHABLE
-<code>low_flap_threshold</code>: The minimum threshold that should be used when detecting if flapping is occurring
-<code>high_flap_threshold</code>: The maximum threshold that should be used when detecting if flapping is occurring
-<code>process_perf_data</code>: Determines if Nagios should process performance data
-<code>retain_status_information</code>: Sets whether or not status related information should be kept for the host
-<code>retain_nonstatus_information</code>: Sets whether or not non-status related information should be kept for the host
-<code>check_freshness</code>: Sets whether or not freshness checks are enabled for the host
-<code>freshness_threshold</code>: The freshness threshold used for the host
-<code>first_notification_delay</code>: The amount of time to wait to send out the first notification when a host enters a non-UP state
-<code>notification_options</code>: Determines when Nagios should alert if a host is one or more of the following options:
+<code>low_flap_threshold</code>: The minimum threshold that should be used when detecting if flapping is occurring<br />
+<code>high_flap_threshold</code>: The maximum threshold that should be used when detecting if flapping is occurring<br />
+<code>process_perf_data</code>: Determines if Nagios should process performance data<br />
+<code>retain_status_information</code>: Sets whether or not status related information should be kept for the host<br />
+<code>retain_nonstatus_information</code>: Sets whether or not non-status related information should be kept for the host<br />
+<code>check_freshness</code>: Sets whether or not freshness checks are enabled for the host<br />
+<code>freshness_threshold</code>: The freshness threshold used for the host<br />
+<code>first_notification_delay</code>: The amount of time to wait to send out the first notification when a host enters a non-UP state<br />
+<code>notification_options</code>: Determines when Nagios should alert if a host is one or more of the following options:<br />
     - o = UP
     - d = DOWN
     - u = UNREACHABLE
     - r = RECOVERY
     - f = FLAPPING
     - s = SCHEDULED DOWNTIME
-<code>notifications_enabled</code>: Determines if Nagios should send notifications
-<code>stalking_options</code>: A list of options to determine which states, if any, should be stalked by Nagios. Refer to the <a href="https://assets.nagios.com/downloads/nagioscore/docs/nagioscore/3/en/stalking.html">Nagios documentation</a> for more information on stalking
-<code>icon_image</code>: The icon to display in Nagios
-<code>icon_image_alt</code>:  The text to display when hovering over the <code>icon_image</code> or the text to display if the <code>icon_image</code> is unavailable
-<code>vrml_image</code>: The image that will be used as a texture map for the specified host
-<code>statusmap_image</code>: The name of the image that should be used in the statusmap CGI in Nagios
-<code>2d_coords</code>: The coordinates to use when drawing the host in the statusmap CGI
-<code>3d_coords</code>: The coordinates to use when drawing the host in the statuswrl CGI</p>
+<code>notifications_enabled</code>: Determines if Nagios should send notifications<br />
+<code>stalking_options</code>: A list of options to determine which states, if any, should be stalked by Nagios. Refer to the <a href="https://assets.nagios.com/downloads/nagioscore/docs/nagioscore/3/en/stalking.html">Nagios documentation</a> for more information on stalking<br />
+<code>icon_image</code>: The icon to display in Nagios<br />
+<code>icon_image_alt</code>:  The text to display when hovering over the <code>icon_image</code> or the text to display if the <code>icon_image</code> is unavailable<br />
+<code>vrml_image</code>: The image that will be used as a texture map for the specified host<br />
+<code>statusmap_image</code>: The name of the image that should be used in the statusmap CGI in Nagios<br />
+<code>2d_coords</code>: The coordinates to use when drawing the host in the statusmap CGI<br />
+<code>3d_coords</code>: The coordinates to use when drawing the host in the statuswrl CGI<br /></p>
               
             </div>
           </div>
