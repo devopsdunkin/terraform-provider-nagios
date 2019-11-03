@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../../img/favicon.ico">
-  <title>resource_servicegroup - terraform provider: nagios</title>
+  <title>Resource: Servicegroup - terraform provider: nagios</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
@@ -17,7 +17,7 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "resource_servicegroup";
+    var mkdocs_page_name = "Resource: Servicegroup";
     var mkdocs_page_input_path = "resources/resource_servicegroup.md";
     var mkdocs_page_url = "/terraform-propvider-nagios/resources/resource_servicegroup/";
   </script>
@@ -65,31 +65,6 @@
                     
     <a class="" href="../resource_hostgroup/">resource_hostgroup</a>
                 </li>
-                <li class="">
-                    
-    <a class="" href="../resource_service/">resource_service</a>
-                </li>
-                <li class=" current">
-                    
-    <a class="current" href="./">resource_servicegroup</a>
-    <ul class="subnav">
-            
-    <li class="toctree-l3"><a href="#resource-servicegroup">resource: servicegroup</a></li>
-    
-
-    <li class="toctree-l3"><a href="#overview">overview</a></li>
-    
-        <ul>
-        
-            <li><a class="toctree-l4" href="#example">example</a></li>
-        
-            <li><a class="toctree-l4" href="#arguments">arguments</a></li>
-        
-        </ul>
-    
-
-    </ul>
-                </li>
     </ul>
 	    </li>
           
@@ -114,12 +89,8 @@
     <li><a href="../..">Docs</a> &raquo;</li>
     
       
-        
-          <li>resources &raquo;</li>
-        
-      
     
-    <li>resource_servicegroup</li>
+    <li>Resource: Servicegroup</li>
     <li class="wy-breadcrumbs-aside">
       
         <a href="https://github.com/devopsdunkin/terraform-provider-nagios/edit/master/docs/resources/resource_servicegroup.md"
@@ -132,11 +103,11 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="resource-servicegroup">resource: servicegroup</h1>
-<h1 id="overview">overview</h1>
+                <h1 id="resource-servicegroup">Resource: Servicegroup</h1>
+<h1 id="overview">Overview</h1>
 <p>This resource manages Nagios servicegroups. Servicegroups are used to logically group services together that may share a
 similar function or provide checks for a specific type of server. Refer to the object definition for <a href="https://assets.nagios.com/downloads/nagioscore/docs/nagioscore/3/en/objectdefinitions.html#servicegroup">servicegroups</a> from Nagios to learn more</p>
-<h2 id="example">example</h2>
+<h2 id="example">Example</h2>
 <pre><code class="hcl">resource &quot;nagios_servicegroup&quot; &quot;servicegroup1&quot; {
     name    = &quot;servicegroup1&quot;
     alias   = &quot;This is an example servicegroup&quot;
@@ -150,24 +121,17 @@ similar function or provide checks for a specific type of server. Refer to the o
 }
 </code></pre>
 
-<h2 id="arguments">arguments</h2>
-<p><code>name</code>: The name of the Nagios service group</p>
-<p><code>alias</code>: The description or other name that the servicegroup may be called. This field can be longer and more descriptive</p>
-<p><code>members</code>: A list of services and other service groups that should be members of the service group. The members must be valid services and service groups within Nagios and must be active. The provider will NOT validate that the object is correctly configured in Nagios. The reason for this is, if the membership grows to hundreds or thousands of hosts, querying for each one of those would create performance issues.</p>
-<p><code>notes</code>: Notes about the service group that may assist with troubleshooting</p>
-<p><code>notes_url</code>: URL to a third-party documentation respoitory containing more information about the service group</p>
-<p><code>action_url</code>: URL to a third-party documentation repository containing actions to take in the event the service group goes down</p>
+<h2 id="arguments">Arguments</h2>
+<p><code>name</code>: The name of the Nagios service group
+<code>alias</code>: The description or other name that the servicegroup may be called. This field can be longer and more descriptive
+<code>members</code>: A list of services and other service groups that should be members of the service group. The members must be valid services and service groups within Nagios and must be active. The provider will NOT validate that the object is correctly configured in Nagios. The reason for this is, if the membership grows to hundreds or thousands of hosts, querying for each one of those would create performance issues.
+<code>notes</code>: Notes about the service group that may assist with troubleshooting
+<code>notes_url</code>: URL to a third-party documentation respoitory containing more information about the service group
+<code>action_url</code>: URL to a third-party documentation repository containing actions to take in the event the service group goes down</p>
               
             </div>
           </div>
           <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-      
-        <a href="../resource_service/" class="btn btn-neutral" title="resource_service"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-      
-    </div>
   
 
   <hr/>
@@ -192,8 +156,6 @@ similar function or provide checks for a specific type of server. Refer to the o
       
           <a href="https://github.com/devopsdunkin/terraform-provider-nagios/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
       
-      
-        <span><a href="../resource_service/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
     </span>

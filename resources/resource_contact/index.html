@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../../img/favicon.ico">
+  <title>resource: contact - terraform provider: nagios</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "resource: contact";
+    var mkdocs_page_input_path = "resources/resource_contact.md";
+    var mkdocs_page_url = "/terraform-propvider-nagios/resources/resource_contact/";
+  </script>
+  
+  <script src="../../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href="../.." class="icon icon-home"> terraform provider: nagios</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../..">getting started</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">resources</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../resource_host/">rsource_host</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../resource_hostgroup/">resource_hostgroup</a>
+                </li>
+    </ul>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../..">terraform provider: nagios</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../..">Docs</a> &raquo;</li>
+    
+      
+    
+    <li>resource: contact</li>
+    <li class="wy-breadcrumbs-aside">
+      
+        <a href="https://github.com/devopsdunkin/terraform-provider-nagios/edit/master/docs/resources/resource_contact.md"
+          class="icon icon-github"> Edit on GitHub</a>
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="resource-contact">resource: contact</h1>
+<h2 id="overview">overview</h2>
+<p>This resource manages Nagios contacts. Nagios uses contacts to send notifications about changes in state of objects that Nagios manages.</p>
+<p>Refer to the object definition for <a href="https://assets.nagios.com/downloads/nagioscore/docs/nagioscore/3/en/objectdefinitions.html#contact">contacts</a> from Nagios to learn more</p>
+<h2 id="example">example</h2>
+<pre><code class="hcl">resource &quot;nagios_contact&quot; &quot;contact&quot; {
+    contact_name                    = &quot;nagiosadmin&quot;
+    host_notifications_enabled      = true
+    service_notifications_enabled   = true
+    host_notification_period        = &quot;workhours&quot;
+    service_notification_period     = &quot;workhours&quot;
+    host_notification_options       = &quot;d,u,r,f,s&quot;
+    service_notification_options    = &quot;w,u,c,f,s&quot;
+    host_notification_commands      = [
+        &quot;notify-host-by-email&quot;
+    ]
+    service_notification_commands   = [
+        &quot;notify-service-by-email&quot;
+    ]
+    alias                           = &quot;Nagios Administrator&quot;
+    templates                       = [
+        &quot;generic-contact&quot;
+    ]
+    email                           = &quot;nagiosadmin@example.com&quot;
+    can_submit_commands             = true
+}
+</code></pre>
+
+<h2 id="arguments">arguments</h2>
+<p>Below is a brief description of what each field is used for in Nagios. Refer to the <a href="https://assets.nagios.com/downloads/nagioscore/docs/nagioscore/3/en/objectdefinitions.html">official Nagios documentation</a> for more detail</p>
+<p><code>contact_name</code> (required): The name of the contact
+<code>host_notifications_enabled</code> (required): Determines whether or not the contact will receive notifications about host problems and recoveries
+<code>service_notifications_enabled</code>: Determines whether or not the contact will receive notifications about service problems and recoveries
+<code>host_notification_period</code> (required): The short name of the time period during which the contact can be notified about host problems or recoveries
+<code>service_notification_period</code> (required): The short name of the time period during which the contact can be notified about service problems or recoveries
+<code>host_notification_options</code> (required): The host states for which notifications can be sent out to this contact. Valid options are a combination of one or more of the following:</p>
+<pre><code>d = notify on DOWN host states
+u = notify on UNREACHABLE host states
+r = notify on UP host states
+f = notify when the host starts and stops flapping
+s = notify when scheduled downtime starts and ends
+n = do not notify this contact for any host events
+</code></pre>
+
+<p><code>service_notification_options</code> (required): The service states for which notifications can be sent out to this contact. Valid options are a combination of one or more of the following:</p>
+<pre><code>w = notify on WARNING service states
+u = notify on UNKNOWN service states
+c = notify on CRITICAL service states
+r = notify on UP service states
+f = notify when the service starts and stops flapping
+s = notify when scheduled downtime starts and ends
+n = do not notify this contact for any service events
+</code></pre>
+
+<p><code>host_notification_commands</code> (required): A list of the short names of the commands used to notify the contact of a host problem or recovery. Multiple notification commands should be separated by commas. The command object must exist in Nagios for it to validate. All notification commands are executed when the contact needs to be notified</p>
+<p><code>service_notification_commands</code> (required): A list of the short names of the commands used to notify the contact of a service problem or recovery. Multiple notification commands should be separated by commas. The command object must exist in Nagios for it to validate. All notification commands are executed when the contact needs to be notified</p>
+<p><code>alias</code>: A longer name or description for the contact</p>
+<p><code>contact_groups</code>: The short name(s) of the contactgroup(s) that the contact belongs to</p>
+<p><code>email</code>: Defines an email address for the contact</p>
+<p><code>pager</code>: Defines a pager number for the contact</p>
+<p><code>addresses</code>: Defines additional 'addresses' for the contact</p>
+<p><code>can_submit_commands</code>: Determines whether or not the contact can submit external commands to Nagios from the CGIs</p>
+<p><code>retain_status_information</code>: Determines whether or not status-related information about the contact is retained across program restarts</p>
+<p><code>retain_nonstatus_information</code>: Determines whether or not non-status information about the contact is retained across program restarts.</p>
+              
+            </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+          <a href="https://github.com/devopsdunkin/terraform-provider-nagios/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
+      
+      
+      
+    </span>
+</div>
+    <script>var base_url = '../..';</script>
+    <script src="../../js/theme.js" defer></script>
+      <script src="../../search/main.js" defer></script>
+
+</body>
+</html>

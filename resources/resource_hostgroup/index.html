@@ -66,29 +66,21 @@
     <a class="current" href="./">resource_hostgroup</a>
     <ul class="subnav">
             
-    <li class="toctree-l3"><a href="#resource-hostgroup">resource: hostgroup</a></li>
+    <li class="toctree-l3"><a href="#resource-hostgroup">Resource: Hostgroup</a></li>
     
 
-    <li class="toctree-l3"><a href="#overview">overview</a></li>
+    <li class="toctree-l3"><a href="#overview">Overview</a></li>
     
         <ul>
         
-            <li><a class="toctree-l4" href="#example">example</a></li>
+            <li><a class="toctree-l4" href="#example">Example</a></li>
         
-            <li><a class="toctree-l4" href="#arguments">arguments</a></li>
+            <li><a class="toctree-l4" href="#arguments">Arguments</a></li>
         
         </ul>
     
 
     </ul>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../resource_service/">resource_service</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../resource_servicegroup/">resource_servicegroup</a>
                 </li>
     </ul>
 	    </li>
@@ -132,12 +124,12 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="resource-hostgroup">resource: hostgroup</h1>
-<h1 id="overview">overview</h1>
+                <h1 id="resource-hostgroup">Resource: Hostgroup</h1>
+<h1 id="overview">Overview</h1>
 <p>This resource manages Nagios host groups. Host groups are used to logically group servers together that may share a
 similar function or other attribute. Refer to the object definition for <a href="https://assets.nagios.com/downloads/nagioscore/docs/nagioscore/3/en/objectdefinitions.html#hostgroup">hostgroups</a> from Nagios to learn more</p>
 <p>Refer to the object definition for <a href="https://assets.nagios.com/downloads/nagioscore/docs/nagioscore/3/en/objectdefinitions.html#hostgroup">hostgroups</a> from Nagios to learn more</p>
-<h2 id="example">example</h2>
+<h2 id="example">Example</h2>
 <pre><code class="hcl">resource &quot;nagios_hostgroup&quot; &quot;hostgroup1&quot; {
     name    = &quot;hostgroup1&quot;
     alias   = &quot;This is an example hostgroup&quot;
@@ -148,18 +140,16 @@ similar function or other attribute. Refer to the object definition for <a href=
 }
 </code></pre>
 
-<h2 id="arguments">arguments</h2>
-<p><code>name</code>: The name of the Nagios host group</p>
-<p><code>alias</code>: The description or other name that the host group may be called. This field can be longer and more descriptive</p>
-<p><code>members</code>: A list of hosts that should be members of the host group. The members must be valid hosts within Nagios and must be active. The provider will NOT validate that the host is correctly configured in Nagios. The reason for this is, if the membership grows to hundreds or thousands of hosts, querying for each one of those would create performance issues.</p>
+<h2 id="arguments">Arguments</h2>
+<p><code>name</code>: The name of the Nagios host group
+<code>alias</code>: The description or other name that the host group may be called. This field can be longer and more descriptive
+<code>members</code>: A list of hosts that should be members of the host group. The members must be valid hosts within Nagios and must be active. The provider will NOT validate that the host is correctly configured in Nagios. The reason for this is, if the membership grows to hundreds or thousands of hosts, querying for each one of those would create performance issues.</p>
               
             </div>
           </div>
           <footer>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="../resource_service/" class="btn btn-neutral float-right" title="resource_service">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
         <a href="../resource_host/" class="btn btn-neutral" title="rsource_host"><span class="icon icon-circle-arrow-left"></span> Previous</a>
@@ -192,8 +182,6 @@ similar function or other attribute. Refer to the object definition for <a href=
       
         <span><a href="../resource_host/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
-      
-        <span style="margin-left: 15px"><a href="../resource_service/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>
