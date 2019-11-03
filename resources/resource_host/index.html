@@ -204,11 +204,12 @@ u = UNREACHABLE
 <code>event_handler</code>: The command that should be run whenver a change in the state of the host is detected<br />
 <code>event_handler_enabled</code>: Sets whether or not event handlers should be enabled for the host<br />
 <code>flap_detection_enabled</code>: Sets whether or not flap detection is enabled for the host<br />
-<code>flap_detection_options</code>: Determines what flap detection logic will be used for the host. One or more of the following valid options can be provided:<br />
-    - o = UP
-    - d = DOWN
-    - u = UNREACHABLE
-<code>low_flap_threshold</code>: The minimum threshold that should be used when detecting if flapping is occurring<br />
+<code>flap_detection_options</code>: Determines what flap detection logic will be used for the host. One or more of the following valid options can be provided:  </p>
+<pre><code>o = UP
+d = DOWN
+u = UNREACHABLE
+</code></pre>
+<p><code>low_flap_threshold</code>: The minimum threshold that should be used when detecting if flapping is occurring<br />
 <code>high_flap_threshold</code>: The maximum threshold that should be used when detecting if flapping is occurring<br />
 <code>process_perf_data</code>: Determines if Nagios should process performance data<br />
 <code>retain_status_information</code>: Sets whether or not status related information should be kept for the host<br />
@@ -216,21 +217,22 @@ u = UNREACHABLE
 <code>check_freshness</code>: Sets whether or not freshness checks are enabled for the host<br />
 <code>freshness_threshold</code>: The freshness threshold used for the host<br />
 <code>first_notification_delay</code>: The amount of time to wait to send out the first notification when a host enters a non-UP state<br />
-<code>notification_options</code>: Determines when Nagios should alert if a host is one or more of the following options:<br />
-    - o = UP
-    - d = DOWN
-    - u = UNREACHABLE
-    - r = RECOVERY
-    - f = FLAPPING
-    - s = SCHEDULED DOWNTIME
-<code>notifications_enabled</code>: Determines if Nagios should send notifications<br />
+<code>notification_options</code>: Determines when Nagios should alert if a host is one or more of the following options:  </p>
+<pre><code>o = UP
+d = DOWN
+u = UNREACHABLE
+r = RECOVERY
+f = FLAPPING
+s = SCHEDULED DOWNTIME
+</code></pre>
+<p><code>notifications_enabled</code>: Determines if Nagios should send notifications<br />
 <code>stalking_options</code>: A list of options to determine which states, if any, should be stalked by Nagios. Refer to the <a href="https://assets.nagios.com/downloads/nagioscore/docs/nagioscore/3/en/stalking.html">Nagios documentation</a> for more information on stalking<br />
 <code>icon_image</code>: The icon to display in Nagios<br />
 <code>icon_image_alt</code>:  The text to display when hovering over the <code>icon_image</code> or the text to display if the <code>icon_image</code> is unavailable<br />
 <code>vrml_image</code>: The image that will be used as a texture map for the specified host<br />
 <code>statusmap_image</code>: The name of the image that should be used in the statusmap CGI in Nagios<br />
 <code>2d_coords</code>: The coordinates to use when drawing the host in the statusmap CGI<br />
-<code>3d_coords</code>: The coordinates to use when drawing the host in the statuswrl CGI<br /></p>
+<code>3d_coords</code>: The coordinates to use when drawing the host in the statuswrl CGI  </p>
               
             </div>
           </div>
