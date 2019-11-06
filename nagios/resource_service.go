@@ -10,44 +10,45 @@ import (
 
 // TODO: Need to add in all of the other fields. What we have right now will work for initial testing
 type Service struct {
-	ServiceName                string        `json:"config_name" schema:"config_name"`
-	HostName                   []interface{} `json:"host_name" schema:"host_name"`
-	DisplayName                string        `json:"display_name" schema:"display_name"`
-	Description                string        `json:"service_description" schema:"service_description"`
-	CheckCommand               string        `json:"check_command" schema:"check_command"`
-	MaxCheckAttempts           string        `json:"max_check_attempts" schema:"max_check_attempts"`
-	CheckInterval              string        `json:"check_interval" schema:"check_interval"`
-	RetryInterval              string        `json:"retry_interval" schema:"retry_interval"`
-	CheckPeriod                string        `json:"check_period" schema:"check_period"`
-	NotificationInterval       string        `json:"notification_interval" schema:"notification_interval"`
-	NotificationPeriod         string        `json:"notification_period" schema:"notification_period"`
-	Contacts                   []interface{} `json:"contacts" schema:"contacts"`
-	Templates                  []interface{} `json:"use" schema:"use"`
-	IsVolatile                 string        `json:"is_volatile" schema:"is_volatile"`
-	InitialState               string        `json:"initial_state" schema:"initial_state"`
-	ActiveChecksEnabled        string        `json:"active_checks_enabled" schema:"active_checks_enabled"`
-	PassiveChecksEnabled       string        `json:"passive_checks_enabled" schema:"passive_checks_enabled"`
-	ObsessOverService          string        `json:"obsess_over_service" schema:"obsess_over_service"`
-	CheckFreshness             string        `json:"check_freshness" schema:"check_freshness"`
-	FreshnessThreshold         string        `json:"freshness_threshold" schema:"freshness_threshold"`
-	EventHandler               string        `json:"event_handler" schema:"event_handler"`
-	EventHandlerEnabled        string        `json:"event_handler_enabled" schema:"event_handler_enabled"`
-	LowFlapThreshold           string        `json:"low_flap_threshold" schema:"low_flap_threshold"`
-	HighFlapThreshold          string        `json:"high_flap_threshold" schema:"high_flap_threshold"`
-	FlapDetectionEnabled       string        `json:"flap_detection_enabled" schema:"flap_detection_enabled"`
-	FlapDetectionOptions       []interface{} `json:"flap_detection_options" schema:"flap_detection_options"`
-	ProcessPerfData            string        `json:"process_perf_data" schema:"process_perf_data"`
-	RetainStatusInformation    string        `json:"retain_status_information" schema:"retain_status_information"`
-	RetainNonStatusInformation string        `json:"retain_nonstatus_information" schema:"retain_nonstatus_information"`
-	FirstNotificationDelay     string        `json:"first_notification_delay" schema:"first_notification_delay"`
-	NotificationOptions        []interface{} `json:"notification_options" schema:"notification_options"`
-	NotificationsEnabled       string        `json:"notifications_enabled" schema:"notifications_enabled"`
-	ContactGroups              []interface{} `json:"contact_groups" schema:"contact_groups"`
-	Notes                      string        `json:"notes" schema:"notes"`
-	NotesURL                   string        `json:"notes_url" schema:"notes_url"`
-	ActionURL                  string        `json:"action_url" schema:"action_url"`
-	IconImage                  string        `json:"icon_image" schema:"icon_image"`
-	IconImageAlt               string        `json:"icon_image_alt" schema:"icon_image_alt"`
+	ServiceName                string        `json:"config_name"`
+	HostName                   []interface{} `json:"host_name"`
+	DisplayName                string        `json:"display_name"`
+	Description                string        `json:"service_description"`
+	CheckCommand               string        `json:"check_command"`
+	MaxCheckAttempts           string        `json:"max_check_attempts"`
+	CheckInterval              string        `json:"check_interval"`
+	RetryInterval              string        `json:"retry_interval"`
+	CheckPeriod                string        `json:"check_period"`
+	NotificationInterval       string        `json:"notification_interval"`
+	NotificationPeriod         string        `json:"notification_period"`
+	Contacts                   []interface{} `json:"contacts"`
+	Templates                  []interface{} `json:"use"`
+	IsVolatile                 string        `json:"is_volatile"`
+	InitialState               string        `json:"initial_state"`
+	ActiveChecksEnabled        string        `json:"active_checks_enabled"`
+	PassiveChecksEnabled       string        `json:"passive_checks_enabled"`
+	ObsessOverService          string        `json:"obsess_over_service"`
+	CheckFreshness             string        `json:"check_freshness"`
+	FreshnessThreshold         string        `json:"freshness_threshold"`
+	EventHandler               string        `json:"event_handler"`
+	EventHandlerEnabled        string        `json:"event_handler_enabled"`
+	LowFlapThreshold           string        `json:"low_flap_threshold"`
+	HighFlapThreshold          string        `json:"high_flap_threshold"`
+	FlapDetectionEnabled       string        `json:"flap_detection_enabled"`
+	FlapDetectionOptions       []interface{} `json:"flap_detection_options"`
+	ProcessPerfData            string        `json:"process_perf_data"`
+	RetainStatusInformation    string        `json:"retain_status_information"`
+	RetainNonStatusInformation string        `json:"retain_nonstatus_information"`
+	FirstNotificationDelay     string        `json:"first_notification_delay"`
+	NotificationOptions        []interface{} `json:"notification_options"`
+	NotificationsEnabled       string        `json:"notifications_enabled"`
+	ContactGroups              []interface{} `json:"contact_groups"`
+	Notes                      string        `json:"notes"`
+	NotesURL                   string        `json:"notes_url"`
+	ActionURL                  string        `json:"action_url"`
+	IconImage                  string        `json:"icon_image"`
+	IconImageAlt               string        `json:"icon_image_alt"`
+	Register                   string        `json:"register"`
 }
 
 /* TODO: Need to figure out the dependencies here
@@ -269,14 +270,20 @@ func resourceService() *schema.Resource {
 				Optional:    true,
 				Description: "The text to display when hovering over the icon_image or the text to display if the icon_image is unavailable",
 			},
+			"register": {
+				Type:        schema.TypeBool,
+				Optional:    true,
+				Default:     true,
+				Description: "Determines if the host will be marked as active or inactive",
+			},
 		},
 		Create: resourceCreateService,
 		Read:   resourceReadService,
 		Update: resourceUpdateService,
 		Delete: resourceDeleteService,
-		// Importer: &schema.ResourceImporter{ // TODO: Need to figure out what is needed here
-		// 	State: schema.ImportStatePassthrough,
-		// },
+		Importer: &schema.ResourceImporter{
+			State: schema.ImportStatePassthrough,
+		},
 	}
 }
 
@@ -479,6 +486,10 @@ func setDataFromService(d *schema.ResourceData, service *Service) {
 	if service.IconImageAlt != "" {
 		d.Set("icon_image_alt", service.IconImageAlt)
 	}
+
+	if service.Register != "" {
+		d.Set("register", service.Register)
+	}
 }
 
 func setServiceFromSchema(d *schema.ResourceData) *Service {
@@ -520,6 +531,7 @@ func setServiceFromSchema(d *schema.ResourceData) *Service {
 		ActionURL:                  d.Get("action_url").(string),
 		IconImage:                  d.Get("icon_image").(string),
 		IconImageAlt:               d.Get("icon_image_alt").(string),
+		Register:                   convertBoolToIntToString(d.Get("register").(bool)),
 	}
 
 	return service
