@@ -10,12 +10,12 @@ import (
 // EWe tag with both JSON and schema because a POST uses URL encoding to send data
 // A GET returns data in JSON format
 type Servicegroup struct {
-	Name      string        `json:"servicegroup_name" schema:"servicegroup_name"`
-	Alias     string        `json:"alias" schema:"alias"`
-	Members   []interface{} `json:"members" schema:"members"`
-	Notes     string        `json:"notes" schema:"notes"`
-	NotesURL  string        `json:"notes_url" schema:"notes_url"`
-	ActionURL string        `json:"action_url" schema:"action_url"`
+	Name      string        `json:"servicegroup_name"`
+	Alias     string        `json:"alias"`
+	Members   []interface{} `json:"members"`
+	Notes     string        `json:"notes"`
+	NotesURL  string        `json:"notes_url"`
+	ActionURL string        `json:"action_url"`
 }
 
 func resourceServiceGroup() *schema.Resource {
@@ -60,9 +60,9 @@ func resourceServiceGroup() *schema.Resource {
 		Read:   resourceReadServiceGroup,
 		Update: resourceUpdateServiceGroup,
 		Delete: resourceDeleteServiceGroup,
-		// Importer: &schema.ResourceImporter{ // TODO: Need to figure out what is needed here
-		// 	State: schema.ImportStatePassthrough,
-		// },
+		Importer: &schema.ResourceImporter{
+			State: schema.ImportStatePassthrough,
+		},
 	}
 }
 

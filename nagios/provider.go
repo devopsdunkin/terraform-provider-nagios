@@ -25,6 +25,8 @@ func NagiosProvider() *schema.Provider {
 			},
 		},
 		ResourcesMap: map[string]*schema.Resource{
+			"nagios_contact":      resourceContact(),
+			"nagios_contactgroup": resourceContactgroup(),
 			"nagios_hostgroup":    resourceHostGroup(),
 			"nagios_host":         resourceHost(),
 			"nagios_service":      resourceService(),

@@ -1,10 +1,10 @@
-terraform-provider-nagios
+terraform-provider-nagios*
+bin/
 *.tf
 *.tfvars
 *.log
 *.tfstate*
 .terraform
-cleanup.py
 Nagios.postman_collection.json
 terraform-provider-nagios.postman_collection.json
 the_plan

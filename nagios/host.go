@@ -15,14 +15,9 @@ func (c *Client) newHost(host *Host) ([]byte, error) {
 	}
 
 	data := setURLValuesFromHost(host)
+	// data := setURLParams(host)
 
 	body, err := c.post(data, nagiosURL)
-
-	if err != nil {
-		return nil, err
-	}
-
-	err = c.applyConfig()
 
 	if err != nil {
 		return nil, err
@@ -98,6 +93,7 @@ func (c *Client) getHost(name string) (*Host, error) {
 		host.StatusMapImage = hostArray[i].StatusMapImage
 		host.TwoDCoords = hostArray[i].TwoDCoords
 		host.ThreeDCoords = hostArray[i].ThreeDCoords
+		host.Register = hostArray[i].Register
 
 		if i > 1 { // Nagios should only return 1 object during a GET with the way we are manipulating it. So only grab the first object and break if we have more than 1
 			break
@@ -304,6 +300,10 @@ func setURLValuesFromHost(host *Host) *url.Values {
 		data.Set("3d_coords", host.ThreeDCoords)
 	}
 
+	if host.Register != "" {
+		data.Set("register", host.Register)
+	}
+
 	return data
 }
 
@@ -473,6 +473,11 @@ func setUpdateURLHostParams(originalURL string, host *Host) string {
 	if host.ThreeDCoords != "" {
 		nagiosURL.WriteString("&3d_coords=")
 		nagiosURL.WriteString(host.ThreeDCoords)
+	}
+
+	if host.Register != "" {
+		nagiosURL.WriteString("&register=")
+		nagiosURL.WriteString(host.Register)
 	}
 
 	return nagiosURL.String()

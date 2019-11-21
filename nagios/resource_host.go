@@ -11,47 +11,48 @@ import (
 
 // TODO: Need to add in all of the other fields. What we have right now will work for initial testing
 type Host struct {
-	Name                       string        `json:"host_name" schema:"host_name"`
-	Address                    string        `json:"address" schema:"address"`
-	DisplayName                string        `json:"display_name" schema:"display_name"`
-	MaxCheckAttempts           string        `json:"max_check_attempts" schema:"max_check_attempts"`
-	CheckPeriod                string        `json:"check_period" schema:"check_period"`
-	NotificationInterval       string        `json:"notification_interval" schema:"notification_interval"`
-	NotificationPeriod         string        `json:"notification_period" schema:"notification_period"`
-	Contacts                   []interface{} `json:"contacts" schema:"contacts"`
-	Alias                      string        `json:"alias" schema:"alias"`
-	Templates                  []interface{} `json:"use" schema:"use"`
-	CheckCommand               string        `json:"check_command" schema:"check_command"`
-	ContactGroups              []interface{} `json:"contact_groups" schema:"contact_groups"`
-	Notes                      string        `json:"notes" schema:"notes"`
-	NotesURL                   string        `json:"notes_url" schema:"notes_url"`
-	ActionURL                  string        `json:"action_url" schema:"action_url"`
-	InitialState               string        `json:"initial_state" schema:"initial_state"`
-	RetryInterval              string        `json:"retry_interval" schema:"retry_interval"`
-	PassiveChecksEnabled       string        `json:"passive_checks_enabled" schema:"passive_checks_enabled"`
-	ActiveChecksEnabled        string        `json:"active_checks_enabled" schema:"active_checks_enabled"`
-	ObsessOverHost             string        `json:"obsess_over_host" schema:"obsess_over_host"`
-	EventHandler               string        `json:"event_handler" schema:"event_handler"`
-	EventHandlerEnabled        string        `json:"event_handler_enabled" schema:"event_handler_enabled"`
-	FlapDetectionEnabled       string        `json:"flap_detection_enabled" schema:"flap_detection_enabled"`
-	FlapDetectionOptions       []interface{} `json:"flap_detection_options" schema:"flap_detection_options"`
-	LowFlapThreshold           string        `json:"low_flap_threshold" schema:"low_flap_threshold"`
-	HighFlapThreshold          string        `json:"high_flap_threshold" schema:"high_flap_threshold"`
-	ProcessPerfData            string        `json:"process_perf_data" schema:"process_perf_data"`
-	RetainStatusInformation    string        `json:"retain_status_information" schema:"retain_status_information"`
-	RetainNonstatusInformation string        `json:"retain_nonstatus_information" schema:"retain_nonstatus_information"`
-	CheckFreshness             string        `json:"check_freshness" schema:"check_freshness"`
-	FreshnessThreshold         string        `json:"freshness_threshold" schema:"freshness_threshold"`
-	FirstNotificationDelay     string        `json:"first_notification_delay" schema:"first_notification_delay"`
-	NotificationOptions        string        `json:"notification_options" schema:"notification_options"`
-	NotificationsEnabled       string        `json:"notifications_enabled" schema:"notifications_enabled"`
-	StalkingOptions            string        `json:"stalking_options" schema:"stalking_options"`
-	IconImage                  string        `json:"icon_image" schema:"icon_image"`
-	IconImageAlt               string        `json:"icon_image_alt" schema:"icon_image_alt"`
-	VRMLImage                  string        `json:"vrml_image" schema:"vrml_image"`
-	StatusMapImage             string        `json:"statusmap_image" schema:"statusmap_image"`
-	TwoDCoords                 string        `json:"2d_coords" schema:"2d_coords"`
-	ThreeDCoords               string        `json:"3d_coords" schema:"3d_coords"`
+	Name                       string        `json:"host_name"`
+	Address                    string        `json:"address"`
+	DisplayName                string        `json:"display_name"`
+	MaxCheckAttempts           string        `json:"max_check_attempts"`
+	CheckPeriod                string        `json:"check_period"`
+	NotificationInterval       string        `json:"notification_interval"`
+	NotificationPeriod         string        `json:"notification_period"`
+	Contacts                   []interface{} `json:"contacts"`
+	Alias                      string        `json:"alias"`
+	Templates                  []interface{} `json:"use"`
+	CheckCommand               string        `json:"check_command"`
+	ContactGroups              []interface{} `json:"contact_groups"`
+	Notes                      string        `json:"notes"`
+	NotesURL                   string        `json:"notes_url"`
+	ActionURL                  string        `json:"action_url"`
+	InitialState               string        `json:"initial_state"`
+	RetryInterval              string        `json:"retry_interval"`
+	PassiveChecksEnabled       string        `json:"passive_checks_enabled"`
+	ActiveChecksEnabled        string        `json:"active_checks_enabled"`
+	ObsessOverHost             string        `json:"obsess_over_host"`
+	EventHandler               string        `json:"event_handler"`
+	EventHandlerEnabled        string        `json:"event_handler_enabled"`
+	FlapDetectionEnabled       string        `json:"flap_detection_enabled"`
+	FlapDetectionOptions       []interface{} `json:"flap_detection_options"`
+	LowFlapThreshold           string        `json:"low_flap_threshold"`
+	HighFlapThreshold          string        `json:"high_flap_threshold"`
+	ProcessPerfData            string        `json:"process_perf_data"`
+	RetainStatusInformation    string        `json:"retain_status_information"`
+	RetainNonstatusInformation string        `json:"retain_nonstatus_information"`
+	CheckFreshness             string        `json:"check_freshness"`
+	FreshnessThreshold         string        `json:"freshness_threshold"`
+	FirstNotificationDelay     string        `json:"first_notification_delay"`
+	NotificationOptions        string        `json:"notification_options"`
+	NotificationsEnabled       string        `json:"notifications_enabled"`
+	StalkingOptions            string        `json:"stalking_options"`
+	IconImage                  string        `json:"icon_image"`
+	IconImageAlt               string        `json:"icon_image_alt"`
+	VRMLImage                  string        `json:"vrml_image"`
+	StatusMapImage             string        `json:"statusmap_image"`
+	TwoDCoords                 string        `json:"2d_coords"`
+	ThreeDCoords               string        `json:"3d_coords"`
+	Register                   string        `json:"register"`
 }
 
 /*
@@ -296,14 +297,20 @@ func resourceHost() *schema.Resource {
 				Optional:    true,
 				Description: "The coordinates to use when drawing the host in the statuswrl CGI",
 			},
+			"register": {
+				Type:        schema.TypeBool,
+				Optional:    true,
+				Default:     true,
+				Description: "Determines if the host will be marked as active or inactive",
+			},
 		},
 		Create: resourceCreateHost,
 		Read:   resourceReadHost,
 		Update: resourceUpdateHost,
 		Delete: resourceDeleteHost,
-		// Importer: &schema.ResourceImporter{ // TODO: Need to figure out what is needed here
-		// 	State: schema.ImportStatePassthrough,
-		// },
+		Importer: &schema.ResourceImporter{
+			State: schema.ImportStatePassthrough,
+		},
 	}
 }
 
@@ -518,6 +525,10 @@ func setDataFromHost(d *schema.ResourceData, host *Host) {
 	if host.ThreeDCoords != "" {
 		d.Set("3d_coords", host.ThreeDCoords)
 	}
+
+	if host.Register != "" {
+		d.Set("register", host.Register)
+	}
 }
 
 func setHostFromSchema(d *schema.ResourceData) *Host {
@@ -562,6 +573,7 @@ func setHostFromSchema(d *schema.ResourceData) *Host {
 		StatusMapImage:             d.Get("statusmap_image").(string),
 		TwoDCoords:                 d.Get("2d_coords").(string),
 		ThreeDCoords:               d.Get("3d_coords").(string),
+		Register:                   convertBoolToIntToString(d.Get("register").(bool)),
 	}
 
 	return host
