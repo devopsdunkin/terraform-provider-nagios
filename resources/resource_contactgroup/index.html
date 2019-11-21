@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../../img/favicon.ico">
-  <title>resource_hostgroup - terraform provider: nagios</title>
+  <title>resource_contactgroup - terraform provider: nagios</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
@@ -17,9 +17,9 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "resource_hostgroup";
-    var mkdocs_page_input_path = "resources/resource_hostgroup.md";
-    var mkdocs_page_url = "/terraform-propvider-nagios/resources/resource_hostgroup/";
+    var mkdocs_page_name = "resource_contactgroup";
+    var mkdocs_page_input_path = "resources/resource_contactgroup.md";
+    var mkdocs_page_url = "/terraform-propvider-nagios/resources/resource_contactgroup/";
   </script>
   
   <script src="../../js/jquery-2.1.1.min.js" defer></script>
@@ -61,34 +61,33 @@
                     
     <a class="" href="../resource_contact/">resource_contact</a>
                 </li>
-                <li class="">
-                    
-    <a class="" href="../resource_contactgroup/">resource_contactgroup</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../resource_host/">resource_host</a>
-                </li>
                 <li class=" current">
                     
-    <a class="current" href="./">resource_hostgroup</a>
+    <a class="current" href="./">resource_contactgroup</a>
     <ul class="subnav">
             
-    <li class="toctree-l3"><a href="#resource-hostgroup">Resource: Hostgroup</a></li>
-    
-
-    <li class="toctree-l3"><a href="#overview">Overview</a></li>
+    <li class="toctree-l3"><a href="#resource-contactgroup">resource: contactgroup</a></li>
     
         <ul>
         
-            <li><a class="toctree-l4" href="#example">Example</a></li>
+            <li><a class="toctree-l4" href="#overview">overview</a></li>
         
-            <li><a class="toctree-l4" href="#arguments">Arguments</a></li>
+            <li><a class="toctree-l4" href="#example">example</a></li>
+        
+            <li><a class="toctree-l4" href="#arguments">arguments</a></li>
         
         </ul>
     
 
     </ul>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../resource_host/">resource_host</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../resource_hostgroup/">resource_hostgroup</a>
                 </li>
                 <li class="">
                     
@@ -127,10 +126,10 @@
         
       
     
-    <li>resource_hostgroup</li>
+    <li>resource_contactgroup</li>
     <li class="wy-breadcrumbs-aside">
       
-        <a href="https://github.com/devopsdunkin/terraform-provider-nagios/edit/master/docs/resources/resource_hostgroup.md"
+        <a href="https://github.com/devopsdunkin/terraform-provider-nagios/edit/master/docs/resources/resource_contactgroup.md"
           class="icon icon-github"> Edit on GitHub</a>
       
     </li>
@@ -140,26 +139,30 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="resource-hostgroup">Resource: Hostgroup</h1>
-<h1 id="overview">Overview</h1>
-<p>This resource manages Nagios host groups. Host groups are used to logically group servers together that may share a
-similar function or other attribute. Refer to the object definition for <a href="https://assets.nagios.com/downloads/nagioscore/docs/nagioscore/3/en/objectdefinitions.html#hostgroup">hostgroups</a> from Nagios to learn more</p>
-<p>Refer to the object definition for <a href="https://assets.nagios.com/downloads/nagioscore/docs/nagioscore/3/en/objectdefinitions.html#hostgroup">hostgroups</a> from Nagios to learn more</p>
-<h2 id="example">Example</h2>
-<pre><code class="hcl">resource &quot;nagios_hostgroup&quot; &quot;hostgroup1&quot; {
-    name    = &quot;hostgroup1&quot;
-    alias   = &quot;This is an example hostgroup&quot;
-    members = [
-        &quot;host1.test.local&quot;,
-        &quot;host2.test.local&quot;
+                <h1 id="resource-contactgroup">resource: contactgroup</h1>
+<h2 id="overview">overview</h2>
+<p>This resource manages Nagios contact groups. Nagios uses contact groups to group togther contacts for alerting</p>
+<p>Refer to the object definition for <a href="https://assets.nagios.com/downloads/nagioscore/docs/nagioscore/3/en/objectdefinitions.html#contactgroup">contactgroups</a> from Nagios to learn more</p>
+<h2 id="example">example</h2>
+<pre><code class="hcl">resource &quot;nagios_contactgroup&quot; &quot;contactgroup&quot; {
+    contactgroup_name       = &quot;noc_staff&quot;
+    alias                   = &quot;NOC staff members&quot;
+    members                 = [
+        &quot;nagiosadmin&quot;,
+        &quot;jdoe&quot;
+    ]
+    contactgroup_members    = [
+        &quot;system_admins&quot;
     ]
 }
 </code></pre>
 
-<h2 id="arguments">Arguments</h2>
-<p><code>name</code>: The name of the Nagios host group<br />
-<code>alias</code>: The description or other name that the host group may be called. This field can be longer and more descriptive<br />
-<code>members</code>: A list of hosts that should be members of the host group. The members must be valid hosts within Nagios and must be active. The provider will NOT validate that the host is correctly configured in Nagios. The reason for this is, if the membership grows to hundreds or thousands of hosts, querying for each one of those would create performance issues.  </p>
+<h2 id="arguments">arguments</h2>
+<p>Below is a brief description of what each field is used for in Nagios. Refer to the <a href="https://assets.nagios.com/downloads/nagioscore/docs/nagioscore/3/en/objectdefinitions.html">official Nagios documentation</a> for more detail</p>
+<p><code>contactgroup_name</code> (required): The name of the contact group
+<code>alias</code> (required): A longer or more descriptive name of the contact group
+<code>members</code>: A list of the contacts that should be included in this group
+<code>contactgroup_members</code>: Other contact groups that should be included in this group</p>
               
             </div>
           </div>
@@ -167,10 +170,10 @@ similar function or other attribute. Refer to the object definition for <a href=
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../resource_service/" class="btn btn-neutral float-right" title="resource_service">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../resource_host/" class="btn btn-neutral float-right" title="resource_host">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../resource_host/" class="btn btn-neutral" title="resource_host"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../resource_contact/" class="btn btn-neutral" title="resource_contact"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -198,10 +201,10 @@ similar function or other attribute. Refer to the object definition for <a href=
           <a href="https://github.com/devopsdunkin/terraform-provider-nagios/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
       
       
-        <span><a href="../resource_host/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../resource_contact/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../resource_service/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../resource_host/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>

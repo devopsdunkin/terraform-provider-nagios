@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../../img/favicon.ico">
-  <title>resource_hostgroup - terraform provider: nagios</title>
+  <title>Resource authserver - terraform provider: nagios</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
@@ -17,9 +17,9 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "resource_hostgroup";
-    var mkdocs_page_input_path = "resources/resource_hostgroup.md";
-    var mkdocs_page_url = "/terraform-propvider-nagios/resources/resource_hostgroup/";
+    var mkdocs_page_name = "Resource authserver";
+    var mkdocs_page_input_path = "resources/resource_authserver.md";
+    var mkdocs_page_url = "/terraform-propvider-nagios/resources/resource_authserver/";
   </script>
   
   <script src="../../js/jquery-2.1.1.min.js" defer></script>
@@ -69,26 +69,9 @@
                     
     <a class="" href="../resource_host/">resource_host</a>
                 </li>
-                <li class=" current">
+                <li class="">
                     
-    <a class="current" href="./">resource_hostgroup</a>
-    <ul class="subnav">
-            
-    <li class="toctree-l3"><a href="#resource-hostgroup">Resource: Hostgroup</a></li>
-    
-
-    <li class="toctree-l3"><a href="#overview">Overview</a></li>
-    
-        <ul>
-        
-            <li><a class="toctree-l4" href="#example">Example</a></li>
-        
-            <li><a class="toctree-l4" href="#arguments">Arguments</a></li>
-        
-        </ul>
-    
-
-    </ul>
+    <a class="" href="../resource_hostgroup/">resource_hostgroup</a>
                 </li>
                 <li class="">
                     
@@ -122,15 +105,11 @@
     <li><a href="../..">Docs</a> &raquo;</li>
     
       
-        
-          <li>resources &raquo;</li>
-        
-      
     
-    <li>resource_hostgroup</li>
+    <li>Resource authserver</li>
     <li class="wy-breadcrumbs-aside">
       
-        <a href="https://github.com/devopsdunkin/terraform-provider-nagios/edit/master/docs/resources/resource_hostgroup.md"
+        <a href="https://github.com/devopsdunkin/terraform-provider-nagios/edit/master/docs/resources/resource_authserver.md"
           class="icon icon-github"> Edit on GitHub</a>
       
     </li>
@@ -140,39 +119,11 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="resource-hostgroup">Resource: Hostgroup</h1>
-<h1 id="overview">Overview</h1>
-<p>This resource manages Nagios host groups. Host groups are used to logically group servers together that may share a
-similar function or other attribute. Refer to the object definition for <a href="https://assets.nagios.com/downloads/nagioscore/docs/nagioscore/3/en/objectdefinitions.html#hostgroup">hostgroups</a> from Nagios to learn more</p>
-<p>Refer to the object definition for <a href="https://assets.nagios.com/downloads/nagioscore/docs/nagioscore/3/en/objectdefinitions.html#hostgroup">hostgroups</a> from Nagios to learn more</p>
-<h2 id="example">Example</h2>
-<pre><code class="hcl">resource &quot;nagios_hostgroup&quot; &quot;hostgroup1&quot; {
-    name    = &quot;hostgroup1&quot;
-    alias   = &quot;This is an example hostgroup&quot;
-    members = [
-        &quot;host1.test.local&quot;,
-        &quot;host2.test.local&quot;
-    ]
-}
-</code></pre>
-
-<h2 id="arguments">Arguments</h2>
-<p><code>name</code>: The name of the Nagios host group<br />
-<code>alias</code>: The description or other name that the host group may be called. This field can be longer and more descriptive<br />
-<code>members</code>: A list of hosts that should be members of the host group. The members must be valid hosts within Nagios and must be active. The provider will NOT validate that the host is correctly configured in Nagios. The reason for this is, if the membership grows to hundreds or thousands of hosts, querying for each one of those would create performance issues.  </p>
+                
               
             </div>
           </div>
           <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="../resource_service/" class="btn btn-neutral float-right" title="resource_service">Next <span class="icon icon-circle-arrow-right"></span></a>
-      
-      
-        <a href="../resource_host/" class="btn btn-neutral" title="resource_host"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-      
-    </div>
   
 
   <hr/>
@@ -198,10 +149,6 @@ similar function or other attribute. Refer to the object definition for <a href=
           <a href="https://github.com/devopsdunkin/terraform-provider-nagios/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
       
       
-        <span><a href="../resource_host/" style="color: #fcfcfc;">&laquo; Previous</a></span>
-      
-      
-        <span style="margin-left: 15px"><a href="../resource_service/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>

@@ -73,6 +73,14 @@
     <ul class="subnav">
                 <li class="">
                     
+    <a class="" href="resources/resource_contact/">resource_contact</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="resources/resource_contactgroup/">resource_contactgroup</a>
+                </li>
+                <li class="">
+                    
     <a class="" href="resources/resource_host/">resource_host</a>
                 </li>
                 <li class="">
@@ -126,9 +134,10 @@
             <div class="section">
               
                 <h1 id="installing">Installing</h1>
+<p>The provider can be downloaded from the <a href="https://github.com/devopsdunkin/terraform-provider-nagios/releases">GitHub releases page</a></p>
 <p>Refer to Hashicorp's <a href="https://www.terraform.io/docs/configuration/providers.html#third-party-plugins">documentation</a> to install third-party providers</p>
 <h2 id="supported-nagios-versions">Supported Nagios Versions</h2>
-<p>This provider was tested on Nagios XI 5.6.1. It may work with other versions, it will just depend on if there are differences in how the API processes commands.</p>
+<p>This provider was tested on Nagios XI 5.6.7. It may work with other versions, it will just depend on if there are differences in how the API processes commands.</p>
 <h2 id="provider-setup">Provider setup</h2>
 <p>The provider requires the following attributes:</p>
 <p><code>url</code> (required) - The URL to login to Nagios XI. This should just be the FQDN of the Nagios server, with <code>/nagiosxi</code> appended to it. It defaults to using the environment variable <code>NAGIOS_URL</code> if no value is provided in the provider definition.</p>
@@ -146,7 +155,7 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="resources/resource_host/" class="btn btn-neutral float-right" title="resource_host">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="resources/resource_contact/" class="btn btn-neutral float-right" title="resource_contact">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
     </div>
@@ -176,7 +185,7 @@
       
       
       
-        <span style="margin-left: 15px"><a href="resources/resource_host/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="resources/resource_contact/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>
@@ -189,5 +198,5 @@
 
 <!--
 MkDocs version : 1.0.4
-Build Date UTC : 2019-11-03 18:49:58
+Build Date UTC : 2019-11-21 03:17:41
 -->
