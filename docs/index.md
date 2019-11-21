@@ -1,10 +1,12 @@
 # Installing
 
+The provider can be downloaded from the [GitHub releases page](https://github.com/devopsdunkin/terraform-provider-nagios/releases)
+
 Refer to Hashicorp's [documentation](https://www.terraform.io/docs/configuration/providers.html#third-party-plugins) to install third-party providers
 
 ## Supported Nagios Versions
 
-This provider was tested on Nagios XI 5.6.1. It may work with other versions, it will just depend on if there are differences in how the API processes commands.
+This provider was tested on Nagios XI 5.6.7. It may work with other versions, it will just depend on if there are differences in how the API processes commands.
 
 ## Provider setup
 
