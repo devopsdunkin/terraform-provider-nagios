@@ -15,14 +15,9 @@ func (c *Client) newHost(host *Host) ([]byte, error) {
 	}
 
 	data := setURLValuesFromHost(host)
+	// data := setURLParams(host)
 
 	body, err := c.post(data, nagiosURL)
-
-	if err != nil {
-		return nil, err
-	}
-
-	err = c.applyConfig()
 
 	if err != nil {
 		return nil, err
