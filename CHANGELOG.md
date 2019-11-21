@@ -1,3 +1,26 @@
+# CHANGELOG
+
+## 1.2.0 (November 20, 2019)
+
+FEATURES:
+
+* **New Resource:** `resource_contact` ([#57](https://github.com/devopsdunkin/terraform-provider-nagios/pull/57))
+* **New Resource:** `resource_contactgroup` ([#57](https://github.com/devopsdunkin/terraform-provider-nagios/pull/57))
+
+IMPROVEMENTS:
+
+* Adds link to GitHub releases page under the installing provider section of the documentation ([#57](https://github.com/devopsdunkin/terraform-provider-nagios/pull/57))
+* Adds support to import state for `resource_host`, `resource_service`, `resource_hostgroup`, `resource_servicegroup`, `resource_contact` and `resource_contactgroup` ([#57](https://github.com/devopsdunkin/terraform-provider-nagios/pull/57))
+* Removes unused `schema` tag on structs for `resource_host`, `resource_service`, `resource_hostgroup`, `resource_servicegroup` and `resource_contact` ([#57](https://github.com/devopsdunkin/terraform-provider-nagios/pull/57))
+* Adds `register` attribute for `resource_host` and `resource_service`. It is used to set whether the object is active or not in Nagios ([#57](https://github.com/devopsdunkin/terraform-provider-nagios/pull/57))
+* Removes unused files from .gitignore ([#57](https://github.com/devopsdunkin/terraform-provider-nagios/pull/57))
+* Updates README with updated roadmap and supported versions ([#57](https://github.com/devopsdunkin/terraform-provider-nagios/pull/57))
+
+BUG FIXES:
+
+* Fixes an issue where line breaks were missing from the documentation for resource arguments ([#57](https://github.com/devopsdunkin/terraform-provider-nagios/pull/57))
+* Cleans up duplicate code ([#57](https://github.com/devopsdunkin/terraform-provider-nagios/pull/57))
+
 ## 1.1.1 (October 31, 2019)
 
 FEATURES:
