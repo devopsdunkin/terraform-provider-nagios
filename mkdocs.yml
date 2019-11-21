@@ -5,5 +5,9 @@ theme: readthedocs
 nav:
   - getting started: index.md
   - resources:
-    - rsource_host: resources/resource_host.md
+    - resource_contact: resources/resource_contact.md
+    - resource_contactgroup: resources/resource_contactgroup.md
+    - resource_host: resources/resource_host.md
     - resource_hostgroup: resources/resource_hostgroup.md
+    - resource_service: resources/resource_service.md
+    - resource_servicegroup: resources/resource_servicegroup.md
