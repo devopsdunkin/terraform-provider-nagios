@@ -12,7 +12,6 @@ func (c *Client) newContactgroup(contactgroup *Contactgroup) ([]byte, error) {
 		return nil, err
 	}
 
-	// data := setURLValuesFromContactgroup(contactgroup)
 	data := setURLParams(contactgroup)
 
 	body, err := c.post(data, nagiosURL)
@@ -70,7 +69,6 @@ func (c *Client) updateContactgroup(contactgroup *Contactgroup, oldVal interface
 		return err
 	}
 
-	// nagiosURL = setUpdateURLContactgroupParams(nagiosURL, contactgroup)
 	nagiosURL = nagiosURL + setURLParams(contactgroup).Encode()
 
 	_, err = c.put(nagiosURL)
@@ -119,33 +117,3 @@ func (c *Client) deleteContactgroup(name string) ([]byte, error) {
 
 	return body, nil
 }
-
-// func setURLValuesFromContactgroup(contactgroup *Contactgroup) *url.Values {
-// 	data := &url.Values{}
-// 	data.Set("contactgroup_name", contactgroup.ContactgroupName)
-// 	data.Set("alias", contactgroup.Alias)
-
-// 	// Optional attributes
-// 	if contactgroup.Members != nil {
-// 		data.Set("members", mapArrayToString(contactgroup.Members))
-// 	}
-
-// 	if contactgroup.ContactgroupMembers != nil {
-// 		data.Set("contactgroup_members", mapArrayToString(contactgroup.ContactgroupMembers))
-// 	}
-
-// 	return data
-// }
-
-// func setUpdateURLContactgroupParams(originalURL string, contactgroup *Contactgroup) string {
-// 	var nagiosURL strings.Builder
-
-// 	nagiosURL.WriteString(originalURL)
-// 	nagiosURL.WriteString(
-// 		"&contactgroup_name=" + contactgroup.ContactgroupName +
-// 			"&alias=" + contactgroup.Alias +
-// 			"&members=" + mapArrayToString(contactgroup.Members) +
-// 			"&contactgroup_members=" + mapArrayToString(contactgroup.ContactgroupMembers))
-
-// 	return nagiosURL.String()
-// }

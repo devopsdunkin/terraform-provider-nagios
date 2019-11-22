@@ -12,12 +12,6 @@ func (c *Client) newHostgroup(hostgroup *Hostgroup) ([]byte, error) {
 		return nil, err
 	}
 
-	// hostGroupMemberList := mapArrayToString(hostgroup.Members)
-
-	// data := &url.Values{}
-	// data.Set("hostgroup_name", hostgroup.Name)
-	// data.Set("alias", hostgroup.Alias)
-	// data.Set("members", hostGroupMemberList)
 	data := setURLParams(hostgroup)
 
 	body, err := c.post(data, nagiosURL)
@@ -67,15 +61,6 @@ func (c *Client) updateHostgroup(hostgroup *Hostgroup, oldVal interface{}) error
 		return err
 	}
 
-	// hostGroupMemberList := mapArrayToString(hostgroup.Members)
-
-	// TODO: Needs migrated to buildURL func
-	// nagiosURL = nagiosURL + "&hostgroup_name=" + hostgroup.Name + "&alias=" + hostgroup.Alias + "&members=" + hostGroupMemberList
-
-	// data := &url.Values{}
-	// data.Set("hostgroup_name", hostgroup.Name)
-	// data.Set("alias", hostgroup.Alias)
-	// data.Set("members", hostGroupMemberList)
 	nagiosURL = nagiosURL + setURLParams(hostgroup).Encode()
 
 	_, err = c.put(nagiosURL)
