@@ -12,47 +12,47 @@ import (
 // TODO: Need to add in all of the other fields. What we have right now will work for initial testing
 type Host struct {
 	Name                       string        `json:"host_name"`
-	Address                    string        `json:"address"`
-	DisplayName                string        `json:"display_name"`
-	MaxCheckAttempts           string        `json:"max_check_attempts"`
-	CheckPeriod                string        `json:"check_period"`
-	NotificationInterval       string        `json:"notification_interval"`
-	NotificationPeriod         string        `json:"notification_period"`
-	Contacts                   []interface{} `json:"contacts"`
-	Alias                      string        `json:"alias"`
-	Templates                  []interface{} `json:"use"`
-	CheckCommand               string        `json:"check_command"`
-	ContactGroups              []interface{} `json:"contact_groups"`
-	Notes                      string        `json:"notes"`
-	NotesURL                   string        `json:"notes_url"`
-	ActionURL                  string        `json:"action_url"`
-	InitialState               string        `json:"initial_state"`
-	RetryInterval              string        `json:"retry_interval"`
-	PassiveChecksEnabled       string        `json:"passive_checks_enabled"`
-	ActiveChecksEnabled        string        `json:"active_checks_enabled"`
-	ObsessOverHost             string        `json:"obsess_over_host"`
-	EventHandler               string        `json:"event_handler"`
-	EventHandlerEnabled        string        `json:"event_handler_enabled"`
-	FlapDetectionEnabled       string        `json:"flap_detection_enabled"`
-	FlapDetectionOptions       []interface{} `json:"flap_detection_options"`
-	LowFlapThreshold           string        `json:"low_flap_threshold"`
-	HighFlapThreshold          string        `json:"high_flap_threshold"`
-	ProcessPerfData            string        `json:"process_perf_data"`
-	RetainStatusInformation    string        `json:"retain_status_information"`
-	RetainNonstatusInformation string        `json:"retain_nonstatus_information"`
-	CheckFreshness             string        `json:"check_freshness"`
-	FreshnessThreshold         string        `json:"freshness_threshold"`
-	FirstNotificationDelay     string        `json:"first_notification_delay"`
-	NotificationOptions        string        `json:"notification_options"`
-	NotificationsEnabled       string        `json:"notifications_enabled"`
-	StalkingOptions            string        `json:"stalking_options"`
-	IconImage                  string        `json:"icon_image"`
-	IconImageAlt               string        `json:"icon_image_alt"`
-	VRMLImage                  string        `json:"vrml_image"`
-	StatusMapImage             string        `json:"statusmap_image"`
-	TwoDCoords                 string        `json:"2d_coords"`
-	ThreeDCoords               string        `json:"3d_coords"`
-	Register                   string        `json:"register"`
+	Address                    string        `json:"address,omitempty"`
+	DisplayName                string        `json:"display_name,omitempty"`
+	MaxCheckAttempts           string        `json:"max_check_attempts,omitempty"`
+	CheckPeriod                string        `json:"check_period,omitempty"`
+	NotificationInterval       string        `json:"notification_interval,omitempty"`
+	NotificationPeriod         string        `json:"notification_period,omitempty"`
+	Contacts                   []interface{} `json:"contacts,omitempty"`
+	Alias                      string        `json:"alias,omitempty"`
+	Templates                  []interface{} `json:"use,omitempty"`
+	CheckCommand               string        `json:"check_command,omitempty"`
+	ContactGroups              []interface{} `json:"contact_groups,omitempty"`
+	Notes                      string        `json:"notes,omitempty"`
+	NotesURL                   string        `json:"notes_url,omitempty"`
+	ActionURL                  string        `json:"action_url,omitempty"`
+	InitialState               string        `json:"initial_state,omitempty"`
+	RetryInterval              string        `json:"retry_interval,omitempty"`
+	PassiveChecksEnabled       string        `json:"passive_checks_enabled,omitempty"`
+	ActiveChecksEnabled        string        `json:"active_checks_enabled,omitempty"`
+	ObsessOverHost             string        `json:"obsess_over_host,omitempty"`
+	EventHandler               string        `json:"event_handler,omitempty"`
+	EventHandlerEnabled        string        `json:"event_handler_enabled,omitempty"`
+	FlapDetectionEnabled       string        `json:"flap_detection_enabled,omitempty"`
+	FlapDetectionOptions       []interface{} `json:"flap_detection_options,omitempty"`
+	LowFlapThreshold           string        `json:"low_flap_threshold,omitempty"`
+	HighFlapThreshold          string        `json:"high_flap_threshold,omitempty"`
+	ProcessPerfData            string        `json:"process_perf_data,omitempty"`
+	RetainStatusInformation    string        `json:"retain_status_information,omitempty"`
+	RetainNonstatusInformation string        `json:"retain_nonstatus_information,omitempty"`
+	CheckFreshness             string        `json:"check_freshness,omitempty"`
+	FreshnessThreshold         string        `json:"freshness_threshold,omitempty"`
+	FirstNotificationDelay     string        `json:"first_notification_delay,omitempty"`
+	NotificationOptions        string        `json:"notification_options,omitempty"`
+	NotificationsEnabled       string        `json:"notifications_enabled,omitempty"`
+	StalkingOptions            string        `json:"stalking_options,omitempty"`
+	IconImage                  string        `json:"icon_image,omitempty"`
+	IconImageAlt               string        `json:"icon_image_alt,omitempty"`
+	VRMLImage                  string        `json:"vrml_image,omitempty"`
+	StatusMapImage             string        `json:"statusmap_image,omitempty"`
+	TwoDCoords                 string        `json:"2d_coords,omitempty"`
+	ThreeDCoords               string        `json:"3d_coords,omitempty"`
+	Register                   string        `json:"register,omitempty"`
 }
 
 /*
@@ -118,7 +118,6 @@ func resourceHost() *schema.Resource {
 				Type:        schema.TypeSet,
 				Optional:    true,
 				Description: "A list of Nagios templates to apply to the host",
-				Default:     nil,
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
 				},
@@ -139,19 +138,16 @@ func resourceHost() *schema.Resource {
 			"notes": {
 				Type:        schema.TypeString,
 				Optional:    true,
-				Default:     nil,
 				Description: "Notes about the host that may assist with troubleshooting",
 			},
 			"notes_url": {
 				Type:        schema.TypeString,
 				Optional:    true,
-				Default:     "",
 				Description: "URL to a third-party documentation respoitory containing more information about the host",
 			},
 			"action_url": {
 				Type:        schema.TypeString,
 				Optional:    true,
-				Default:     "",
 				Description: "URL to a third-party documentation repository containing actions to take in the event the host goes down",
 			},
 			"initial_state": {
@@ -167,19 +163,16 @@ func resourceHost() *schema.Resource {
 			"passive_checks_enabled": {
 				Type:        schema.TypeBool,
 				Optional:    true,
-				Default:     true,
 				Description: "Sets whether or not passive checks are enabled for the host",
 			},
 			"active_checks_enabled": {
 				Type:        schema.TypeBool,
 				Optional:    true,
-				Default:     true,
 				Description: "Sets whether or not active checks are enabled for the host",
 			},
 			"obsess_over_host": {
 				Type:        schema.TypeBool,
 				Optional:    true,
-				Default:     false,
 				Description: "Sets whether or not Nagios 'obsesses' over the host using the ochp_command",
 			},
 			"event_handler": {
@@ -190,13 +183,11 @@ func resourceHost() *schema.Resource {
 			"event_handler_enabled": {
 				Type:        schema.TypeBool,
 				Optional:    true,
-				Default:     false,
 				Description: "Sets whether or not event handlers should be enabled for the host",
 			},
 			"flap_detection_enabled": {
 				Type:        schema.TypeBool,
 				Optional:    true,
-				Default:     false,
 				Description: "Sets whether or not flap detection is enabled for the host",
 			},
 			"flap_detection_options": {
@@ -220,25 +211,21 @@ func resourceHost() *schema.Resource {
 			"process_perf_data": {
 				Type:        schema.TypeBool,
 				Optional:    true,
-				Default:     true,
 				Description: "Determines if Nagios should process performance data",
 			},
 			"retain_status_information": {
 				Type:        schema.TypeBool,
 				Optional:    true,
-				Default:     true,
 				Description: "Sets whether or not status related information should be kept for the host",
 			},
 			"retain_nonstatus_information": {
 				Type:        schema.TypeBool,
 				Optional:    true,
-				Default:     true,
 				Description: "Sets whether or not non-status related information should be kept for the host",
 			},
 			"check_freshness": {
 				Type:        schema.TypeBool,
 				Optional:    true,
-				Default:     true,
 				Description: "Sets whether or not freshness checks are enabled for the host",
 			},
 			"freshness_threshold": {
@@ -259,7 +246,6 @@ func resourceHost() *schema.Resource {
 			"notifications_enabled": {
 				Type:        schema.TypeBool,
 				Optional:    true,
-				Default:     true,
 				Description: "Determines if Nagios should send notifications",
 			},
 			"stalking_options": {

@@ -2,6 +2,7 @@ package nagios
 
 import (
 	"fmt"
+	"log"
 	"net/url"
 	"strings"
 )
@@ -14,8 +15,7 @@ func (c *Client) newHost(host *Host) ([]byte, error) {
 		return nil, err
 	}
 
-	data := setURLValuesFromHost(host)
-	// data := setURLParams(host)
+	data := setURLParams(host)
 
 	body, err := c.post(data, nagiosURL)
 
@@ -110,7 +110,9 @@ func (c *Client) updateHost(host *Host, oldVal interface{}) error {
 		return err
 	}
 
-	nagiosURL = setUpdateURLHostParams(nagiosURL, host)
+	nagiosURL = nagiosURL + setURLParams(host).Encode()
+
+	log.Printf("Nagios URL: %s", nagiosURL)
 
 	_, err = c.put(nagiosURL)
 
