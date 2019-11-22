@@ -15,7 +15,8 @@ func (c *Client) newService(service *Service) ([]byte, error) {
 		return nil, err
 	}
 
-	data := setURLValuesFromService(service)
+	// data := setURLValuesFromService(service)
+	data := setURLParams(service)
 
 	body, err := c.post(data, nagiosURL)
 
@@ -108,7 +109,8 @@ func (c *Client) updateService(service *Service, oldVal, oldDesc interface{}) er
 		return err
 	}
 
-	nagiosURL = setUpdateURLServiceParams(nagiosURL, service)
+	// nagiosURL = setUpdateURLServiceParams(nagiosURL, service)
+	nagiosURL = nagiosURL + setURLParams(service).Encode()
 
 	_, err = c.put(nagiosURL)
 
@@ -154,292 +156,292 @@ func (c *Client) deleteService(hostName, serviceDescription string) ([]byte, err
 	return body, nil
 }
 
-func setURLValuesFromService(service *Service) *url.Values {
-	// Required attributes
-	data := &url.Values{}
-	data.Set("config_name", service.ServiceName)
-	data.Set("host_name", mapArrayToString(service.HostName))
-	data.Set("service_description", service.Description)
-	data.Set("max_check_attempts", service.MaxCheckAttempts)
-	data.Set("check_interval", service.CheckInterval)
-	data.Set("retry_interval", service.RetryInterval)
-	data.Set("check_period", service.CheckPeriod)
-	data.Set("notification_interval", service.NotificationInterval)
-	data.Set("notification_period", service.NotificationPeriod)
-	data.Set("contacts", mapArrayToString(service.Contacts))
-	data.Set("templates", mapArrayToString(service.Templates))
+// func setURLValuesFromService(service *Service) *url.Values {
+// 	// Required attributes
+// 	data := &url.Values{}
+// 	data.Set("config_name", service.ServiceName)
+// 	data.Set("host_name", mapArrayToString(service.HostName))
+// 	data.Set("service_description", service.Description)
+// 	data.Set("max_check_attempts", service.MaxCheckAttempts)
+// 	data.Set("check_interval", service.CheckInterval)
+// 	data.Set("retry_interval", service.RetryInterval)
+// 	data.Set("check_period", service.CheckPeriod)
+// 	data.Set("notification_interval", service.NotificationInterval)
+// 	data.Set("notification_period", service.NotificationPeriod)
+// 	data.Set("contacts", mapArrayToString(service.Contacts))
+// 	data.Set("templates", mapArrayToString(service.Templates))
 
-	// optionsl attributes
-	if service.CheckCommand != "" {
-		data.Set("check_command", service.CheckCommand)
-	}
+// 	// optionsl attributes
+// 	if service.CheckCommand != "" {
+// 		data.Set("check_command", service.CheckCommand)
+// 	}
 
-	if service.Templates != nil {
-		data.Set("use", mapArrayToString(service.Templates))
-	}
+// 	if service.Templates != nil {
+// 		data.Set("use", mapArrayToString(service.Templates))
+// 	}
 
-	if service.IsVolatile != "" {
-		data.Set("is_volatile", service.IsVolatile)
-	}
+// 	if service.IsVolatile != "" {
+// 		data.Set("is_volatile", service.IsVolatile)
+// 	}
 
-	if service.InitialState != "" {
-		data.Set("initial_state", service.InitialState)
-	}
+// 	if service.InitialState != "" {
+// 		data.Set("initial_state", service.InitialState)
+// 	}
 
-	if service.ActiveChecksEnabled != "" {
-		data.Set("active_checks_enabled", service.ActiveChecksEnabled)
-	}
+// 	if service.ActiveChecksEnabled != "" {
+// 		data.Set("active_checks_enabled", service.ActiveChecksEnabled)
+// 	}
 
-	if service.PassiveChecksEnabled != "" {
-		data.Set("passive_checks_enabled", service.PassiveChecksEnabled)
-	}
+// 	if service.PassiveChecksEnabled != "" {
+// 		data.Set("passive_checks_enabled", service.PassiveChecksEnabled)
+// 	}
 
-	if service.ObsessOverService != "" {
-		data.Set("obsess_over_service", service.ObsessOverService)
-	}
+// 	if service.ObsessOverService != "" {
+// 		data.Set("obsess_over_service", service.ObsessOverService)
+// 	}
 
-	if service.CheckFreshness != "" {
-		data.Set("check_freshness", service.CheckFreshness)
-	}
+// 	if service.CheckFreshness != "" {
+// 		data.Set("check_freshness", service.CheckFreshness)
+// 	}
 
-	if service.FreshnessThreshold != "" {
-		data.Set("freshness_threshold", service.FreshnessThreshold)
-	}
+// 	if service.FreshnessThreshold != "" {
+// 		data.Set("freshness_threshold", service.FreshnessThreshold)
+// 	}
 
-	if service.EventHandler != "" {
-		data.Set("event_handler", service.EventHandler)
-	}
+// 	if service.EventHandler != "" {
+// 		data.Set("event_handler", service.EventHandler)
+// 	}
 
-	if service.EventHandlerEnabled != "" {
-		data.Set("event_handler_enabled", service.EventHandlerEnabled)
-	}
+// 	if service.EventHandlerEnabled != "" {
+// 		data.Set("event_handler_enabled", service.EventHandlerEnabled)
+// 	}
 
-	if service.LowFlapThreshold != "" {
-		data.Set("low_flap_threshold", service.LowFlapThreshold)
-	}
+// 	if service.LowFlapThreshold != "" {
+// 		data.Set("low_flap_threshold", service.LowFlapThreshold)
+// 	}
 
-	if service.HighFlapThreshold != "" {
-		data.Set("high_flap_threshold", service.HighFlapThreshold)
-	}
+// 	if service.HighFlapThreshold != "" {
+// 		data.Set("high_flap_threshold", service.HighFlapThreshold)
+// 	}
 
-	if service.FlapDetectionEnabled != "" {
-		data.Set("flap_detection_enabled", service.FlapDetectionEnabled)
-	}
+// 	if service.FlapDetectionEnabled != "" {
+// 		data.Set("flap_detection_enabled", service.FlapDetectionEnabled)
+// 	}
 
-	if service.FlapDetectionOptions != nil {
-		data.Set("flap_detection_options", mapArrayToString(service.FlapDetectionOptions))
-	}
+// 	if service.FlapDetectionOptions != nil {
+// 		data.Set("flap_detection_options", mapArrayToString(service.FlapDetectionOptions))
+// 	}
 
-	if service.ProcessPerfData != "" {
-		data.Set("process_perf_data", service.ProcessPerfData)
-	}
+// 	if service.ProcessPerfData != "" {
+// 		data.Set("process_perf_data", service.ProcessPerfData)
+// 	}
 
-	if service.RetainStatusInformation != "" {
-		data.Set("retain_status_information", service.RetainStatusInformation)
-	}
+// 	if service.RetainStatusInformation != "" {
+// 		data.Set("retain_status_information", service.RetainStatusInformation)
+// 	}
 
-	if service.RetainNonStatusInformation != "" {
-		data.Set("retain_nonstatus_information", service.RetainNonStatusInformation)
-	}
+// 	if service.RetainNonStatusInformation != "" {
+// 		data.Set("retain_nonstatus_information", service.RetainNonStatusInformation)
+// 	}
 
-	if service.FirstNotificationDelay != "" {
-		data.Set("first_notification_delay", service.FirstNotificationDelay)
-	}
+// 	if service.FirstNotificationDelay != "" {
+// 		data.Set("first_notification_delay", service.FirstNotificationDelay)
+// 	}
 
-	if service.NotificationOptions != nil {
-		data.Set("notification_options", mapArrayToString(service.NotificationOptions))
-	}
+// 	if service.NotificationOptions != nil {
+// 		data.Set("notification_options", mapArrayToString(service.NotificationOptions))
+// 	}
 
-	if service.NotificationsEnabled != "" {
-		data.Set("notifications_enabled", service.NotificationsEnabled)
-	}
+// 	if service.NotificationsEnabled != "" {
+// 		data.Set("notifications_enabled", service.NotificationsEnabled)
+// 	}
 
-	if service.ContactGroups != nil {
-		data.Set("contact_groups", mapArrayToString(service.ContactGroups))
-	}
+// 	if service.ContactGroups != nil {
+// 		data.Set("contact_groups", mapArrayToString(service.ContactGroups))
+// 	}
 
-	if service.Notes != "" {
-		data.Set("notes", service.Notes)
-	}
+// 	if service.Notes != "" {
+// 		data.Set("notes", service.Notes)
+// 	}
 
-	if service.NotesURL != "" {
-		data.Set("notes_url", service.NotesURL)
-	}
+// 	if service.NotesURL != "" {
+// 		data.Set("notes_url", service.NotesURL)
+// 	}
 
-	if service.ActionURL != "" {
-		data.Set("action_url", service.ActionURL)
-	}
+// 	if service.ActionURL != "" {
+// 		data.Set("action_url", service.ActionURL)
+// 	}
 
-	if service.IconImage != "" {
-		data.Set("icon_image", service.IconImage)
-	}
+// 	if service.IconImage != "" {
+// 		data.Set("icon_image", service.IconImage)
+// 	}
 
-	if service.IconImageAlt != "" {
-		data.Set("icon_image_alt", service.IconImageAlt)
-	}
+// 	if service.IconImageAlt != "" {
+// 		data.Set("icon_image_alt", service.IconImageAlt)
+// 	}
 
-	if service.Register != "" {
-		data.Set("register", service.Register)
-	}
+// 	if service.Register != "" {
+// 		data.Set("register", service.Register)
+// 	}
 
-	return data
-}
+// 	return data
+// }
 
-func setUpdateURLServiceParams(originalURL string, service *Service) string {
-	var nagiosURL strings.Builder
+// func setUpdateURLServiceParams(originalURL string, service *Service) string {
+// 	var nagiosURL strings.Builder
 
-	nagiosURL.WriteString(originalURL)
-	nagiosURL.WriteString("&config_name=" + service.ServiceName + "&host_name=" + mapArrayToString(service.HostName) +
-		"&max_check_attempts=" + service.MaxCheckAttempts + "&check_period=" + service.CheckPeriod + "&notification_interval=" + service.NotificationInterval +
-		"&notification_period=" + service.NotificationPeriod + "&contacts=" + mapArrayToString(service.Contacts) +
-		"&service_description=" + strings.Replace(service.Description, " ", "%20", -1))
+// 	nagiosURL.WriteString(originalURL)
+// 	nagiosURL.WriteString("&config_name=" + service.ServiceName + "&host_name=" + mapArrayToString(service.HostName) +
+// 		"&max_check_attempts=" + service.MaxCheckAttempts + "&check_period=" + service.CheckPeriod + "&notification_interval=" + service.NotificationInterval +
+// 		"&notification_period=" + service.NotificationPeriod + "&contacts=" + mapArrayToString(service.Contacts) +
+// 		"&service_description=" + strings.Replace(service.Description, " ", "%20", -1))
 
-	// TODO: Need to reorder these so they match the same order as the setURLValuesFromService func and the struct
-	// Optional attributes
-	if service.CheckCommand != "" {
-		nagiosURL.WriteString("&check_command=")
-		nagiosURL.WriteString(service.CheckCommand)
-	}
+// 	// TODO: Need to reorder these so they match the same order as the setURLValuesFromService func and the struct
+// 	// Optional attributes
+// 	if service.CheckCommand != "" {
+// 		nagiosURL.WriteString("&check_command=")
+// 		nagiosURL.WriteString(service.CheckCommand)
+// 	}
 
-	if service.Templates != nil {
-		nagiosURL.WriteString("&use=")
-		nagiosURL.WriteString(mapArrayToString(service.Templates))
-	}
+// 	if service.Templates != nil {
+// 		nagiosURL.WriteString("&use=")
+// 		nagiosURL.WriteString(mapArrayToString(service.Templates))
+// 	}
 
-	if service.IsVolatile != "" {
-		nagiosURL.WriteString("&is_volatile=")
-		nagiosURL.WriteString(service.IsVolatile)
-	}
+// 	if service.IsVolatile != "" {
+// 		nagiosURL.WriteString("&is_volatile=")
+// 		nagiosURL.WriteString(service.IsVolatile)
+// 	}
 
-	if service.InitialState != "" {
-		nagiosURL.WriteString("&initial_state=")
-		nagiosURL.WriteString(service.InitialState)
-	}
+// 	if service.InitialState != "" {
+// 		nagiosURL.WriteString("&initial_state=")
+// 		nagiosURL.WriteString(service.InitialState)
+// 	}
 
-	if service.ActiveChecksEnabled != "" {
-		nagiosURL.WriteString("&active_checks_enabled=")
-		nagiosURL.WriteString(service.ActiveChecksEnabled)
-	}
+// 	if service.ActiveChecksEnabled != "" {
+// 		nagiosURL.WriteString("&active_checks_enabled=")
+// 		nagiosURL.WriteString(service.ActiveChecksEnabled)
+// 	}
 
-	if service.PassiveChecksEnabled != "" {
-		nagiosURL.WriteString("&passive_checks_enabled=")
-		nagiosURL.WriteString(service.PassiveChecksEnabled)
-	}
+// 	if service.PassiveChecksEnabled != "" {
+// 		nagiosURL.WriteString("&passive_checks_enabled=")
+// 		nagiosURL.WriteString(service.PassiveChecksEnabled)
+// 	}
 
-	if service.ObsessOverService != "" {
-		nagiosURL.WriteString("&obsess_over_service=")
-		nagiosURL.WriteString(service.ObsessOverService)
-	}
+// 	if service.ObsessOverService != "" {
+// 		nagiosURL.WriteString("&obsess_over_service=")
+// 		nagiosURL.WriteString(service.ObsessOverService)
+// 	}
 
-	if service.CheckFreshness != "" {
-		nagiosURL.WriteString("&check_freshness=")
-		nagiosURL.WriteString(service.CheckFreshness)
-	}
+// 	if service.CheckFreshness != "" {
+// 		nagiosURL.WriteString("&check_freshness=")
+// 		nagiosURL.WriteString(service.CheckFreshness)
+// 	}
 
-	if service.FreshnessThreshold != "" {
-		nagiosURL.WriteString("&freshness_threshold=")
-		nagiosURL.WriteString(service.FreshnessThreshold)
-	}
+// 	if service.FreshnessThreshold != "" {
+// 		nagiosURL.WriteString("&freshness_threshold=")
+// 		nagiosURL.WriteString(service.FreshnessThreshold)
+// 	}
 
-	if service.EventHandler != "" {
-		nagiosURL.WriteString("&event_handler=")
-		nagiosURL.WriteString(service.EventHandler)
-	}
+// 	if service.EventHandler != "" {
+// 		nagiosURL.WriteString("&event_handler=")
+// 		nagiosURL.WriteString(service.EventHandler)
+// 	}
 
-	if service.EventHandlerEnabled != "" {
-		nagiosURL.WriteString("&event_handler_enabled=")
-		nagiosURL.WriteString(service.EventHandlerEnabled)
-	}
+// 	if service.EventHandlerEnabled != "" {
+// 		nagiosURL.WriteString("&event_handler_enabled=")
+// 		nagiosURL.WriteString(service.EventHandlerEnabled)
+// 	}
 
-	if service.LowFlapThreshold != "" {
-		nagiosURL.WriteString("&low_flap_threshold=")
-		nagiosURL.WriteString(service.LowFlapThreshold)
-	}
+// 	if service.LowFlapThreshold != "" {
+// 		nagiosURL.WriteString("&low_flap_threshold=")
+// 		nagiosURL.WriteString(service.LowFlapThreshold)
+// 	}
 
-	if service.HighFlapThreshold != "" {
-		nagiosURL.WriteString("&high_flap_threshold=")
-		nagiosURL.WriteString(service.HighFlapThreshold)
-	}
+// 	if service.HighFlapThreshold != "" {
+// 		nagiosURL.WriteString("&high_flap_threshold=")
+// 		nagiosURL.WriteString(service.HighFlapThreshold)
+// 	}
 
-	if service.FlapDetectionEnabled != "" {
-		nagiosURL.WriteString("&flap_detection_enabled=")
-		nagiosURL.WriteString(service.FlapDetectionEnabled)
-	}
+// 	if service.FlapDetectionEnabled != "" {
+// 		nagiosURL.WriteString("&flap_detection_enabled=")
+// 		nagiosURL.WriteString(service.FlapDetectionEnabled)
+// 	}
 
-	if service.FlapDetectionOptions != nil {
-		nagiosURL.WriteString("&flap_detection_options=")
-		nagiosURL.WriteString(mapArrayToString(service.FlapDetectionOptions))
-	}
+// 	if service.FlapDetectionOptions != nil {
+// 		nagiosURL.WriteString("&flap_detection_options=")
+// 		nagiosURL.WriteString(mapArrayToString(service.FlapDetectionOptions))
+// 	}
 
-	if service.ProcessPerfData != "" {
-		nagiosURL.WriteString("&process_perf_data=")
-		nagiosURL.WriteString(service.ProcessPerfData)
-	}
+// 	if service.ProcessPerfData != "" {
+// 		nagiosURL.WriteString("&process_perf_data=")
+// 		nagiosURL.WriteString(service.ProcessPerfData)
+// 	}
 
-	if service.RetainStatusInformation != "" {
-		nagiosURL.WriteString("&retain_status_information=")
-		nagiosURL.WriteString(service.RetainStatusInformation)
-	}
+// 	if service.RetainStatusInformation != "" {
+// 		nagiosURL.WriteString("&retain_status_information=")
+// 		nagiosURL.WriteString(service.RetainStatusInformation)
+// 	}
 
-	if service.RetainNonStatusInformation != "" {
-		nagiosURL.WriteString("&retain_nonstatus_information")
-		nagiosURL.WriteString(service.RetainNonStatusInformation)
-	}
+// 	if service.RetainNonStatusInformation != "" {
+// 		nagiosURL.WriteString("&retain_nonstatus_information")
+// 		nagiosURL.WriteString(service.RetainNonStatusInformation)
+// 	}
 
-	if service.FirstNotificationDelay != "" {
-		nagiosURL.WriteString("&first_notification_delay=")
-		nagiosURL.WriteString(service.FirstNotificationDelay)
-	}
+// 	if service.FirstNotificationDelay != "" {
+// 		nagiosURL.WriteString("&first_notification_delay=")
+// 		nagiosURL.WriteString(service.FirstNotificationDelay)
+// 	}
 
-	if service.NotificationOptions != nil {
-		nagiosURL.WriteString("&notification_options=")
-		nagiosURL.WriteString(mapArrayToString(service.NotificationOptions))
-	}
+// 	if service.NotificationOptions != nil {
+// 		nagiosURL.WriteString("&notification_options=")
+// 		nagiosURL.WriteString(mapArrayToString(service.NotificationOptions))
+// 	}
 
-	if service.NotificationsEnabled != "" {
-		nagiosURL.WriteString("&notifications_enabled=")
-		nagiosURL.WriteString(service.NotificationsEnabled)
-	}
+// 	if service.NotificationsEnabled != "" {
+// 		nagiosURL.WriteString("&notifications_enabled=")
+// 		nagiosURL.WriteString(service.NotificationsEnabled)
+// 	}
 
-	if service.ContactGroups != nil {
-		nagiosURL.WriteString("&contact_groups=")
-		nagiosURL.WriteString(mapArrayToString(service.ContactGroups))
-	}
+// 	if service.ContactGroups != nil {
+// 		nagiosURL.WriteString("&contact_groups=")
+// 		nagiosURL.WriteString(mapArrayToString(service.ContactGroups))
+// 	}
 
-	if service.Notes != "" {
-		nagiosURL.WriteString("&notes=")
-		nagiosURL.WriteString(service.Notes)
-	}
+// 	if service.Notes != "" {
+// 		nagiosURL.WriteString("&notes=")
+// 		nagiosURL.WriteString(service.Notes)
+// 	}
 
-	if service.NotesURL != "" {
-		nagiosURL.WriteString("&notes_url=")
-		nagiosURL.WriteString(service.NotesURL)
-	}
+// 	if service.NotesURL != "" {
+// 		nagiosURL.WriteString("&notes_url=")
+// 		nagiosURL.WriteString(service.NotesURL)
+// 	}
 
-	if service.ActionURL != "" {
-		nagiosURL.WriteString("&action_url=")
-		nagiosURL.WriteString(service.ActionURL)
-	}
+// 	if service.ActionURL != "" {
+// 		nagiosURL.WriteString("&action_url=")
+// 		nagiosURL.WriteString(service.ActionURL)
+// 	}
 
-	if service.RetryInterval != "" {
-		nagiosURL.WriteString("&retry_interval=")
-		nagiosURL.WriteString(service.RetryInterval)
-	}
+// 	if service.RetryInterval != "" {
+// 		nagiosURL.WriteString("&retry_interval=")
+// 		nagiosURL.WriteString(service.RetryInterval)
+// 	}
 
-	if service.IconImage != "" {
-		nagiosURL.WriteString("&icon_image=")
-		nagiosURL.WriteString(service.IconImage)
-	}
+// 	if service.IconImage != "" {
+// 		nagiosURL.WriteString("&icon_image=")
+// 		nagiosURL.WriteString(service.IconImage)
+// 	}
 
-	if service.IconImage != "" {
-		nagiosURL.WriteString("&icon_image_alt=")
-		nagiosURL.WriteString(service.IconImageAlt)
-	}
+// 	if service.IconImage != "" {
+// 		nagiosURL.WriteString("&icon_image_alt=")
+// 		nagiosURL.WriteString(service.IconImageAlt)
+// 	}
 
-	if service.Register != "" {
-		nagiosURL.WriteString("&register=")
-		nagiosURL.WriteString(service.Register)
-	}
+// 	if service.Register != "" {
+// 		nagiosURL.WriteString("&register=")
+// 		nagiosURL.WriteString(service.Register)
+// 	}
 
-	return nagiosURL.String()
-}
+// 	return nagiosURL.String()
+// }

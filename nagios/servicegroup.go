@@ -12,10 +12,11 @@ func (c *Client) newServicegroup(servicegroup *Servicegroup) ([]byte, error) {
 		return nil, err
 	}
 
-	data := &url.Values{}
-	data.Set("servicegroup_name", servicegroup.Name)
-	data.Set("alias", servicegroup.Alias)
-	data.Set("members", mapArrayToString(servicegroup.Members))
+	// data := &url.Values{}
+	// data.Set("servicegroup_name", servicegroup.Name)
+	// data.Set("alias", servicegroup.Alias)
+	// data.Set("members", mapArrayToString(servicegroup.Members))
+	data := setURLParams(servicegroup)
 
 	body, err := c.post(data, nagiosURL)
 
@@ -65,12 +66,13 @@ func (c *Client) updateServicegroup(servicegroup *Servicegroup, oldVal interface
 	}
 
 	// TODO: Needs migrated to buildURL func
-	nagiosURL = nagiosURL + "&servicegroup_name=" + servicegroup.Name + "&alias=" + servicegroup.Alias
+	// nagiosURL = nagiosURL + "&servicegroup_name=" + servicegroup.Name + "&alias=" + servicegroup.Alias
 
-	data := &url.Values{}
-	data.Set("servicegroup_name", servicegroup.Name)
-	data.Set("alias", servicegroup.Alias)
-	data.Set("members", mapArrayToString(servicegroup.Members))
+	// data := &url.Values{}
+	// data.Set("servicegroup_name", servicegroup.Name)
+	// data.Set("alias", servicegroup.Alias)
+	// data.Set("members", mapArrayToString(servicegroup.Members))
+	nagiosURL = nagiosURL + setURLParams(servicegroup).Encode()
 
 	_, err = c.put(nagiosURL)
 
