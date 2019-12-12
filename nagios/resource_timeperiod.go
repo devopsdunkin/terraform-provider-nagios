@@ -12,14 +12,14 @@ import (
 type Timeperiod struct {
 	TimeperiodName string        `json:"timeperiod_name" schema:"timeperiod_name"`
 	Alias          string        `json:"alias"`
-	Sunday         string        `json:"sunday"`
-	Monday         string        `json:"monday"`
-	Tuesday        string        `json:"tuesday"`
-	Wednesday      string        `json:"wednesday"`
-	Thursday       string        `json:"thursday"`
-	Friday         string        `json:"friday"`
-	Saturday       string        `json:"saturday"`
-	Exclude        []interface{} `json:"exclude"`
+	Sunday         string        `json:"sunday,omitempty"`
+	Monday         string        `json:"monday,omitempty"`
+	Tuesday        string        `json:"tuesday,omitempty"`
+	Wednesday      string        `json:"wednesday,omitempty"`
+	Thursday       string        `json:"thursday,omitempty"`
+	Friday         string        `json:"friday,omitempty"`
+	Saturday       string        `json:"saturday,omitempty"`
+	Exclude        []interface{} `json:"exclude,omitempty"`
 }
 
 /*
