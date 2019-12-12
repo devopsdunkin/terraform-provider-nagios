@@ -1,10 +1,8 @@
 package nagios
 
 import (
-	"encoding/json"
 	"errors"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"net/url"
 	"reflect"
@@ -161,20 +159,20 @@ func (c *Client) addRequestHeaders(request *http.Request) {
 	return
 }
 
-func (c *Client) get(data *url.Values, resourceInfo interface{}, nagiosURL string) error {
-	request, err := http.NewRequest(http.MethodGet, nagiosURL, strings.NewReader(data.Encode()))
+func (c *Client) get(requestData, nagiosURL string) ([]byte, error) {
+	request, err := http.NewRequest(http.MethodGet, nagiosURL, strings.NewReader(requestData))
 
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	body, err := c.sendRequest(request)
 
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	return json.Unmarshal(body, resourceInfo)
+	return body, nil
 }
 
 func (c *Client) post(data *url.Values, nagiosURL string) ([]byte, error) {
@@ -333,8 +331,6 @@ func setURLParams(nagiosObject interface{}) *url.Values {
 
 		if curType == "string" {
 			if values.Field(i).Interface().(string) != "" {
-				log.Printf("[DEBUG] Tag: %s", tag)
-				log.Printf("[DEBUG] values.Field(i).Interface(): %s", values.Field(i).Interface().(string))
 				urlParams.Add(tag, values.Field(i).Interface().(string))
 			}
 		} else if curType == "[]interface {}" {
@@ -353,8 +349,21 @@ func setURLParams(nagiosObject interface{}) *url.Values {
 				// We need the value to be a string but first need to cast it as an integer if that is what the type is in the struct
 				urlParams.Add(tag, strconv.Itoa(values.Field(i).Interface().(int)))
 			}
+		} else if curType == "map[string]interface {}" {
+			if values.Field(i).Interface() != nil {
+				// We need to loop through the map and grab the key and value for each line
+				// The value is an interface, so we need to then call the Interface() method
+				// and cast it as a string to get the value in string format
+				mapObject := values.Field(i).MapRange()
+				for mapObject.Next() {
+					outputString.Reset()
+					index := mapObject.Key().String()
+					val := mapObject.Value()
+					valString := val.Interface().(string)
+					urlParams.Add(index, valString)
+				}
+			}
 		}
 	}
-
 	return urlParams
 }
