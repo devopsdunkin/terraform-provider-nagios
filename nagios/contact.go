@@ -1,6 +1,7 @@
 package nagios
 
 import (
+	"encoding/json"
 	"net/url"
 	"strings"
 )
@@ -42,11 +43,19 @@ func (c *Client) getContact(name string) (*Contact, error) {
 	data := &url.Values{}
 	data.Set("contact_name", name)
 
-	err = c.get(data, &contactArray, nagiosURL)
+	body, err := c.get(data.Encode(), nagiosURL)
 
 	if err != nil {
 		return nil, err
 	}
+
+	err = json.Unmarshal(body, &contactArray)
+
+	if err != nil {
+		return nil, err
+	}
+
+	json.Unmarshal(body, &contact.FreeVariables)
 
 	for i, _ := range contactArray {
 		contact.ContactName = contactArray[i].ContactName

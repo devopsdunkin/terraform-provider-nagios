@@ -139,6 +139,10 @@ resource "nagios_contact" "contact" {
 	]
 	email						  = "%s"
 	can_submit_commands			  = true
+	free_variables				  = {
+		"_team" = "System Admins",
+		"_test" = "TestContact123"
+	}
 }
 	`, contactName, hostNotificationPeriod, serviceNotificationPeriod, hostNotificationOptions, serviceNotificationOptions, hostNotificationCommands, serviceNotificationCommands, alias, templates, email)
 }
@@ -227,6 +231,10 @@ func testAccCheckContactFetch(rName string, contact *Contact) resource.TestCheck
 
 		if returnedContact.CanSubmitCommands != "" {
 			contact.CanSubmitCommands = returnedContact.CanSubmitCommands
+		}
+
+		if returnedContact.FreeVariables != nil {
+			contact.FreeVariables = returnedContact.FreeVariables
 		}
 
 		return nil

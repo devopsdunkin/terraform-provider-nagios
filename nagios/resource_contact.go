@@ -1,6 +1,8 @@
 package nagios
 
 import (
+	"fmt"
+
 	"github.com/hashicorp/terraform/helper/schema"
 )
 
@@ -10,26 +12,27 @@ import (
 
 // TODO: Need to add in all of the other fields. What we have right now will work for initial testing
 type Contact struct {
-	ContactName                 string        `json:"contact_name"`
-	HostNotificationsEnabled    string        `json:"host_notifications_enabled"`
-	ServiceNotificationsEnabled string        `json:"service_notifications_enabled"`
-	HostNotificationPeriod      string        `json:"host_notification_period"`
-	ServiceNotificationPeriod   string        `json:"service_notification_period"`
-	HostNotificationOptions     string        `json:"host_notification_options"`
-	ServiceNotificationOptions  string        `json:"service_notification_options"`
-	HostNotificationCommands    []interface{} `json:"host_notification_commands"`
-	ServiceNotificationCommands []interface{} `json:"service_notification_commands"`
-	Alias                       string        `json:"alias"`
-	ContactGroups               []interface{} `json:"contact_groups"`
-	Templates                   []interface{} `json:"use"`
-	Email                       string        `json:"email"`
-	Pager                       string        `json:"pager"`
-	Address1                    string        `json:"address1"`
-	Address2                    string        `json:"address2"`
-	Address3                    string        `json:"address3"`
-	CanSubmitCommands           string        `json:"can_submit_commands"`
-	RetainStatusInformation     string        `json:"retain_status_information"`
-	RetainNonstatusInformation  string        `json:"retain_nonstatus_information"`
+	ContactName                 string                 `json:"contact_name,omitempty"`
+	HostNotificationsEnabled    string                 `json:"host_notifications_enabled,omitempty"`
+	ServiceNotificationsEnabled string                 `json:"service_notifications_enabled,omitempty"`
+	HostNotificationPeriod      string                 `json:"host_notification_period,omitempty"`
+	ServiceNotificationPeriod   string                 `json:"service_notification_period,omitempty"`
+	HostNotificationOptions     string                 `json:"host_notification_options,omitempty"`
+	ServiceNotificationOptions  string                 `json:"service_notification_options,omitempty"`
+	HostNotificationCommands    []interface{}          `json:"host_notification_commands,omitempty"`
+	ServiceNotificationCommands []interface{}          `json:"service_notification_commands,omitempty"`
+	Alias                       string                 `json:"alias,omitempty"`
+	ContactGroups               []interface{}          `json:"contact_groups,omitempty"`
+	Templates                   []interface{}          `json:"use,omitempty"`
+	Email                       string                 `json:"email,omitempty"`
+	Pager                       string                 `json:"pager,omitempty"`
+	Address1                    string                 `json:"address1,omitempty"`
+	Address2                    string                 `json:"address2,omitempty"`
+	Address3                    string                 `json:"address3,omitempty"`
+	CanSubmitCommands           string                 `json:"can_submit_commands,omitempty"`
+	RetainStatusInformation     string                 `json:"retain_status_information,omitempty"`
+	RetainNonstatusInformation  string                 `json:"retain_nonstatus_information,omitempty"`
+	FreeVariables               map[string]interface{} `json:"free_variables,omitempty"`
 }
 
 /*
@@ -154,6 +157,14 @@ func resourceContact() *schema.Resource {
 				Optional:    true,
 				Description: "Determines whether or not non-status information about the contact is retained across program restarts.",
 			},
+			"free_variables": {
+				Type:        schema.TypeMap,
+				Optional:    true,
+				Description: "A key/value pair of free variables to add to the contact. The key must begin with an underscore.",
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
+			},
 		},
 		Create: resourceCreateContact,
 		Read:   resourceReadContact,
@@ -235,7 +246,7 @@ func resourceDeleteContact(d *schema.ResourceData, m interface{}) error {
 	return nil
 }
 
-func setDataFromContact(d *schema.ResourceData, contact *Contact) {
+func setDataFromContact(d *schema.ResourceData, contact *Contact) error {
 	d.SetId(contact.ContactName)
 	d.Set("contact_name", contact.ContactName)
 	d.Set("host_notifications_enabled", contact.HostNotificationsEnabled)
@@ -291,6 +302,14 @@ func setDataFromContact(d *schema.ResourceData, contact *Contact) {
 	if contact.RetainNonstatusInformation != "" {
 		d.Set("retain_nonstatus_information", contact.RetainNonstatusInformation)
 	}
+
+	if contact.FreeVariables != nil {
+		if err := d.Set("free_variables", contact.FreeVariables); err != nil {
+			return fmt.Errorf("Error setting free variables for resource %s: %s", d.Id(), err)
+		}
+	}
+
+	return nil
 }
 
 func setContactFromSchema(d *schema.ResourceData) *Contact {
@@ -315,6 +334,7 @@ func setContactFromSchema(d *schema.ResourceData) *Contact {
 		CanSubmitCommands:           convertBoolToIntToString(d.Get("can_submit_commands").(bool)),
 		RetainStatusInformation:     convertBoolToIntToString(d.Get("retain_status_information").(bool)),
 		RetainNonstatusInformation:  convertBoolToIntToString(d.Get("retain_nonstatus_information").(bool)),
+		FreeVariables:               d.Get("free_variables").(map[string]interface{}),
 	}
 
 	return contact
