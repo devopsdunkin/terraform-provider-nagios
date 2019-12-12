@@ -1,6 +1,7 @@
 package nagios
 
 import (
+	"encoding/json"
 	"net/url"
 )
 
@@ -36,7 +37,13 @@ func (c *Client) getHostgroup(name string) (*Hostgroup, error) {
 	data := &url.Values{}
 	data.Set("hostgroup_name", name)
 
-	err = c.get(data, &hostgroupArray, nagiosURL)
+	body, err := c.get(data.Encode(), nagiosURL)
+
+	if err != nil {
+		return nil, err
+	}
+
+	err = json.Unmarshal(body, &hostgroupArray)
 
 	if err != nil {
 		return nil, err
