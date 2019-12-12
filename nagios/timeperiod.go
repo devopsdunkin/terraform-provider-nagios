@@ -1,6 +1,7 @@
 package nagios
 
 import (
+	"encoding/json"
 	"log"
 	"net/url"
 	"strings"
@@ -43,7 +44,13 @@ func (c *Client) getTimeperiod(name string) (*Timeperiod, error) {
 	data := &url.Values{}
 	data.Set("timeperiod_name", name)
 
-	err = c.get(data, &timeperiodArray, nagiosURL)
+	body, err := c.get(data.Encode(), nagiosURL)
+
+	if err != nil {
+		return nil, err
+	}
+
+	err = json.Unmarshal(body, &timeperiodArray)
 
 	if err != nil {
 		return nil, err
