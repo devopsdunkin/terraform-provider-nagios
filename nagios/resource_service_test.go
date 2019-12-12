@@ -127,24 +127,27 @@ func TestAccService_updateName(t *testing.T) {
 func testAccServiceResource_basic(serviceName, hostName, description, checkCommand, maxCheckAttempts, checkInterval, retryInterval, checkPeriod, notificationInterval, notificationPeriod, contacts, templates string) string {
 	return fmt.Sprintf(`
 resource "nagios_service" "service" {
-	service_name = "%s"
-	host_name = [
+	service_name			= "%s"
+	host_name				= [
 		"%s"
 	]
-	description = "%s"
-	check_command = "%s"
-	max_check_attempts = "%s"
-	check_interval = "%s"
-	retry_interval = "%s"
-	check_period = "%s"
-	notification_interval = "%s"
-	notification_period = "%s"
-	contacts = [
+	description				= "%s"
+	check_command			= "%s"
+	max_check_attempts		= "%s"
+	check_interval			= "%s"
+	retry_interval			= "%s"
+	check_period			= "%s"
+	notification_interval	= "%s"
+	notification_period		= "%s"
+	contacts				= [
 		"%s"
 	]
-	templates = [
+	templates				= [
 		"%s"
 	]
+	free_variables 			= {
+		"_test" = "TestVar123"
+	}
 }
 	`, serviceName, hostName, description, checkCommand, maxCheckAttempts, checkInterval, retryInterval, checkPeriod, notificationInterval, notificationPeriod, contacts, templates)
 }
@@ -323,6 +326,10 @@ func testAccCheckServiceFetch(rName string, service *Service) resource.TestCheck
 
 		if returnedService.IconImageAlt != "" {
 			service.IconImageAlt = returnedService.IconImageAlt
+		}
+
+		if returnedService.FreeVariables != nil {
+			service.FreeVariables = returnedService.FreeVariables
 		}
 
 		return nil

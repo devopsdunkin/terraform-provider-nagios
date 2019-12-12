@@ -1,6 +1,7 @@
 package nagios
 
 import (
+	"encoding/json"
 	"log"
 	"net/url"
 	"strings"
@@ -47,11 +48,23 @@ func (c *Client) getService(name string) (*Service, error) {
 	data := &url.Values{}
 	data.Set("config_name", name)
 
-	err = c.get(data, &serviceArray, nagiosURL)
+	body, err := c.get(data.Encode(), nagiosURL)
 
 	if err != nil {
 		return nil, err
 	}
+
+	err = json.Unmarshal(body, &serviceArray)
+
+	if err != nil {
+		return nil, err
+	}
+
+	json.Unmarshal(body, &service.FreeVariables)
+
+	// if err != nil {
+	// 	return nil, err
+	// }
 
 	for i, _ := range serviceArray {
 		service.ServiceName = serviceArray[i].ServiceName
