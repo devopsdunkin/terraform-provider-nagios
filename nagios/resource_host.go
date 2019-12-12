@@ -1,6 +1,8 @@
 package nagios
 
 import (
+	"fmt"
+
 	"github.com/hashicorp/terraform/helper/schema"
 	"github.com/hashicorp/terraform/helper/validation"
 )
@@ -11,48 +13,49 @@ import (
 
 // TODO: Need to add in all of the other fields. What we have right now will work for initial testing
 type Host struct {
-	Name                       string        `json:"host_name"`
-	Address                    string        `json:"address,omitempty"`
-	DisplayName                string        `json:"display_name,omitempty"`
-	MaxCheckAttempts           string        `json:"max_check_attempts,omitempty"`
-	CheckPeriod                string        `json:"check_period,omitempty"`
-	NotificationInterval       string        `json:"notification_interval,omitempty"`
-	NotificationPeriod         string        `json:"notification_period,omitempty"`
-	Contacts                   []interface{} `json:"contacts,omitempty"`
-	Alias                      string        `json:"alias,omitempty"`
-	Templates                  []interface{} `json:"use,omitempty"`
-	CheckCommand               string        `json:"check_command,omitempty"`
-	ContactGroups              []interface{} `json:"contact_groups,omitempty"`
-	Notes                      string        `json:"notes,omitempty"`
-	NotesURL                   string        `json:"notes_url,omitempty"`
-	ActionURL                  string        `json:"action_url,omitempty"`
-	InitialState               string        `json:"initial_state,omitempty"`
-	RetryInterval              string        `json:"retry_interval,omitempty"`
-	PassiveChecksEnabled       string        `json:"passive_checks_enabled,omitempty"`
-	ActiveChecksEnabled        string        `json:"active_checks_enabled,omitempty"`
-	ObsessOverHost             string        `json:"obsess_over_host,omitempty"`
-	EventHandler               string        `json:"event_handler,omitempty"`
-	EventHandlerEnabled        string        `json:"event_handler_enabled,omitempty"`
-	FlapDetectionEnabled       string        `json:"flap_detection_enabled,omitempty"`
-	FlapDetectionOptions       []interface{} `json:"flap_detection_options,omitempty"`
-	LowFlapThreshold           string        `json:"low_flap_threshold,omitempty"`
-	HighFlapThreshold          string        `json:"high_flap_threshold,omitempty"`
-	ProcessPerfData            string        `json:"process_perf_data,omitempty"`
-	RetainStatusInformation    string        `json:"retain_status_information,omitempty"`
-	RetainNonstatusInformation string        `json:"retain_nonstatus_information,omitempty"`
-	CheckFreshness             string        `json:"check_freshness,omitempty"`
-	FreshnessThreshold         string        `json:"freshness_threshold,omitempty"`
-	FirstNotificationDelay     string        `json:"first_notification_delay,omitempty"`
-	NotificationOptions        string        `json:"notification_options,omitempty"`
-	NotificationsEnabled       string        `json:"notifications_enabled,omitempty"`
-	StalkingOptions            string        `json:"stalking_options,omitempty"`
-	IconImage                  string        `json:"icon_image,omitempty"`
-	IconImageAlt               string        `json:"icon_image_alt,omitempty"`
-	VRMLImage                  string        `json:"vrml_image,omitempty"`
-	StatusMapImage             string        `json:"statusmap_image,omitempty"`
-	TwoDCoords                 string        `json:"2d_coords,omitempty"`
-	ThreeDCoords               string        `json:"3d_coords,omitempty"`
-	Register                   string        `json:"register,omitempty"`
+	Name                       string                 `json:"host_name"`
+	Address                    string                 `json:"address"`
+	DisplayName                string                 `json:"display_name,omitempty"`
+	MaxCheckAttempts           string                 `json:"max_check_attempts"`
+	CheckPeriod                string                 `json:"check_period"`
+	NotificationInterval       string                 `json:"notification_interval"`
+	NotificationPeriod         string                 `json:"notification_period"`
+	Contacts                   []interface{}          `json:"contacts"`
+	Alias                      string                 `json:"alias,omitempty"`
+	Templates                  []interface{}          `json:"use,omitempty"`
+	CheckCommand               string                 `json:"check_command,omitempty"`
+	ContactGroups              []interface{}          `json:"contact_groups,omitempty"`
+	Notes                      string                 `json:"notes,omitempty"`
+	NotesURL                   string                 `json:"notes_url,omitempty"`
+	ActionURL                  string                 `json:"action_url,omitempty"`
+	InitialState               string                 `json:"initial_state,omitempty"`
+	RetryInterval              string                 `json:"retry_interval,omitempty"`
+	PassiveChecksEnabled       string                 `json:"passive_checks_enabled,omitempty"`
+	ActiveChecksEnabled        string                 `json:"active_checks_enabled,omitempty"`
+	ObsessOverHost             string                 `json:"obsess_over_host,omitempty"`
+	EventHandler               string                 `json:"event_handler,omitempty"`
+	EventHandlerEnabled        string                 `json:"event_handler_enabled,omitempty"`
+	FlapDetectionEnabled       string                 `json:"flap_detection_enabled,omitempty"`
+	FlapDetectionOptions       []interface{}          `json:"flap_detection_options,omitempty"`
+	LowFlapThreshold           string                 `json:"low_flap_threshold,omitempty"`
+	HighFlapThreshold          string                 `json:"high_flap_threshold,omitempty"`
+	ProcessPerfData            string                 `json:"process_perf_data,omitempty"`
+	RetainStatusInformation    string                 `json:"retain_status_information,omitempty"`
+	RetainNonstatusInformation string                 `json:"retain_nonstatus_information,omitempty"`
+	CheckFreshness             string                 `json:"check_freshness,omitempty"`
+	FreshnessThreshold         string                 `json:"freshness_threshold,omitempty"`
+	FirstNotificationDelay     string                 `json:"first_notification_delay,omitempty"`
+	NotificationOptions        string                 `json:"notification_options,omitempty"`
+	NotificationsEnabled       string                 `json:"notifications_enabled,omitempty"`
+	StalkingOptions            string                 `json:"stalking_options,omitempty"`
+	IconImage                  string                 `json:"icon_image,omitempty"`
+	IconImageAlt               string                 `json:"icon_image_alt,omitempty"`
+	VRMLImage                  string                 `json:"vrml_image,omitempty"`
+	StatusMapImage             string                 `json:"statusmap_image,omitempty"`
+	TwoDCoords                 string                 `json:"2d_coords,omitempty"`
+	ThreeDCoords               string                 `json:"3d_coords,omitempty"`
+	Register                   string                 `json:"register,omitempty"`
+	FreeVariables              map[string]interface{} `json:"free_variables,omitempty"`
 }
 
 /*
@@ -289,6 +292,14 @@ func resourceHost() *schema.Resource {
 				Default:     true,
 				Description: "Determines if the host will be marked as active or inactive",
 			},
+			"free_variables": {
+				Type:        schema.TypeMap,
+				Optional:    true,
+				Description: "A key/value pair of free variables to add to the host. The key must begin with an underscore.",
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
+			},
 		},
 		Create: resourceCreateHost,
 		Read:   resourceReadHost,
@@ -300,10 +311,27 @@ func resourceHost() *schema.Resource {
 	}
 }
 
+// func validateCognitoSupportedLoginProviders(v interface{}, k string) (ws []string, errors []error) {
+// 	value := v.(string)
+// 	if len(value) < 1 {
+// 		errors = append(errors, fmt.Errorf("%q cannot be less than 1 character", k))
+// 	}
+
+// 	if len(value) > 128 {
+// 		errors = append(errors, fmt.Errorf("%q cannot be longer than 128 characters", k))
+// 	}
+
+// 	if !regexp.MustCompile(`^[\w.;_/-]+$`).MatchString(value) {
+// 		errors = append(errors, fmt.Errorf("%q must contain only alphanumeric characters, dots, semicolons, underscores, slashes and hyphens", k))
+// 	}
+
+// 	return
+// }
+
 func resourceCreateHost(d *schema.ResourceData, m interface{}) error {
 	nagiosClient := m.(*Client)
 
-	host := setHostFromSchema(d)
+	host := getHostSchema(d)
 
 	_, err := nagiosClient.newHost(host)
 
@@ -332,7 +360,11 @@ func resourceReadHost(d *schema.ResourceData, m interface{}) error {
 		return nil
 	}
 
-	setDataFromHost(d, host)
+	err = setDataFromHost(d, host)
+
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
@@ -340,7 +372,7 @@ func resourceReadHost(d *schema.ResourceData, m interface{}) error {
 func resourceUpdateHost(d *schema.ResourceData, m interface{}) error {
 	nagiosClient := m.(*Client)
 
-	host := setHostFromSchema(d)
+	host := getHostSchema(d)
 
 	oldVal, _ := d.GetChange("name")
 
@@ -354,7 +386,11 @@ func resourceUpdateHost(d *schema.ResourceData, m interface{}) error {
 		return err
 	}
 
-	setDataFromHost(d, host)
+	err = setDataFromHost(d, host)
+
+	if err != nil {
+		return err
+	}
 
 	return resourceReadHost(d, m)
 }
@@ -374,7 +410,7 @@ func resourceDeleteHost(d *schema.ResourceData, m interface{}) error {
 	return nil
 }
 
-func setDataFromHost(d *schema.ResourceData, host *Host) {
+func setDataFromHost(d *schema.ResourceData, host *Host) error {
 	// Required attributes
 	d.SetId(host.Name)
 	d.Set("name", host.Name)
@@ -515,9 +551,18 @@ func setDataFromHost(d *schema.ResourceData, host *Host) {
 	if host.Register != "" {
 		d.Set("register", host.Register)
 	}
+
+	if host.FreeVariables != nil {
+		if err := d.Set("free_variables", host.FreeVariables); err != nil {
+			return fmt.Errorf("Error setting free variables for resource %s: %s", d.Id(), err)
+		}
+	}
+
+	return nil
 }
 
-func setHostFromSchema(d *schema.ResourceData) *Host {
+// getHostSchema retrieves the values provided from the user in their TF files and sets the Host struct fields to its values
+func getHostSchema(d *schema.ResourceData) *Host {
 	host := &Host{
 		Name:                       d.Get("name").(string),
 		Alias:                      d.Get("alias").(string),
@@ -560,6 +605,7 @@ func setHostFromSchema(d *schema.ResourceData) *Host {
 		TwoDCoords:                 d.Get("2d_coords").(string),
 		ThreeDCoords:               d.Get("3d_coords").(string),
 		Register:                   convertBoolToIntToString(d.Get("register").(bool)),
+		FreeVariables:              d.Get("free_variables").(map[string]interface{}),
 	}
 
 	return host

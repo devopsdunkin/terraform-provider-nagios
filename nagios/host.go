@@ -1,6 +1,7 @@
 package nagios
 
 import (
+	"encoding/json"
 	"log"
 	"net/url"
 	"strings"
@@ -15,6 +16,8 @@ func (c *Client) newHost(host *Host) ([]byte, error) {
 	}
 
 	data := setURLParams(host)
+
+	log.Printf("[DEBUG] NagiosURL: %s", nagiosURL)
 
 	body, err := c.post(data, nagiosURL)
 
@@ -45,11 +48,23 @@ func (c *Client) getHost(name string) (*Host, error) {
 	data := &url.Values{}
 	data.Set("host_name", name)
 
-	err = c.get(data, &hostArray, nagiosURL)
+	// err = c.get(data, &hostArray, nagiosURL)
+	body, err := c.get(data.Encode(), nagiosURL)
 
 	if err != nil {
 		return nil, err
 	}
+
+	err = json.Unmarshal(body, &hostArray)
+
+	if err != nil {
+		return nil, err
+	}
+
+	// We are not capturing errors here because free vars may not be provided
+	// It will throw an error if it isn't set on the Nagios host and it attempts to Unmarshal here
+	// TODO: We need to find a better way of checking for this as an optional field
+	json.Unmarshal(body, &host.FreeVariables)
 
 	for i, _ := range hostArray {
 		host.Name = hostArray[i].Name
