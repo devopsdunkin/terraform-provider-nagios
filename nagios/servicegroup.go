@@ -1,6 +1,7 @@
 package nagios
 
 import (
+	"encoding/json"
 	"net/url"
 )
 
@@ -36,7 +37,13 @@ func (c *Client) getServicegroup(name string) (*Servicegroup, error) {
 	data := &url.Values{}
 	data.Set("servicegroup_name", name)
 
-	err = c.get(data, &servicegroupArray, nagiosURL)
+	body, err := c.get(data.Encode(), nagiosURL)
+
+	if err != nil {
+		return nil, err
+	}
+
+	err = json.Unmarshal(body, &servicegroupArray)
 
 	if err != nil {
 		return nil, err
