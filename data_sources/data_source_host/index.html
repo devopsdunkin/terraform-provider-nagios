@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../../img/favicon.ico">
-  <title>Resource timeperiod - terraform provider: nagios</title>
+  <title>data_source_host - terraform provider: nagios</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
@@ -17,9 +17,9 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "Resource timeperiod";
-    var mkdocs_page_input_path = "resources/resource_timeperiod.md";
-    var mkdocs_page_url = "/terraform-propvider-nagios/resources/resource_timeperiod/";
+    var mkdocs_page_name = "data_source_host";
+    var mkdocs_page_input_path = "data_sources/data_source_host.md";
+    var mkdocs_page_url = "/terraform-propvider-nagios/data_sources/data_source_host/";
   </script>
   
   <script src="../../js/jquery-2.1.1.min.js" defer></script>
@@ -55,31 +55,58 @@
           
             <li class="toctree-l1">
 		
+    <span class="caption-text">data sources</span>
+    <ul class="subnav">
+                <li class=" current">
+                    
+    <a class="current" href="./">data_source_host</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#data-source-host">data source: host</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#overview">Overview</a></li>
+        
+            <li><a class="toctree-l4" href="#example">Example</a></li>
+        
+            <li><a class="toctree-l4" href="#arguments">Arguments</a></li>
+        
+        </ul>
+    
+
+    </ul>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
     <span class="caption-text">resources</span>
     <ul class="subnav">
                 <li class="">
                     
-    <a class="" href="../resource_contact/">resource_contact</a>
+    <a class="" href="../../resources/resource_contact/">resource_contact</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../resource_contactgroup/">resource_contactgroup</a>
+    <a class="" href="../../resources/resource_contactgroup/">resource_contactgroup</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../resource_host/">resource_host</a>
+    <a class="" href="../../resources/resource_host/">resource_host</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../resource_hostgroup/">resource_hostgroup</a>
+    <a class="" href="../../resources/resource_hostgroup/">resource_hostgroup</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../resource_service/">resource_service</a>
+    <a class="" href="../../resources/resource_service/">resource_service</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../resource_servicegroup/">resource_servicegroup</a>
+    <a class="" href="../../resources/resource_servicegroup/">resource_servicegroup</a>
                 </li>
     </ul>
 	    </li>
@@ -105,11 +132,15 @@
     <li><a href="../..">Docs</a> &raquo;</li>
     
       
+        
+          <li>data sources &raquo;</li>
+        
+      
     
-    <li>Resource timeperiod</li>
+    <li>data_source_host</li>
     <li class="wy-breadcrumbs-aside">
       
-        <a href="https://github.com/devopsdunkin/terraform-provider-nagios/edit/master/docs/resources/resource_timeperiod.md"
+        <a href="https://github.com/devopsdunkin/terraform-provider-nagios/edit/master/docs/data_sources/data_source_host.md"
           class="icon icon-github"> Edit on GitHub</a>
       
     </li>
@@ -119,11 +150,32 @@
           <div role="main">
             <div class="section">
               
-                
+                <h1 id="data-source-host">data source: host</h1>
+<h2 id="overview">Overview</h2>
+<p>This data source retrieves a host object from Nagios. The data source will retrieve any setting that is defined in Nagios for the host.</p>
+<p>Refer to the object definition for <a href="https://assets.nagios.com/downloads/nagioscore/docs/nagioscore/3/en/objectdefinitions.html#host">hosts</a> from Nagios to learn more</p>
+<h2 id="example">Example</h2>
+<pre><code class="hcl">data &quot;nagios_host&quot; &quot;webserver1&quot; {
+    host_name       = &quot;webserver1&quot;
+}
+</code></pre>
+
+<h2 id="arguments">Arguments</h2>
+<p>Below is a brief description of what each field is used for in Nagios. Refer to the <a href="https://assets.nagios.com/downloads/nagioscore/docs/nagioscore/3/en/objectdefinitions.html">official Nagios documentation</a> for more detail</p>
+<p><code>host_name</code> (required): The name of the host to retrieve from Nagios.</p>
               
             </div>
           </div>
           <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../../resources/resource_contact/" class="btn btn-neutral float-right" title="resource_contact">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../.." class="btn btn-neutral" title="getting started"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
   
 
   <hr/>
@@ -149,6 +201,10 @@
           <a href="https://github.com/devopsdunkin/terraform-provider-nagios/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
       
       
+        <span><a href="../.." style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../../resources/resource_contact/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>
