@@ -311,23 +311,6 @@ func resourceHost() *schema.Resource {
 	}
 }
 
-// func validateCognitoSupportedLoginProviders(v interface{}, k string) (ws []string, errors []error) {
-// 	value := v.(string)
-// 	if len(value) < 1 {
-// 		errors = append(errors, fmt.Errorf("%q cannot be less than 1 character", k))
-// 	}
-
-// 	if len(value) > 128 {
-// 		errors = append(errors, fmt.Errorf("%q cannot be longer than 128 characters", k))
-// 	}
-
-// 	if !regexp.MustCompile(`^[\w.;_/-]+$`).MatchString(value) {
-// 		errors = append(errors, fmt.Errorf("%q must contain only alphanumeric characters, dots, semicolons, underscores, slashes and hyphens", k))
-// 	}
-
-// 	return
-// }
-
 func resourceCreateHost(d *schema.ResourceData, m interface{}) error {
 	nagiosClient := m.(*Client)
 
