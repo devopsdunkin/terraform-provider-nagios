@@ -1,5 +1,23 @@
 # CHANGELOG
 
+## 1.3.0 (December 16, 2019)
+
+FEATURES:
+
+* Adds automated GitHub releases through CircleCI pipeline ([#59](https://github.com/devopsdunkin/terraform-provider-nagios/pull/59))
+* Adds `free_variables` field to `resource_host`, `resource_service` and `resource_contact` ([#59](https://github.com/devopsdunkin/terraform-provider-nagios/pull/59))
+
+IMPROVEMENTS:
+
+* Adds centralized function to create URL parameeters for all resources ([#59](https://github.com/devopsdunkin/terraform-provider-nagios/pull/59))
+* Adds `omitempty` tag to all optional struct fields to prevent setting options when not specified in schema ([#59](https://github.com/devopsdunkin/terraform-provider-nagios/pull/59))
+* Refactors `get` function in `client.go` to return `[]byte` to allow for more flexibility when performing an unmarshal of `[]byte` into an `interface{}` ([#59](https://github.com/devopsdunkin/terraform-provider-nagios/pull/59))
+* Fixes formatting and linting issues with `docs/resources/resource_host.md` ([#59](https://github.com/devopsdunkin/terraform-provider-nagios/pull/59))
+
+BUG FIXES:
+
+* NA
+
 ## 1.2.0 (November 20, 2019)
 
 FEATURES:
