@@ -1,7 +1,8 @@
 package nagios
 
 import (
-	"fmt"
+	"encoding/json"
+	"log"
 	"net/url"
 	"strings"
 )
@@ -14,8 +15,9 @@ func (c *Client) newHost(host *Host) ([]byte, error) {
 		return nil, err
 	}
 
-	data := setURLValuesFromHost(host)
-	// data := setURLParams(host)
+	data := setURLParams(host)
+
+	log.Printf("[DEBUG] NagiosURL: %s", nagiosURL)
 
 	body, err := c.post(data, nagiosURL)
 
@@ -46,11 +48,23 @@ func (c *Client) getHost(name string) (*Host, error) {
 	data := &url.Values{}
 	data.Set("host_name", name)
 
-	err = c.get(data, &hostArray, nagiosURL)
+	// err = c.get(data, &hostArray, nagiosURL)
+	body, err := c.get(data.Encode(), nagiosURL)
 
 	if err != nil {
 		return nil, err
 	}
+
+	err = json.Unmarshal(body, &hostArray)
+
+	if err != nil {
+		return nil, err
+	}
+
+	// We are not capturing errors here because free vars may not be provided
+	// It will throw an error if it isn't set on the Nagios host and it attempts to Unmarshal here
+	// TODO: We need to find a better way of checking for this as an optional field
+	json.Unmarshal(body, &host.FreeVariables)
 
 	for i, _ := range hostArray {
 		host.Name = hostArray[i].Name
@@ -110,7 +124,9 @@ func (c *Client) updateHost(host *Host, oldVal interface{}) error {
 		return err
 	}
 
-	nagiosURL = setUpdateURLHostParams(nagiosURL, host)
+	nagiosURL = nagiosURL + setURLParams(host).Encode()
+
+	log.Printf("Nagios URL: %s", nagiosURL)
 
 	_, err = c.put(nagiosURL)
 
@@ -157,328 +173,4 @@ func (c *Client) deleteHost(name string) ([]byte, error) {
 	}
 
 	return body, nil
-}
-
-func setURLValuesFromHost(host *Host) *url.Values {
-	// Required attributes
-	data := &url.Values{}
-	data.Set("host_name", host.Name)
-	data.Set("address", host.Address)
-	data.Set("max_check_attempts", host.MaxCheckAttempts)
-	data.Set("check_period", host.CheckPeriod)
-	data.Set("notification_interval", host.NotificationInterval)
-	data.Set("notification_period", host.NotificationPeriod)
-	data.Set("contacts", mapArrayToString(host.Contacts))
-
-	// Optional attributes
-	if host.Templates != nil {
-		data.Set("use", mapArrayToString(host.Templates))
-	}
-	if host.Alias != "" {
-		data.Set("alias", host.Alias)
-	}
-	if host.CheckCommand != "" {
-		data.Set("check_command", host.CheckCommand)
-	}
-	if host.ContactGroups != nil {
-		data.Set("contact_groups", mapArrayToString(host.ContactGroups))
-	}
-
-	if host.Notes != "" {
-		data.Set("notes", host.Notes)
-	}
-
-	if host.NotesURL != "" {
-		data.Set("notes_url", host.NotesURL)
-	}
-
-	if host.ActionURL != "" {
-		data.Set("action_url", host.ActionURL)
-	}
-
-	if host.InitialState != "" {
-		data.Set("initial_state", host.InitialState)
-	}
-
-	if host.RetryInterval != "" {
-		data.Set("retry_interval", host.RetryInterval)
-	}
-
-	if host.PassiveChecksEnabled != "" {
-		data.Set("passive_checks_enabled", host.PassiveChecksEnabled)
-	}
-
-	if host.ActiveChecksEnabled != "" {
-		data.Set("active_checks_enabled", host.ActiveChecksEnabled)
-	}
-
-	if host.ObsessOverHost != "" {
-		data.Set("obsess_over_host", host.ObsessOverHost)
-	}
-
-	if host.EventHandler != "" {
-		data.Set("event_handler", host.EventHandler)
-	}
-
-	if host.EventHandlerEnabled != "" {
-		data.Set("event_handler_enabled", host.EventHandlerEnabled)
-	}
-
-	if host.FlapDetectionEnabled != "" {
-		data.Set("flap_detection_enabled", host.FlapDetectionEnabled)
-	}
-
-	if host.FlapDetectionOptions != nil {
-		data.Set("flap_detection_options", mapArrayToString(host.FlapDetectionOptions))
-	}
-
-	if host.LowFlapThreshold != "" {
-		data.Set("low_flap_threshold", host.LowFlapThreshold)
-	}
-
-	if host.HighFlapThreshold != "" {
-		data.Set("high_flap_threshold", host.HighFlapThreshold)
-	}
-
-	if host.ProcessPerfData != "" {
-		data.Set("process_perf_data", host.ProcessPerfData)
-	}
-
-	if host.RetainStatusInformation != "" {
-		data.Set("retain_status_information", host.RetainStatusInformation)
-	}
-
-	if host.RetainNonstatusInformation != "" {
-		data.Set("retain_nonstatus_information", host.RetainNonstatusInformation)
-	}
-
-	if host.CheckFreshness != "" {
-		data.Set("check_freshness", host.CheckFreshness)
-	}
-
-	if host.FreshnessThreshold != "" {
-		data.Set("freshness_threshold", host.FreshnessThreshold)
-	}
-
-	if host.FirstNotificationDelay != "" {
-		data.Set("first_notification_delay", host.FirstNotificationDelay)
-	}
-
-	if host.NotificationOptions != "" {
-		data.Set("notification_options", host.NotificationOptions)
-	}
-
-	if host.NotificationsEnabled != "" {
-		data.Set("notifications_enabled", host.NotificationsEnabled)
-	}
-
-	if host.StalkingOptions != "" {
-		data.Set("stalking_options", host.StalkingOptions)
-	}
-
-	if host.IconImage != "" {
-		data.Set("icon_image", host.IconImage)
-	}
-
-	if host.IconImageAlt != "" {
-		data.Set("icon_image_alt", host.IconImageAlt)
-	}
-
-	if host.VRMLImage != "" {
-		data.Set("vrml_image", host.VRMLImage)
-	}
-
-	if host.StatusMapImage != "" {
-		data.Set("statusmap_image", host.StatusMapImage)
-	}
-
-	if host.TwoDCoords != "" {
-		data.Set("2d_coords", host.TwoDCoords)
-	}
-
-	if host.ThreeDCoords != "" {
-		data.Set("3d_coords", host.ThreeDCoords)
-	}
-
-	if host.Register != "" {
-		data.Set("register", host.Register)
-	}
-
-	return data
-}
-
-func setUpdateURLHostParams(originalURL string, host *Host) string {
-	var nagiosURL strings.Builder
-
-	nagiosURL.WriteString(originalURL)
-	nagiosURL.WriteString("&host_name=" + host.Name + "&alias=" + host.Alias + "&address=" + host.Address + "&max_check_attempts=" + host.MaxCheckAttempts +
-		"&check_period=" + host.CheckPeriod + "&notification_interval=" + host.NotificationInterval +
-		"&notification_period=" + host.NotificationPeriod + "&contacts=" + mapArrayToString(host.Contacts))
-
-	// Optional attributes
-	if host.Templates != nil {
-		nagiosURL.WriteString("&use=")
-		nagiosURL.WriteString(mapArrayToString(host.Templates))
-	}
-	if host.CheckCommand != "" {
-		nagiosURL.WriteString("&check_command=")
-		nagiosURL.WriteString(fmt.Sprint(host.CheckCommand))
-	}
-
-	if host.ContactGroups != nil {
-		nagiosURL.WriteString("&contact_groups=")
-		nagiosURL.WriteString(mapArrayToString(host.ContactGroups))
-	}
-
-	if host.Notes != "" {
-		nagiosURL.WriteString("&notes=")
-		nagiosURL.WriteString(host.Notes)
-	}
-
-	if host.NotesURL != "" {
-		nagiosURL.WriteString("&notes_url=")
-		nagiosURL.WriteString(host.NotesURL)
-	}
-
-	if host.ActionURL != "" {
-		nagiosURL.WriteString("&action_url=")
-		nagiosURL.WriteString(host.ActionURL)
-	}
-
-	if host.InitialState != "" {
-		nagiosURL.WriteString("&initial_state=")
-		nagiosURL.WriteString(host.InitialState)
-	}
-
-	if host.RetryInterval != "" {
-		nagiosURL.WriteString("&retry_interval=")
-		nagiosURL.WriteString(host.RetryInterval)
-	}
-
-	if host.PassiveChecksEnabled != "" {
-		nagiosURL.WriteString("&passive_checks_enabled=")
-		nagiosURL.WriteString(host.PassiveChecksEnabled)
-	}
-
-	if host.ActiveChecksEnabled != "" {
-		nagiosURL.WriteString("&active_checks_enabled=")
-		nagiosURL.WriteString(host.ActiveChecksEnabled)
-	}
-
-	if host.ObsessOverHost != "" {
-		nagiosURL.WriteString("&obsess_over_host=")
-		nagiosURL.WriteString(host.ObsessOverHost)
-	}
-
-	if host.EventHandler != "" {
-		nagiosURL.WriteString("&event_handler=")
-		nagiosURL.WriteString(host.EventHandler)
-	}
-
-	if host.EventHandlerEnabled != "" {
-		nagiosURL.WriteString("&event_handler_enabled=")
-		nagiosURL.WriteString(host.EventHandlerEnabled)
-	}
-
-	if host.FlapDetectionEnabled != "" {
-		nagiosURL.WriteString("&flap_detection_enabled=")
-		nagiosURL.WriteString(host.FlapDetectionEnabled)
-	}
-
-	if host.FlapDetectionOptions != nil {
-		nagiosURL.WriteString("&flap_detection_options=")
-		nagiosURL.WriteString(mapArrayToString(host.FlapDetectionOptions))
-	}
-
-	if host.LowFlapThreshold != "" {
-		nagiosURL.WriteString("&low_flap_threshold=")
-		nagiosURL.WriteString(host.LowFlapThreshold)
-	}
-
-	if host.HighFlapThreshold != "" {
-		nagiosURL.WriteString("&high_flap_threshold=")
-		nagiosURL.WriteString(host.HighFlapThreshold)
-	}
-
-	if host.ProcessPerfData != "" {
-		nagiosURL.WriteString("&process_perf_data=")
-		nagiosURL.WriteString(host.ProcessPerfData)
-	}
-
-	if host.RetainStatusInformation != "" {
-		nagiosURL.WriteString("&retain_status_information=")
-		nagiosURL.WriteString(host.RetainStatusInformation)
-	}
-
-	if host.RetainNonstatusInformation != "" {
-		nagiosURL.WriteString("&retain_nonstatus_information")
-		nagiosURL.WriteString(host.RetainNonstatusInformation)
-	}
-
-	if host.CheckFreshness != "" {
-		nagiosURL.WriteString("&check_freshness=")
-		nagiosURL.WriteString(host.CheckFreshness)
-	}
-
-	if host.FreshnessThreshold != "" {
-		nagiosURL.WriteString("&freshness_threshold=")
-		nagiosURL.WriteString(host.FreshnessThreshold)
-	}
-
-	if host.FirstNotificationDelay != "" {
-		nagiosURL.WriteString("&first_notification_delay=")
-		nagiosURL.WriteString(host.FirstNotificationDelay)
-	}
-
-	if host.NotificationOptions != "" {
-		nagiosURL.WriteString("&notification_options=")
-		nagiosURL.WriteString(host.NotificationOptions)
-	}
-
-	if host.NotificationsEnabled != "" {
-		nagiosURL.WriteString("&notifications_enabled=")
-		nagiosURL.WriteString(host.NotificationsEnabled)
-	}
-
-	if host.StalkingOptions != "" {
-		nagiosURL.WriteString("&stalking_options=")
-		nagiosURL.WriteString(host.StalkingOptions)
-	}
-
-	if host.IconImage != "" {
-		nagiosURL.WriteString("&icon_image=")
-		nagiosURL.WriteString(host.IconImage)
-	}
-
-	if host.IconImage != "" {
-		nagiosURL.WriteString("&icon_image_alt=")
-		nagiosURL.WriteString(host.IconImageAlt)
-	}
-
-	if host.VRMLImage != "" {
-		nagiosURL.WriteString("&vrml_image=")
-		nagiosURL.WriteString(host.VRMLImage)
-	}
-
-	if host.StatusMapImage != "" {
-		nagiosURL.WriteString("&statusmap_image=")
-		nagiosURL.WriteString(host.StatusMapImage)
-	}
-
-	if host.TwoDCoords != "" {
-		nagiosURL.WriteString("&2d_coords=")
-		nagiosURL.WriteString(host.TwoDCoords)
-	}
-
-	if host.ThreeDCoords != "" {
-		nagiosURL.WriteString("&3d_coords=")
-		nagiosURL.WriteString(host.ThreeDCoords)
-	}
-
-	if host.Register != "" {
-		nagiosURL.WriteString("&register=")
-		nagiosURL.WriteString(host.Register)
-	}
-
-	return nagiosURL.String()
 }

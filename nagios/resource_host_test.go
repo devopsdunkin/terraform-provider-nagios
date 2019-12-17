@@ -142,7 +142,11 @@ resource "nagios_host" "host" {
 	notification_options	= "d,u,"
 	notifications_enabled	= true
 	icon_image				= "icon1.jpg"
+	free_variables			= {
+		"_test" = "test123"
+	}
 }
+
 	`, name, alias, address, maxCheckAttempts, checkPeriod, notificationInterval, notificationPeriod, contacts, templates)
 }
 
@@ -340,6 +344,10 @@ func testAccCheckHostFetch(rName string, host *Host) resource.TestCheckFunc {
 
 		if returnedHost.ThreeDCoords != "" {
 			host.ThreeDCoords = returnedHost.ThreeDCoords
+		}
+
+		if returnedHost.FreeVariables != nil {
+			host.FreeVariables = returnedHost.FreeVariables
 		}
 
 		return nil

@@ -1,8 +1,9 @@
 package nagios
 
 import (
+	"fmt"
+
 	"github.com/hashicorp/terraform/helper/schema"
-	"github.com/hashicorp/terraform/helper/validation"
 )
 
 // Service contains all info needed to create a service in Nagios
@@ -10,45 +11,46 @@ import (
 
 // TODO: Need to add in all of the other fields. What we have right now will work for initial testing
 type Service struct {
-	ServiceName                string        `json:"config_name"`
-	HostName                   []interface{} `json:"host_name"`
-	DisplayName                string        `json:"display_name"`
-	Description                string        `json:"service_description"`
-	CheckCommand               string        `json:"check_command"`
-	MaxCheckAttempts           string        `json:"max_check_attempts"`
-	CheckInterval              string        `json:"check_interval"`
-	RetryInterval              string        `json:"retry_interval"`
-	CheckPeriod                string        `json:"check_period"`
-	NotificationInterval       string        `json:"notification_interval"`
-	NotificationPeriod         string        `json:"notification_period"`
-	Contacts                   []interface{} `json:"contacts"`
-	Templates                  []interface{} `json:"use"`
-	IsVolatile                 string        `json:"is_volatile"`
-	InitialState               string        `json:"initial_state"`
-	ActiveChecksEnabled        string        `json:"active_checks_enabled"`
-	PassiveChecksEnabled       string        `json:"passive_checks_enabled"`
-	ObsessOverService          string        `json:"obsess_over_service"`
-	CheckFreshness             string        `json:"check_freshness"`
-	FreshnessThreshold         string        `json:"freshness_threshold"`
-	EventHandler               string        `json:"event_handler"`
-	EventHandlerEnabled        string        `json:"event_handler_enabled"`
-	LowFlapThreshold           string        `json:"low_flap_threshold"`
-	HighFlapThreshold          string        `json:"high_flap_threshold"`
-	FlapDetectionEnabled       string        `json:"flap_detection_enabled"`
-	FlapDetectionOptions       []interface{} `json:"flap_detection_options"`
-	ProcessPerfData            string        `json:"process_perf_data"`
-	RetainStatusInformation    string        `json:"retain_status_information"`
-	RetainNonStatusInformation string        `json:"retain_nonstatus_information"`
-	FirstNotificationDelay     string        `json:"first_notification_delay"`
-	NotificationOptions        []interface{} `json:"notification_options"`
-	NotificationsEnabled       string        `json:"notifications_enabled"`
-	ContactGroups              []interface{} `json:"contact_groups"`
-	Notes                      string        `json:"notes"`
-	NotesURL                   string        `json:"notes_url"`
-	ActionURL                  string        `json:"action_url"`
-	IconImage                  string        `json:"icon_image"`
-	IconImageAlt               string        `json:"icon_image_alt"`
-	Register                   string        `json:"register"`
+	ServiceName                string                 `json:"config_name"`
+	HostName                   []interface{}          `json:"host_name"`
+	DisplayName                string                 `json:"display_name,omitempty"`
+	Description                string                 `json:"service_description"`
+	CheckCommand               string                 `json:"check_command"`
+	MaxCheckAttempts           string                 `json:"max_check_attempts"`
+	CheckInterval              string                 `json:"check_interval"`
+	RetryInterval              string                 `json:"retry_interval"`
+	CheckPeriod                string                 `json:"check_period"`
+	NotificationInterval       string                 `json:"notification_interval"`
+	NotificationPeriod         string                 `json:"notification_period"`
+	Contacts                   []interface{}          `json:"contacts"`
+	Templates                  []interface{}          `json:"use,omitempty"`
+	IsVolatile                 string                 `json:"is_volatile,omitempty"`
+	InitialState               string                 `json:"initial_state,omitempty"`
+	ActiveChecksEnabled        string                 `json:"active_checks_enabled,omitempty"`
+	PassiveChecksEnabled       string                 `json:"passive_checks_enabled,omitempty"`
+	ObsessOverService          string                 `json:"obsess_over_service,omitempty"`
+	CheckFreshness             string                 `json:"check_freshness,omitempty"`
+	FreshnessThreshold         string                 `json:"freshness_threshold,omitempty"`
+	EventHandler               string                 `json:"event_handler,omitempty"`
+	EventHandlerEnabled        string                 `json:"event_handler_enabled,omitempty"`
+	LowFlapThreshold           string                 `json:"low_flap_threshold,omitempty"`
+	HighFlapThreshold          string                 `json:"high_flap_threshold,omitempty"`
+	FlapDetectionEnabled       string                 `json:"flap_detection_enabled,omitempty"`
+	FlapDetectionOptions       []interface{}          `json:"flap_detection_options,omitempty"`
+	ProcessPerfData            string                 `json:"process_perf_data,omitempty"`
+	RetainStatusInformation    string                 `json:"retain_status_information,omitempty"`
+	RetainNonStatusInformation string                 `json:"retain_nonstatus_information,omitempty"`
+	FirstNotificationDelay     string                 `json:"first_notification_delay,omitempty"`
+	NotificationOptions        []interface{}          `json:"notification_options,omitempty"`
+	NotificationsEnabled       string                 `json:"notifications_enabled,omitempty"`
+	ContactGroups              []interface{}          `json:"contact_group,omitemptys"`
+	Notes                      string                 `json:"notes,omitempty"`
+	NotesURL                   string                 `json:"notes_url,omitempty"`
+	ActionURL                  string                 `json:"action_url,omitempty"`
+	IconImage                  string                 `json:"icon_image,omitempty"`
+	IconImageAlt               string                 `json:"icon_image_alt,omitempty"`
+	Register                   string                 `json:"register,omitempty"`
+	FreeVariables              map[string]interface{} `json:"free_variables,omitempty"`
 }
 
 /* TODO: Need to figure out the dependencies here
@@ -77,10 +79,9 @@ func resourceService() *schema.Resource {
 				},
 			},
 			"description": {
-				Type:         schema.TypeString,
-				Required:     true,
-				Description:  "Defines the description of the service. It may contain spaces, dashes and colons (avoid using semicolons, apostrophes and quotation marks)",
-				ValidateFunc: validation.StringLenBetween(1, 255),
+				Type:        schema.TypeString,
+				Required:    true,
+				Description: "Defines the description of the service. It may contain spaces, dashes and colons (avoid using semicolons, apostrophes and quotation marks)",
 			},
 			"check_command": {
 				Type:        schema.TypeString,
@@ -276,6 +277,14 @@ func resourceService() *schema.Resource {
 				Default:     true,
 				Description: "Determines if the host will be marked as active or inactive",
 			},
+			"free_variables": {
+				Type:        schema.TypeMap,
+				Optional:    true,
+				Description: "A key/value pair of free variables to add to the service. The key must begin with an underscore.",
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
+			},
 		},
 		Create: resourceCreateService,
 		Read:   resourceReadService,
@@ -365,7 +374,7 @@ func resourceDeleteService(d *schema.ResourceData, m interface{}) error {
 	return nil
 }
 
-func setDataFromService(d *schema.ResourceData, service *Service) {
+func setDataFromService(d *schema.ResourceData, service *Service) error {
 	// required attributes
 	d.SetId(service.ServiceName)
 	d.Set("service_name", service.ServiceName)
@@ -490,6 +499,14 @@ func setDataFromService(d *schema.ResourceData, service *Service) {
 	if service.Register != "" {
 		d.Set("register", service.Register)
 	}
+
+	if service.FreeVariables != nil {
+		if err := d.Set("free_variables", service.FreeVariables); err != nil {
+			return fmt.Errorf("Error setting free variables for resource %s: %s", d.Id(), err)
+		}
+	}
+
+	return nil
 }
 
 func setServiceFromSchema(d *schema.ResourceData) *Service {
@@ -532,6 +549,7 @@ func setServiceFromSchema(d *schema.ResourceData) *Service {
 		IconImage:                  d.Get("icon_image").(string),
 		IconImageAlt:               d.Get("icon_image_alt").(string),
 		Register:                   convertBoolToIntToString(d.Get("register").(bool)),
+		FreeVariables:              d.Get("free_variables").(map[string]interface{}),
 	}
 
 	return service

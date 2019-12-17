@@ -1,6 +1,7 @@
 package nagios
 
 import (
+	"encoding/json"
 	"net/url"
 )
 
@@ -12,10 +13,7 @@ func (c *Client) newServicegroup(servicegroup *Servicegroup) ([]byte, error) {
 		return nil, err
 	}
 
-	data := &url.Values{}
-	data.Set("servicegroup_name", servicegroup.Name)
-	data.Set("alias", servicegroup.Alias)
-	data.Set("members", mapArrayToString(servicegroup.Members))
+	data := setURLParams(servicegroup)
 
 	body, err := c.post(data, nagiosURL)
 
@@ -39,7 +37,13 @@ func (c *Client) getServicegroup(name string) (*Servicegroup, error) {
 	data := &url.Values{}
 	data.Set("servicegroup_name", name)
 
-	err = c.get(data, &servicegroupArray, nagiosURL)
+	body, err := c.get(data.Encode(), nagiosURL)
+
+	if err != nil {
+		return nil, err
+	}
+
+	err = json.Unmarshal(body, &servicegroupArray)
 
 	if err != nil {
 		return nil, err
@@ -64,13 +68,7 @@ func (c *Client) updateServicegroup(servicegroup *Servicegroup, oldVal interface
 		return err
 	}
 
-	// TODO: Needs migrated to buildURL func
-	nagiosURL = nagiosURL + "&servicegroup_name=" + servicegroup.Name + "&alias=" + servicegroup.Alias
-
-	data := &url.Values{}
-	data.Set("servicegroup_name", servicegroup.Name)
-	data.Set("alias", servicegroup.Alias)
-	data.Set("members", mapArrayToString(servicegroup.Members))
+	nagiosURL = nagiosURL + setURLParams(servicegroup).Encode()
 
 	_, err = c.put(nagiosURL)
 

@@ -12,8 +12,8 @@ import (
 type Contactgroup struct {
 	ContactgroupName    string        `json:"contactgroup_name"`
 	Alias               string        `json:"alias"`
-	Members             []interface{} `json:"members"`
-	ContactgroupMembers []interface{} `json:"contactgroup_members"`
+	Members             []interface{} `json:"members,omitempty"`
+	ContactgroupMembers []interface{} `json:"contactgroup_members,omitempty"`
 }
 
 /*

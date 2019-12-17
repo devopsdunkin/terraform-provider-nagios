@@ -10,12 +10,12 @@ import (
 // EWe tag with both JSON and schema because a POST uses URL encoding to send data
 // A GET returns data in JSON format
 type Servicegroup struct {
-	Name      string        `json:"servicegroup_name"`
-	Alias     string        `json:"alias"`
-	Members   []interface{} `json:"members"`
-	Notes     string        `json:"notes"`
-	NotesURL  string        `json:"notes_url"`
-	ActionURL string        `json:"action_url"`
+	Name      string        `json:"servicegroup_name,omitempty"`
+	Alias     string        `json:"alias,omitempty"`
+	Members   []interface{} `json:"members,omitempty"`
+	Notes     string        `json:"notes,omitempty"`
+	NotesURL  string        `json:"notes_url,omitempty"`
+	ActionURL string        `json:"action_url,omitempty"`
 }
 
 func resourceServiceGroup() *schema.Resource {

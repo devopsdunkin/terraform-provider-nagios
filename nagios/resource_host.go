@@ -1,58 +1,56 @@
 package nagios
 
 import (
+	"fmt"
+
 	"github.com/hashicorp/terraform/helper/schema"
 	"github.com/hashicorp/terraform/helper/validation"
 )
 
-// Host contains all info needed to create a host in Nagios
-// TODO: Test to see if we need both JSON and schema tags
-// Using tag with both JSON and schema because a POST uses URL encoding to send data
-
-// TODO: Need to add in all of the other fields. What we have right now will work for initial testing
 type Host struct {
-	Name                       string        `json:"host_name"`
-	Address                    string        `json:"address"`
-	DisplayName                string        `json:"display_name"`
-	MaxCheckAttempts           string        `json:"max_check_attempts"`
-	CheckPeriod                string        `json:"check_period"`
-	NotificationInterval       string        `json:"notification_interval"`
-	NotificationPeriod         string        `json:"notification_period"`
-	Contacts                   []interface{} `json:"contacts"`
-	Alias                      string        `json:"alias"`
-	Templates                  []interface{} `json:"use"`
-	CheckCommand               string        `json:"check_command"`
-	ContactGroups              []interface{} `json:"contact_groups"`
-	Notes                      string        `json:"notes"`
-	NotesURL                   string        `json:"notes_url"`
-	ActionURL                  string        `json:"action_url"`
-	InitialState               string        `json:"initial_state"`
-	RetryInterval              string        `json:"retry_interval"`
-	PassiveChecksEnabled       string        `json:"passive_checks_enabled"`
-	ActiveChecksEnabled        string        `json:"active_checks_enabled"`
-	ObsessOverHost             string        `json:"obsess_over_host"`
-	EventHandler               string        `json:"event_handler"`
-	EventHandlerEnabled        string        `json:"event_handler_enabled"`
-	FlapDetectionEnabled       string        `json:"flap_detection_enabled"`
-	FlapDetectionOptions       []interface{} `json:"flap_detection_options"`
-	LowFlapThreshold           string        `json:"low_flap_threshold"`
-	HighFlapThreshold          string        `json:"high_flap_threshold"`
-	ProcessPerfData            string        `json:"process_perf_data"`
-	RetainStatusInformation    string        `json:"retain_status_information"`
-	RetainNonstatusInformation string        `json:"retain_nonstatus_information"`
-	CheckFreshness             string        `json:"check_freshness"`
-	FreshnessThreshold         string        `json:"freshness_threshold"`
-	FirstNotificationDelay     string        `json:"first_notification_delay"`
-	NotificationOptions        string        `json:"notification_options"`
-	NotificationsEnabled       string        `json:"notifications_enabled"`
-	StalkingOptions            string        `json:"stalking_options"`
-	IconImage                  string        `json:"icon_image"`
-	IconImageAlt               string        `json:"icon_image_alt"`
-	VRMLImage                  string        `json:"vrml_image"`
-	StatusMapImage             string        `json:"statusmap_image"`
-	TwoDCoords                 string        `json:"2d_coords"`
-	ThreeDCoords               string        `json:"3d_coords"`
-	Register                   string        `json:"register"`
+	Name                       string                 `json:"host_name"`
+	Address                    string                 `json:"address"`
+	DisplayName                string                 `json:"display_name,omitempty"`
+	MaxCheckAttempts           string                 `json:"max_check_attempts"`
+	CheckPeriod                string                 `json:"check_period"`
+	NotificationInterval       string                 `json:"notification_interval"`
+	NotificationPeriod         string                 `json:"notification_period"`
+	Contacts                   []interface{}          `json:"contacts"`
+	Alias                      string                 `json:"alias,omitempty"`
+	Templates                  []interface{}          `json:"use,omitempty"`
+	CheckCommand               string                 `json:"check_command,omitempty"`
+	ContactGroups              []interface{}          `json:"contact_groups,omitempty"`
+	Notes                      string                 `json:"notes,omitempty"`
+	NotesURL                   string                 `json:"notes_url,omitempty"`
+	ActionURL                  string                 `json:"action_url,omitempty"`
+	InitialState               string                 `json:"initial_state,omitempty"`
+	RetryInterval              string                 `json:"retry_interval,omitempty"`
+	PassiveChecksEnabled       string                 `json:"passive_checks_enabled,omitempty"`
+	ActiveChecksEnabled        string                 `json:"active_checks_enabled,omitempty"`
+	ObsessOverHost             string                 `json:"obsess_over_host,omitempty"`
+	EventHandler               string                 `json:"event_handler,omitempty"`
+	EventHandlerEnabled        string                 `json:"event_handler_enabled,omitempty"`
+	FlapDetectionEnabled       string                 `json:"flap_detection_enabled,omitempty"`
+	FlapDetectionOptions       []interface{}          `json:"flap_detection_options,omitempty"`
+	LowFlapThreshold           string                 `json:"low_flap_threshold,omitempty"`
+	HighFlapThreshold          string                 `json:"high_flap_threshold,omitempty"`
+	ProcessPerfData            string                 `json:"process_perf_data,omitempty"`
+	RetainStatusInformation    string                 `json:"retain_status_information,omitempty"`
+	RetainNonstatusInformation string                 `json:"retain_nonstatus_information,omitempty"`
+	CheckFreshness             string                 `json:"check_freshness,omitempty"`
+	FreshnessThreshold         string                 `json:"freshness_threshold,omitempty"`
+	FirstNotificationDelay     string                 `json:"first_notification_delay,omitempty"`
+	NotificationOptions        string                 `json:"notification_options,omitempty"`
+	NotificationsEnabled       string                 `json:"notifications_enabled,omitempty"`
+	StalkingOptions            string                 `json:"stalking_options,omitempty"`
+	IconImage                  string                 `json:"icon_image,omitempty"`
+	IconImageAlt               string                 `json:"icon_image_alt,omitempty"`
+	VRMLImage                  string                 `json:"vrml_image,omitempty"`
+	StatusMapImage             string                 `json:"statusmap_image,omitempty"`
+	TwoDCoords                 string                 `json:"2d_coords,omitempty"`
+	ThreeDCoords               string                 `json:"3d_coords,omitempty"`
+	Register                   string                 `json:"register,omitempty"`
+	FreeVariables              map[string]interface{} `json:"free_variables,omitempty"`
 }
 
 /*
@@ -118,7 +116,6 @@ func resourceHost() *schema.Resource {
 				Type:        schema.TypeSet,
 				Optional:    true,
 				Description: "A list of Nagios templates to apply to the host",
-				Default:     nil,
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
 				},
@@ -139,19 +136,16 @@ func resourceHost() *schema.Resource {
 			"notes": {
 				Type:        schema.TypeString,
 				Optional:    true,
-				Default:     nil,
 				Description: "Notes about the host that may assist with troubleshooting",
 			},
 			"notes_url": {
 				Type:        schema.TypeString,
 				Optional:    true,
-				Default:     "",
 				Description: "URL to a third-party documentation respoitory containing more information about the host",
 			},
 			"action_url": {
 				Type:        schema.TypeString,
 				Optional:    true,
-				Default:     "",
 				Description: "URL to a third-party documentation repository containing actions to take in the event the host goes down",
 			},
 			"initial_state": {
@@ -167,19 +161,16 @@ func resourceHost() *schema.Resource {
 			"passive_checks_enabled": {
 				Type:        schema.TypeBool,
 				Optional:    true,
-				Default:     true,
 				Description: "Sets whether or not passive checks are enabled for the host",
 			},
 			"active_checks_enabled": {
 				Type:        schema.TypeBool,
 				Optional:    true,
-				Default:     true,
 				Description: "Sets whether or not active checks are enabled for the host",
 			},
 			"obsess_over_host": {
 				Type:        schema.TypeBool,
 				Optional:    true,
-				Default:     false,
 				Description: "Sets whether or not Nagios 'obsesses' over the host using the ochp_command",
 			},
 			"event_handler": {
@@ -190,13 +181,11 @@ func resourceHost() *schema.Resource {
 			"event_handler_enabled": {
 				Type:        schema.TypeBool,
 				Optional:    true,
-				Default:     false,
 				Description: "Sets whether or not event handlers should be enabled for the host",
 			},
 			"flap_detection_enabled": {
 				Type:        schema.TypeBool,
 				Optional:    true,
-				Default:     false,
 				Description: "Sets whether or not flap detection is enabled for the host",
 			},
 			"flap_detection_options": {
@@ -220,25 +209,21 @@ func resourceHost() *schema.Resource {
 			"process_perf_data": {
 				Type:        schema.TypeBool,
 				Optional:    true,
-				Default:     true,
 				Description: "Determines if Nagios should process performance data",
 			},
 			"retain_status_information": {
 				Type:        schema.TypeBool,
 				Optional:    true,
-				Default:     true,
 				Description: "Sets whether or not status related information should be kept for the host",
 			},
 			"retain_nonstatus_information": {
 				Type:        schema.TypeBool,
 				Optional:    true,
-				Default:     true,
 				Description: "Sets whether or not non-status related information should be kept for the host",
 			},
 			"check_freshness": {
 				Type:        schema.TypeBool,
 				Optional:    true,
-				Default:     true,
 				Description: "Sets whether or not freshness checks are enabled for the host",
 			},
 			"freshness_threshold": {
@@ -259,7 +244,6 @@ func resourceHost() *schema.Resource {
 			"notifications_enabled": {
 				Type:        schema.TypeBool,
 				Optional:    true,
-				Default:     true,
 				Description: "Determines if Nagios should send notifications",
 			},
 			"stalking_options": {
@@ -303,6 +287,14 @@ func resourceHost() *schema.Resource {
 				Default:     true,
 				Description: "Determines if the host will be marked as active or inactive",
 			},
+			"free_variables": {
+				Type:        schema.TypeMap,
+				Optional:    true,
+				Description: "A key/value pair of free variables to add to the host. The key must begin with an underscore.",
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
+			},
 		},
 		Create: resourceCreateHost,
 		Read:   resourceReadHost,
@@ -317,7 +309,7 @@ func resourceHost() *schema.Resource {
 func resourceCreateHost(d *schema.ResourceData, m interface{}) error {
 	nagiosClient := m.(*Client)
 
-	host := setHostFromSchema(d)
+	host := getHostSchema(d)
 
 	_, err := nagiosClient.newHost(host)
 
@@ -346,7 +338,11 @@ func resourceReadHost(d *schema.ResourceData, m interface{}) error {
 		return nil
 	}
 
-	setDataFromHost(d, host)
+	err = setDataFromHost(d, host)
+
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
@@ -354,7 +350,7 @@ func resourceReadHost(d *schema.ResourceData, m interface{}) error {
 func resourceUpdateHost(d *schema.ResourceData, m interface{}) error {
 	nagiosClient := m.(*Client)
 
-	host := setHostFromSchema(d)
+	host := getHostSchema(d)
 
 	oldVal, _ := d.GetChange("name")
 
@@ -368,7 +364,11 @@ func resourceUpdateHost(d *schema.ResourceData, m interface{}) error {
 		return err
 	}
 
-	setDataFromHost(d, host)
+	err = setDataFromHost(d, host)
+
+	if err != nil {
+		return err
+	}
 
 	return resourceReadHost(d, m)
 }
@@ -388,7 +388,7 @@ func resourceDeleteHost(d *schema.ResourceData, m interface{}) error {
 	return nil
 }
 
-func setDataFromHost(d *schema.ResourceData, host *Host) {
+func setDataFromHost(d *schema.ResourceData, host *Host) error {
 	// Required attributes
 	d.SetId(host.Name)
 	d.Set("name", host.Name)
@@ -529,9 +529,18 @@ func setDataFromHost(d *schema.ResourceData, host *Host) {
 	if host.Register != "" {
 		d.Set("register", host.Register)
 	}
+
+	if host.FreeVariables != nil {
+		if err := d.Set("free_variables", host.FreeVariables); err != nil {
+			return fmt.Errorf("Error setting free variables for resource %s: %s", d.Id(), err)
+		}
+	}
+
+	return nil
 }
 
-func setHostFromSchema(d *schema.ResourceData) *Host {
+// getHostSchema retrieves the values provided from the user in their TF files and sets the Host struct fields to its values
+func getHostSchema(d *schema.ResourceData) *Host {
 	host := &Host{
 		Name:                       d.Get("name").(string),
 		Alias:                      d.Get("alias").(string),
@@ -574,6 +583,7 @@ func setHostFromSchema(d *schema.ResourceData) *Host {
 		TwoDCoords:                 d.Get("2d_coords").(string),
 		ThreeDCoords:               d.Get("3d_coords").(string),
 		Register:                   convertBoolToIntToString(d.Get("register").(bool)),
+		FreeVariables:              d.Get("free_variables").(map[string]interface{}),
 	}
 
 	return host

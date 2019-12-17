@@ -1,11 +1,12 @@
 package nagios
 
 import (
-	"encoding/json"
 	"errors"
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"reflect"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -130,13 +131,13 @@ func (c *Client) buildURL(objectType, method, objectName, name, oldVal, objectDe
 
 		nagiosURL.WriteString("?apikey=")
 		nagiosURL.WriteString(c.token)
-		nagiosURL.WriteString("&pretty=1&force=1")
+		nagiosURL.WriteString("&pretty=1&force=1&")
 	} else if method == "POST" {
 		nagiosURL.WriteString("?apikey=")
 		nagiosURL.WriteString(c.token)
 
 		if objectType != "applyconfig" {
-			nagiosURL.WriteString("&force=1")
+			nagiosURL.WriteString("&force=1&")
 		}
 	}
 
@@ -158,20 +159,20 @@ func (c *Client) addRequestHeaders(request *http.Request) {
 	return
 }
 
-func (c *Client) get(data *url.Values, resourceInfo interface{}, nagiosURL string) error {
-	request, err := http.NewRequest(http.MethodGet, nagiosURL, strings.NewReader(data.Encode()))
+func (c *Client) get(requestData, nagiosURL string) ([]byte, error) {
+	request, err := http.NewRequest(http.MethodGet, nagiosURL, strings.NewReader(requestData))
 
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	body, err := c.sendRequest(request)
 
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	return json.Unmarshal(body, resourceInfo)
+	return body, nil
 }
 
 func (c *Client) post(data *url.Values, nagiosURL string) ([]byte, error) {
@@ -303,4 +304,66 @@ func convertBoolToIntToString(sourceVal bool) string {
 		return "1"
 	}
 	return "0"
+}
+
+// setURLParams loops through a struct object and returns a set of URL parameters
+func setURLParams(nagiosObject interface{}) *url.Values {
+	values := reflect.ValueOf(nagiosObject)
+	var urlParams = &url.Values{}
+	var tag string
+
+	// If we are passing in a pointer to a struct, we need to get the actual result of what the struct is pointing to
+	if values.Kind() == reflect.Ptr {
+		values = values.Elem()
+	}
+
+	for i := 0; i < values.NumField(); i++ {
+		var outputString strings.Builder
+		curType := values.Field(i).Type().String()
+		tags := strings.Split(values.Type().Field(i).Tag.Get("json"), ",")
+
+		for k, _ := range tags {
+			if tags[k] != "omitempty" {
+				tag = tags[k]
+				break
+			}
+		}
+
+		if curType == "string" {
+			if values.Field(i).Interface().(string) != "" {
+				urlParams.Add(tag, values.Field(i).Interface().(string))
+			}
+		} else if curType == "[]interface {}" {
+			if values.Field(i).Interface() != nil {
+				for j, val := range values.Field(i).Interface().([]interface{}) {
+					if j > 0 {
+						outputString.WriteString(",")
+					}
+
+					outputString.WriteString(val.(string))
+				}
+				urlParams.Add(tag, outputString.String())
+			}
+		} else if curType == "int" {
+			if strconv.Itoa(values.Field(i).Interface().(int)) != "" {
+				// We need the value to be a string but first need to cast it as an integer if that is what the type is in the struct
+				urlParams.Add(tag, strconv.Itoa(values.Field(i).Interface().(int)))
+			}
+		} else if curType == "map[string]interface {}" {
+			if values.Field(i).Interface() != nil {
+				// We need to loop through the map and grab the key and value for each line
+				// The value is an interface, so we need to then call the Interface() method
+				// and cast it as a string to get the value in string format
+				mapObject := values.Field(i).MapRange()
+				for mapObject.Next() {
+					outputString.Reset()
+					index := mapObject.Key().String()
+					val := mapObject.Value()
+					valString := val.Interface().(string)
+					urlParams.Add(index, valString)
+				}
+			}
+		}
+	}
+	return urlParams
 }

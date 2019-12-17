@@ -12,10 +12,10 @@ import (
 type Hostgroup struct {
 	Name      string        `json:"hostgroup_name"`
 	Alias     string        `json:"alias"`
-	Members   []interface{} `json:"members"`
-	Notes     string        `json:"notes"`
-	NotesURL  string        `json:"notes_url"`
-	ActionURL string        `json:"action_url"`
+	Members   []interface{} `json:"members,omitempty"`
+	Notes     string        `json:"notes,omitempty"`
+	NotesURL  string        `json:"notes_url,omitempty"`
+	ActionURL string        `json:"action_url,omitempty"`
 }
 
 func resourceHostGroup() *schema.Resource {
