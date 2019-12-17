@@ -8,7 +8,7 @@ Refer to the object definition for [hosts](https://assets.nagios.com/downloads/n
 
 ## Best practices
 
-This resource allows you to configure any attribute on a host, however, we recommend to manually create a host template that contains common settings for the hosts, and then use the host resource to create your hosts and set host specific attributes. 
+This resource allows you to configure any attribute on a host, however, we recommend to manually create a host template that contains common settings for the hosts, and then use the host resource to create your hosts and set host specific attributes.
 
 ## Example
 
@@ -45,6 +45,10 @@ resource "nagios_host" "host1" {
         "d"
     ]
     notifications_enabled           = 1
+    free_variables                  = {
+        _maintenance_windows = "TUESDAY_2300"
+        _owner               = "Accounting"
+    }
 }
 ```
 
@@ -69,9 +73,9 @@ Below is a brief description of what each field is used for in Nagios. Refer to 
 `action_url`: URL to a third-party documentation repository containing actions to take in the event the host goes down  
 `initial_state`: The state of the host when it is first added to Nagios. Valid options are:  
 
-    s = UP  
-    d = DOWN  
-    u = UNREACHABLE  
+* s = UP  
+* d = DOWN  
+* u = UNREACHABLE
 
 `retry_interval`: How often should Nagios try to check the host after the initial down alert  
 `passive_checks_enabled`: Sets whether or not passive checks are enabled for the host  
@@ -82,9 +86,9 @@ Below is a brief description of what each field is used for in Nagios. Refer to 
 `flap_detection_enabled`: Sets whether or not flap detection is enabled for the host  
 `flap_detection_options`: Determines what flap detection logic will be used for the host. One or more of the following valid options can be provided:  
 
-    o = UP
-    d = DOWN
-    u = UNREACHABLE
+* o = UP
+* d = DOWN
+* u = UNREACHABLE
 
 `low_flap_threshold`: The minimum threshold that should be used when detecting if flapping is occurring  
 `high_flap_threshold`: The maximum threshold that should be used when detecting if flapping is occurring  
@@ -96,12 +100,12 @@ Below is a brief description of what each field is used for in Nagios. Refer to 
 `first_notification_delay`: The amount of time to wait to send out the first notification when a host enters a non-UP state  
 `notification_options`: Determines when Nagios should alert if a host is one or more of the following options:  
 
-    o = UP
-    d = DOWN
-    u = UNREACHABLE
-    r = RECOVERY
-    f = FLAPPING
-    s = SCHEDULED DOWNTIME
+* o = UP
+* d = DOWN
+* u = UNREACHABLE
+* r = RECOVERY
+* f = FLAPPING
+* s = SCHEDULED DOWNTIME
 
 `notifications_enabled`: Determines if Nagios should send notifications  
 `stalking_options`: A list of options to determine which states, if any, should be stalked by Nagios. Refer to the [Nagios documentation](https://assets.nagios.com/downloads/nagioscore/docs/nagioscore/3/en/stalking.html) for more information on stalking  
@@ -110,4 +114,5 @@ Below is a brief description of what each field is used for in Nagios. Refer to 
 `vrml_image`: The image that will be used as a texture map for the specified host  
 `statusmap_image`: The name of the image that should be used in the statusmap CGI in Nagios  
 `2d_coords`: The coordinates to use when drawing the host in the statusmap CGI  
-`3d_coords`: The coordinates to use when drawing the host in the statuswrl CGI  
+`3d_coords`: The coordinates to use when drawing the host in the statuswrl CGI
+`free_variables`: A key/value pair of custom information that can be associated with the host. Nagios requires that the key begin with an underscore
