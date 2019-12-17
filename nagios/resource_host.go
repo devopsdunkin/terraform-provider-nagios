@@ -7,11 +7,6 @@ import (
 	"github.com/hashicorp/terraform/helper/validation"
 )
 
-// Host contains all info needed to create a host in Nagios
-// TODO: Test to see if we need both JSON and schema tags
-// Using tag with both JSON and schema because a POST uses URL encoding to send data
-
-// TODO: Need to add in all of the other fields. What we have right now will work for initial testing
 type Host struct {
 	Name                       string                 `json:"host_name"`
 	Address                    string                 `json:"address"`
