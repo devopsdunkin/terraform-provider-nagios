@@ -53,9 +53,11 @@
     <a class="current" href=".">getting started</a>
     <ul class="subnav">
             
-    <li class="toctree-l2"><a href="#installing">Installing</a></li>
+    <li class="toctree-l2"><a href="#terraform-provider-nagios">Terraform Provider: Nagios</a></li>
     
         <ul>
+        
+            <li><a class="toctree-l3" href="#installing">Installing</a></li>
         
             <li><a class="toctree-l3" href="#supported-nagios-versions">Supported Nagios Versions</a></li>
         
@@ -133,15 +135,16 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="installing">Installing</h1>
+                <h1 id="terraform-provider-nagios">Terraform Provider: Nagios</h1>
+<h2 id="installing">Installing</h2>
 <p>The provider can be downloaded from the <a href="https://github.com/devopsdunkin/terraform-provider-nagios/releases">GitHub releases page</a></p>
 <p>Refer to Hashicorp's <a href="https://www.terraform.io/docs/configuration/providers.html#third-party-plugins">documentation</a> to install third-party providers</p>
 <h2 id="supported-nagios-versions">Supported Nagios Versions</h2>
 <p>This provider was tested on Nagios XI 5.6.7. It may work with other versions, it will just depend on if there are differences in how the API processes commands.</p>
 <h2 id="provider-setup">Provider setup</h2>
 <p>The provider requires the following attributes:</p>
-<p><code>url</code> (required) - The URL to login to Nagios XI. This should just be the FQDN of the Nagios server, with <code>/nagiosxi</code> appended to it. It defaults to using the environment variable <code>NAGIOS_URL</code> if no value is provided in the provider definition.</p>
-<p><code>token</code> (required) - The API token used to login to the Nagios XI API. This value can be found by logging in to the web application, clicking <code>Help</code>, and on the left hand side menu, click <code>Introduction</code>. Then it will be listed under the <code>Authentication</code> section. It defaults to using the environment variable <code>API_TOKEN</code> if no value is provided in the provider definition.</p>
+<p><code>url</code> (required): The URL to login to Nagios XI. This should just be the FQDN of the Nagios server, with <code>/nagiosxi</code> appended to it. It defaults to using the environment variable <code>NAGIOS_URL</code> if no value is provided in the provider definition.</p>
+<p><code>token</code> (required): The API token used to login to the Nagios XI API. This value can be found by logging in to the web application, clicking <code>Help</code>, and on the left hand side menu, click <code>Introduction</code>. Then it will be listed under the <code>Authentication</code> section. It defaults to using the environment variable <code>API_TOKEN</code> if no value is provided in the provider definition.</p>
 <h3 id="examples">Examples</h3>
 <pre><code class="hcl">provider &quot;nagios&quot; {
     url = &quot;http://localhost/nagiosxi&quot;
@@ -198,5 +201,5 @@
 
 <!--
 MkDocs version : 1.0.4
-Build Date UTC : 2019-12-17 02:47:43
+Build Date UTC : 2019-12-17 02:57:51
 -->

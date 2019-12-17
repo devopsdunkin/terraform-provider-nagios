@@ -62,15 +62,15 @@
     <a class="current" href="./">resource_contact</a>
     <ul class="subnav">
             
-    <li class="toctree-l3"><a href="#resource-contact">resource: contact</a></li>
+    <li class="toctree-l3"><a href="#resource-contact">Resource: Contact</a></li>
     
         <ul>
         
-            <li><a class="toctree-l4" href="#overview">overview</a></li>
+            <li><a class="toctree-l4" href="#overview">Overview</a></li>
         
-            <li><a class="toctree-l4" href="#example">example</a></li>
+            <li><a class="toctree-l4" href="#example">Example</a></li>
         
-            <li><a class="toctree-l4" href="#arguments">arguments</a></li>
+            <li><a class="toctree-l4" href="#arguments">Arguments</a></li>
         
         </ul>
     
@@ -139,11 +139,11 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="resource-contact">resource: contact</h1>
-<h2 id="overview">overview</h2>
+                <h1 id="resource-contact">Resource: Contact</h1>
+<h2 id="overview">Overview</h2>
 <p>This resource manages Nagios contacts. Nagios uses contacts to send notifications about changes in state of objects that Nagios manages.</p>
 <p>Refer to the object definition for <a href="https://assets.nagios.com/downloads/nagioscore/docs/nagioscore/3/en/objectdefinitions.html#contact">contacts</a> from Nagios to learn more</p>
-<h2 id="example">example</h2>
+<h2 id="example">Example</h2>
 <pre><code class="hcl">resource &quot;nagios_contact&quot; &quot;contact&quot; {
     contact_name                    = &quot;nagiosadmin&quot;
     host_notifications_enabled      = true
@@ -164,10 +164,14 @@
     ]
     email                           = &quot;nagiosadmin@example.com&quot;
     can_submit_commands             = true
+    free_variables                  = {
+        &quot;_Department&quot; = &quot;IT&quot;
+        &quot;_Title&quot; = &quot;System Administrator&quot;
+    }
 }
 </code></pre>
 
-<h2 id="arguments">arguments</h2>
+<h2 id="arguments">Arguments</h2>
 <p>Below is a brief description of what each field is used for in Nagios. Refer to the <a href="https://assets.nagios.com/downloads/nagioscore/docs/nagioscore/3/en/objectdefinitions.html">official Nagios documentation</a> for more detail</p>
 <p><code>contact_name</code> (required): The name of the contact
 <code>host_notifications_enabled</code> (required): Determines whether or not the contact will receive notifications about host problems and recoveries
