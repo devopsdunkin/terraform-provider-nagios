@@ -54,7 +54,7 @@ resource "nagios_service" "service1" {
     retain_status_information       = true
     retain_nonstatus_information    = true
     first_notification_delay        = "5"
-	notification_options            = [
+    notification_options            = [
         "d",
         "u"
     ]
@@ -84,9 +84,9 @@ Below is a brief description of what each field is used for in Nagios. Refer to 
 `is_volatile`: Determines if the service is "volatile". Services typically are not volatile and this should be disabled. This accepts either `true` or `false`. The default value is `false`  
 `initial_state`: By default, Nagios will assume the service are in an OK state. Valid options are:  
 
-    s = UP
-    d = DOWN
-    u = UNREACHABLE
+* s = UP
+* d = DOWN
+* u = UNREACHABLE
   
 `check_interval`: The number of minutes to wait until the next regular check of the service  
 `retry_interval`: The number of minutes to wait until re-checking the service  
@@ -103,9 +103,9 @@ Below is a brief description of what each field is used for in Nagios. Refer to 
 `flap_detection_enabled`: Sets whether or not flap detection is enabled for the service  
 `flap_detection_options`: Determines what flap detection logic will be used for the service. One or more of the following valid options can be provided:  
 
-    o = UP
-    d = DOWN
-    u = UNREACHABLE
+* o = UP
+* d = DOWN
+* u = UNREACHABLE
 
 `process_perf_data`: Determines if Nagios should process performance data  
 `retain_status_information`: Sets whether or not status related information should be kept for the service  
@@ -115,12 +115,12 @@ Below is a brief description of what each field is used for in Nagios. Refer to 
 `notification_period` (required): The time period during which notifications can be sent for a service alert  
 `notification_options`: Determines when Nagios should alert if a host is one or more of the following options:  
 
-    o = UP
-    d = DOWN
-    u = UNREACHABLE
-    r = RECOVERY
-    f = FLAPPING
-    s = SCHEDULED DOWNTIME
+* o = UP
+* d = DOWN
+* u = UNREACHABLE
+* r = RECOVERY
+* f = FLAPPING
+* s = SCHEDULED DOWNTIME
 
 `notifications_enabled`: Determines if Nagios should send notifications  
 `contacts` (required): The list of users that Nagios should alert when a service is down  
@@ -130,4 +130,4 @@ Below is a brief description of what each field is used for in Nagios. Refer to 
 `notes_url`: URL to a third-party documentation respoitory containing more information about the service  
 `action_url`: URL to a third-party documentation repository containing actions to take in the event the service goes down  
 `icon_image`: The icon to display in Nagios  
-`icon_image_alt`:  The text to display when hovering over the `icon_image` or the text to display if the `icon_image` is unavailable  
+`icon_image_alt`:  The text to display when hovering over the `icon_image` or the text to display if the `icon_image` is unavailable
