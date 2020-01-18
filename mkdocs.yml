@@ -6,6 +6,7 @@ nav:
   - getting started: index.md
   - data sources:
     - data_source_host: data_sources/data_source_host.md
+    - data_source_hostgroup: data_sources/data_source_hostgroup.md
   - resources:
     - resource_contact: resources/resource_contact.md
     - resource_contactgroup: resources/resource_contactgroup.md
