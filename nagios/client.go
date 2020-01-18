@@ -68,6 +68,8 @@ func (c *Client) buildURL(objectType, method, objectName, name, oldVal, objectDe
 		if method != "POST" {
 			return "", errors.New("You must use a HTTP POST when performing an applyconfig")
 		}
+	} else if objectType == "authserver" {
+		apiType = "system"
 	} else {
 		apiType = "config"
 	}
@@ -104,6 +106,9 @@ func (c *Client) buildURL(objectType, method, objectName, name, oldVal, objectDe
 
 		nagiosURL.WriteString("&pretty=1")
 	} else if method == "DELETE" {
+		if objectType == "authserver" {
+			nagiosURL.WriteString("/" + name)
+		}
 		nagiosURL.WriteString("?apikey=")
 		nagiosURL.WriteString(c.token)
 		nagiosURL.WriteString("&")
