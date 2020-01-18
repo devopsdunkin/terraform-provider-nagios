@@ -67,7 +67,7 @@ func (c *Client) getHost(name string) (*Host, error) {
 	json.Unmarshal(body, &host.FreeVariables)
 
 	for i, _ := range hostArray {
-		host.Name = hostArray[i].Name
+		host.HostName = hostArray[i].HostName
 		host.Alias = hostArray[i].Alias
 		host.Address = hostArray[i].Address
 		host.MaxCheckAttempts = hostArray[i].MaxCheckAttempts
@@ -118,7 +118,7 @@ func (c *Client) getHost(name string) (*Host, error) {
 }
 
 func (c *Client) updateHost(host *Host, oldVal interface{}) error {
-	nagiosURL, err := c.buildURL("host", "PUT", "host_name", host.Name, oldVal.(string), "")
+	nagiosURL, err := c.buildURL("host", "PUT", "host_name", host.HostName, oldVal.(string), "")
 
 	if err != nil {
 		return err
