@@ -53,6 +53,9 @@ func (c *Client) getHostgroup(name string) (*Hostgroup, error) {
 		hostgroup.Name = hostgroupArray[i].Name
 		hostgroup.Alias = hostgroupArray[i].Alias
 		hostgroup.Members = hostgroupArray[i].Members
+		hostgroup.Notes = hostgroupArray[i].Notes
+		hostgroup.NotesURL = hostgroupArray[i].NotesURL
+		hostgroup.ActionURL = hostgroupArray[i].ActionURL
 		if i > 1 { // Nagios should only return 1 object during a GET with the way we are manipulating it. So only grab the first object and break if we have more than 1
 			break
 		}
