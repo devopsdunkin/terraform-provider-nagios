@@ -10,7 +10,7 @@ import (
 	"github.com/hashicorp/terraform/terraform"
 )
 
-func TestAccHost_basic(t *testing.T) {
+func TestAccHostBasic(t *testing.T) {
 	hostName := "tf_" + acctest.RandString(10)
 	hostAlias := "tf_" + acctest.RandString(10)
 	hostAddress := "127.0.0.1"
@@ -28,7 +28,7 @@ func TestAccHost_basic(t *testing.T) {
 		CheckDestroy: testAccCheckHostDestroy(),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccHostResource_basic(hostName, hostAlias, hostAddress, hostMaxCheckAttempts, hostCheckPeriod, hostNotificationInterval, hostNotificationPeriod, hostContacts, hostTemplates),
+				Config: testAccHostResourceBasic(hostName, hostAlias, hostAddress, hostMaxCheckAttempts, hostCheckPeriod, hostNotificationInterval, hostNotificationPeriod, hostContacts, hostTemplates),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckHostExists(rName),
 				),
@@ -37,7 +37,7 @@ func TestAccHost_basic(t *testing.T) {
 	})
 }
 
-func TestAccHost_createAfterManualDestroy(t *testing.T) {
+func TestAccHostCreateAfterManualDestroy(t *testing.T) {
 	var host = &Host{}
 	hostName := "tf_" + acctest.RandString(10)
 	hostAlias := "tf_" + acctest.RandString(10)
@@ -56,7 +56,7 @@ func TestAccHost_createAfterManualDestroy(t *testing.T) {
 		CheckDestroy: testAccCheckHostDestroy(),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccHostResource_basic(hostName, hostAlias, hostAddress, hostMaxCheckAttempts, hostCheckPeriod, hostNotificationInterval, hostNotificationPeriod, hostContacts, hostTemplates),
+				Config: testAccHostResourceBasic(hostName, hostAlias, hostAddress, hostMaxCheckAttempts, hostCheckPeriod, hostNotificationInterval, hostNotificationPeriod, hostContacts, hostTemplates),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckHostExists(rName),
 					testAccCheckHostFetch(rName, host),
@@ -66,19 +66,19 @@ func TestAccHost_createAfterManualDestroy(t *testing.T) {
 				PreConfig: func() {
 					client := testAccProvider.Meta().(*Client)
 
-					_, err := client.deleteHost(host.Name)
+					_, err := client.deleteHost(host.HostName)
 					if err != nil {
 						t.Fatal(err)
 					}
 				},
-				Config: testAccHostResource_basic(hostName, hostAlias, hostAddress, hostMaxCheckAttempts, hostCheckPeriod, hostNotificationInterval, hostNotificationPeriod, hostContacts, hostTemplates),
+				Config: testAccHostResourceBasic(hostName, hostAlias, hostAddress, hostMaxCheckAttempts, hostCheckPeriod, hostNotificationInterval, hostNotificationPeriod, hostContacts, hostTemplates),
 				Check:  testAccCheckHostExists(rName),
 			},
 		},
 	})
 }
 
-func TestAccHost_updateName(t *testing.T) {
+func TestAccHostUpdateName(t *testing.T) {
 	firstHostName := "tf_" + acctest.RandString(10)
 	secondHostName := "tf_" + acctest.RandString(10)
 	hostAlias := "tf_" + acctest.RandString(10)
@@ -97,27 +97,27 @@ func TestAccHost_updateName(t *testing.T) {
 		CheckDestroy: testAccCheckHostDestroy(),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccHostResource_basic(firstHostName, hostAlias, hostAddress, hostMaxCheckAttempts, hostCheckPeriod, hostNotificationInterval, hostNotificationPeriod, hostContacts, hostTemplates),
+				Config: testAccHostResourceBasic(firstHostName, hostAlias, hostAddress, hostMaxCheckAttempts, hostCheckPeriod, hostNotificationInterval, hostNotificationPeriod, hostContacts, hostTemplates),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckHostExists(rName),
-					resource.TestCheckResourceAttr(rName, "name", firstHostName),
+					resource.TestCheckResourceAttr(rName, "host_name", firstHostName),
 				),
 			},
 			{
-				Config: testAccHostResource_basic(secondHostName, hostAlias, hostAddress, hostMaxCheckAttempts, hostCheckPeriod, hostNotificationInterval, hostNotificationPeriod, hostContacts, hostTemplates),
+				Config: testAccHostResourceBasic(secondHostName, hostAlias, hostAddress, hostMaxCheckAttempts, hostCheckPeriod, hostNotificationInterval, hostNotificationPeriod, hostContacts, hostTemplates),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckHostExists(rName),
-					resource.TestCheckResourceAttr(rName, "name", secondHostName),
+					resource.TestCheckResourceAttr(rName, "host_name", secondHostName),
 				),
 			},
 		},
 	})
 }
 
-func testAccHostResource_basic(name, alias, address, maxCheckAttempts, checkPeriod, notificationInterval, notificationPeriod, contacts, templates string) string {
+func testAccHostResourceBasic(name, alias, address, maxCheckAttempts, checkPeriod, notificationInterval, notificationPeriod, contacts, templates string) string {
 	return fmt.Sprintf(`
 resource "nagios_host" "host" {
-	name					= "%s"
+	host_name				= "%s"
 	alias					= "%s"
 	address					= "%s"
 	max_check_attempts		= "%s"
@@ -158,12 +158,12 @@ func testAccCheckHostDestroy() resource.TestCheckFunc {
 			}
 
 			// Get the name from the state and check if it still exists
-			name := rs.Primary.Attributes["name"]
+			name := rs.Primary.Attributes["host_name"]
 
 			conn := testAccProvider.Meta().(*Client)
 
 			host, _ := conn.getHost(name)
-			if host.Name != "" {
+			if host.HostName != "" {
 				return fmt.Errorf("Host %s still exists", name)
 			}
 		}
@@ -190,7 +190,7 @@ func getHostFromState(s *terraform.State, rName string) (*Host, error) {
 		return nil, fmt.Errorf("host not found: %s", rName)
 	}
 
-	name := rs.Primary.Attributes["name"]
+	name := rs.Primary.Attributes["host_name"]
 	log.Printf("[DEBUG] Name value from state - %s", name)
 
 	host, err := nagiosClient.getHost(name)
@@ -209,7 +209,7 @@ func testAccCheckHostFetch(rName string, host *Host) resource.TestCheckFunc {
 			return err
 		}
 
-		host.Name = returnedHost.Name
+		host.HostName = returnedHost.HostName
 		host.Alias = returnedHost.Alias
 		host.Address = returnedHost.Address
 		host.MaxCheckAttempts = returnedHost.MaxCheckAttempts

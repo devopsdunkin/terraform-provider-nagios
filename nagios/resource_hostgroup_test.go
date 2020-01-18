@@ -9,7 +9,7 @@ import (
 	"github.com/hashicorp/terraform/terraform"
 )
 
-func TestAccHostgroup_basic(t *testing.T) {
+func TestAccHostgroupBasic(t *testing.T) {
 	// Host group info
 	hgName := "tf_" + acctest.RandString(10)
 	hgAlias := "tf_" + acctest.RandString(10)
@@ -34,7 +34,7 @@ func TestAccHostgroup_basic(t *testing.T) {
 		CheckDestroy: testAccCheckHostgroupDestroy(),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccHostgroupResource_basic(hostName, alias, address, maxCheckAttempts, checkPeriod, notificationInterval, notificationPeriod, contacts, templates, hgName, hgAlias),
+				Config: testAccHostgroupResourceBasic(hostName, alias, address, maxCheckAttempts, checkPeriod, notificationInterval, notificationPeriod, contacts, templates, hgName, hgAlias),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckHostgroupExists(rHostgroupName),
 					testAccCheckHostExists(rHostName),
@@ -44,7 +44,7 @@ func TestAccHostgroup_basic(t *testing.T) {
 	})
 }
 
-func TestAccHostgroup_createAfterManualDestroy(t *testing.T) {
+func TestAccHostgroupCreateAfterManualDestroy(t *testing.T) {
 	var hostgroup = &Hostgroup{}
 	// Host group info
 	hgName := "tf_" + acctest.RandString(10)
@@ -70,7 +70,7 @@ func TestAccHostgroup_createAfterManualDestroy(t *testing.T) {
 		CheckDestroy: testAccCheckHostgroupDestroy(),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccHostgroupResource_basic(hostName, alias, address, maxCheckAttempts, checkPeriod, notificationInterval, notificationPeriod, contacts, templates, hgName, hgAlias),
+				Config: testAccHostgroupResourceBasic(hostName, alias, address, maxCheckAttempts, checkPeriod, notificationInterval, notificationPeriod, contacts, templates, hgName, hgAlias),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckHostgroupExists(rHostgroupName),
 					testAccCheckHostExists(rHostName),
@@ -86,7 +86,7 @@ func TestAccHostgroup_createAfterManualDestroy(t *testing.T) {
 						t.Fatal(err)
 					}
 				},
-				Config: testAccHostgroupResource_basic(hostName, alias, address, maxCheckAttempts, checkPeriod, notificationInterval, notificationPeriod, contacts, templates, hgName, hgAlias),
+				Config: testAccHostgroupResourceBasic(hostName, alias, address, maxCheckAttempts, checkPeriod, notificationInterval, notificationPeriod, contacts, templates, hgName, hgAlias),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckHostgroupExists(rHostgroupName),
 					testAccCheckHostExists(rHostName),
@@ -96,7 +96,7 @@ func TestAccHostgroup_createAfterManualDestroy(t *testing.T) {
 	})
 }
 
-func TestAccHostgroup_updateName(t *testing.T) {
+func TestAccHostgroupUpdateName(t *testing.T) {
 	// Host group info
 	hgFirstName := "tf_" + acctest.RandString(10)
 	hgSecondName := "tf_" + acctest.RandString(10)
@@ -122,7 +122,7 @@ func TestAccHostgroup_updateName(t *testing.T) {
 		CheckDestroy: testAccCheckHostgroupDestroy(),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccHostgroupResource_basic(hostName, alias, address, maxCheckAttempts, checkPeriod, notificationInterval, notificationPeriod, contacts, templates, hgFirstName, hgAlias),
+				Config: testAccHostgroupResourceBasic(hostName, alias, address, maxCheckAttempts, checkPeriod, notificationInterval, notificationPeriod, contacts, templates, hgFirstName, hgAlias),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckHostgroupExists(rHostgroupName),
 					testAccCheckHostExists(rHostName),
@@ -130,7 +130,7 @@ func TestAccHostgroup_updateName(t *testing.T) {
 				),
 			},
 			{
-				Config: testAccHostgroupResource_basic(hostName, alias, address, maxCheckAttempts, checkPeriod, notificationInterval, notificationPeriod, contacts, templates, hgSecondName, hgAlias),
+				Config: testAccHostgroupResourceBasic(hostName, alias, address, maxCheckAttempts, checkPeriod, notificationInterval, notificationPeriod, contacts, templates, hgSecondName, hgAlias),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckHostgroupExists(rHostgroupName),
 					testAccCheckHostExists(rHostName),
@@ -141,12 +141,12 @@ func TestAccHostgroup_updateName(t *testing.T) {
 	})
 }
 
-func testAccHostgroupResource_basic(hostName, hostAlias, hostAddress, hostMaxCheckAttempts, hostCheckPeriod, hostNotificationInterval, hostNotificationPeriod, contacts, hostTemplates, hgName, hgAlias string) string {
+func testAccHostgroupResourceBasic(hostName, hostAlias, hostAddress, hostMaxCheckAttempts, hostCheckPeriod, hostNotificationInterval, hostNotificationPeriod, contacts, hostTemplates, hgName, hgAlias string) string {
 	// TODO: Need to refactor to support creating N number of hosts and adding N number of hostgroup members
 
 	return fmt.Sprintf(`
 	resource "nagios_host" "host" {
-		name = "%s"
+		host_name = "%s"
 		alias = "%s"
 		address = "%s"
 		max_check_attempts = "%s"
@@ -190,13 +190,13 @@ func testAccCheckHostgroupDestroy() resource.TestCheckFunc {
 					return fmt.Errorf("Hostgroup %s still exists", name)
 				}
 			} else if rs.Type == "nagios_host" {
-				name := rs.Primary.Attributes["name"]
+				name := rs.Primary.Attributes["host_name"]
 
 				conn := testAccProvider.Meta().(*Client)
 
 				host, _ := conn.getHost(name)
-        
-				if host.Name != "" {
+
+				if host.HostName != "" {
 					return fmt.Errorf("Host %s still exists", name)
 				}
 			}

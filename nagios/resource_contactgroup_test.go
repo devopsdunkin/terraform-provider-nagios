@@ -10,7 +10,7 @@ import (
 	"github.com/hashicorp/terraform/terraform"
 )
 
-func TestAccContactgroup_basic(t *testing.T) {
+func TestAccContactgroupBasic(t *testing.T) {
 	contactgroupName := "tf_" + acctest.RandString(10)
 	contactgroupAlias := "tf_" + acctest.RandString(10)
 	contactgroupMembers := "nagiosadmin"
@@ -22,7 +22,7 @@ func TestAccContactgroup_basic(t *testing.T) {
 		CheckDestroy: testAccCheckContactgroupDestroy(),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccContactgroupResource_basic(contactgroupName, contactgroupAlias, contactgroupMembers),
+				Config: testAccContactgroupResourceBasic(contactgroupName, contactgroupAlias, contactgroupMembers),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckContactgroupExists(resourceName),
 				),
@@ -31,7 +31,7 @@ func TestAccContactgroup_basic(t *testing.T) {
 	})
 }
 
-func TestAccContactgroup_createAfterManualDestroy(t *testing.T) {
+func TestAccContactgroupCreateAfterManualDestroy(t *testing.T) {
 	var contactgroup = &Contactgroup{}
 	contactgroupName := "tf_" + acctest.RandString(10)
 	contactgroupAlias := "tf_" + acctest.RandString(10)
@@ -44,7 +44,7 @@ func TestAccContactgroup_createAfterManualDestroy(t *testing.T) {
 		CheckDestroy: testAccCheckContactgroupDestroy(),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccContactgroupResource_basic(contactgroupName, contactgroupAlias, contactgroupMembers),
+				Config: testAccContactgroupResourceBasic(contactgroupName, contactgroupAlias, contactgroupMembers),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckContactgroupExists(resourceName),
 					testAccCheckContactgroupFetch(resourceName, contactgroup),
@@ -59,14 +59,14 @@ func TestAccContactgroup_createAfterManualDestroy(t *testing.T) {
 						t.Fatal(err)
 					}
 				},
-				Config: testAccContactgroupResource_basic(contactgroupName, contactgroupAlias, contactgroupMembers),
+				Config: testAccContactgroupResourceBasic(contactgroupName, contactgroupAlias, contactgroupMembers),
 				Check:  testAccCheckContactgroupExists(resourceName),
 			},
 		},
 	})
 }
 
-func TestAccContactgroup_updateName(t *testing.T) {
+func TestAccContactgroupUpdateName(t *testing.T) {
 	firstContactgroupName := "tf_" + acctest.RandString(10)
 	secondContactgroupName := "tf_" + acctest.RandString(10)
 	contactgroupAlias := "tf_" + acctest.RandString(10)
@@ -79,14 +79,14 @@ func TestAccContactgroup_updateName(t *testing.T) {
 		CheckDestroy: testAccCheckContactgroupDestroy(),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccContactgroupResource_basic(firstContactgroupName, contactgroupAlias, contactgroupMembers),
+				Config: testAccContactgroupResourceBasic(firstContactgroupName, contactgroupAlias, contactgroupMembers),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckContactgroupExists(resourceName),
 					resource.TestCheckResourceAttr(resourceName, "contactgroup_name", firstContactgroupName),
 				),
 			},
 			{
-				Config: testAccContactgroupResource_basic(secondContactgroupName, contactgroupAlias, contactgroupMembers),
+				Config: testAccContactgroupResourceBasic(secondContactgroupName, contactgroupAlias, contactgroupMembers),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckContactgroupExists(resourceName),
 					resource.TestCheckResourceAttr(resourceName, "contactgroup_name", secondContactgroupName),
@@ -96,7 +96,7 @@ func TestAccContactgroup_updateName(t *testing.T) {
 	})
 }
 
-func testAccContactgroupResource_basic(contactgroupName, alias, members string) string {
+func testAccContactgroupResourceBasic(contactgroupName, alias, members string) string {
 	return fmt.Sprintf(`
 resource "nagios_contactgroup" "contactgroup" {
 	contactgroup_name	= "%s"

@@ -32,7 +32,7 @@ func TestAccService_basic(t *testing.T) {
 		CheckDestroy: testAccCheckServiceDestroy(),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccServiceResource_basic(serviceServiceName, serviceHostName, serviceDescription, serviceCheckCommand, serviceMaxCheckAttempts, serviceCheckInterval, serviceRetryInterval, serviceCheckPeriod, serviceNotificationInterval, serviceNotificationPeriod, serviceContacts, serviceTemplates),
+				Config: testAccServiceResourceBasic(serviceServiceName, serviceHostName, serviceDescription, serviceCheckCommand, serviceMaxCheckAttempts, serviceCheckInterval, serviceRetryInterval, serviceCheckPeriod, serviceNotificationInterval, serviceNotificationPeriod, serviceContacts, serviceTemplates),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckServiceExists(rName),
 				),
@@ -41,7 +41,7 @@ func TestAccService_basic(t *testing.T) {
 	})
 }
 
-func TestAccService_createAfterManualDestroy(t *testing.T) {
+func TestAccServiceCreateAfterManualDestroy(t *testing.T) {
 	var service = &Service{}
 	serviceServiceName := "camd_" + acctest.RandString(10)
 	serviceHostName := "localhost"
@@ -63,7 +63,7 @@ func TestAccService_createAfterManualDestroy(t *testing.T) {
 		CheckDestroy: testAccCheckServiceDestroy(),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccServiceResource_basic(serviceServiceName, serviceHostName, serviceDescription, serviceCheckCommand, serviceMaxCheckAttempts, serviceCheckInterval, serviceRetryInterval, serviceCheckPeriod, serviceNotificationInterval, serviceNotificationPeriod, serviceContacts, serviceTemplates),
+				Config: testAccServiceResourceBasic(serviceServiceName, serviceHostName, serviceDescription, serviceCheckCommand, serviceMaxCheckAttempts, serviceCheckInterval, serviceRetryInterval, serviceCheckPeriod, serviceNotificationInterval, serviceNotificationPeriod, serviceContacts, serviceTemplates),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckServiceExists(rName),
 					testAccCheckServiceFetch(rName, service),
@@ -78,14 +78,14 @@ func TestAccService_createAfterManualDestroy(t *testing.T) {
 						t.Fatal(err)
 					}
 				},
-				Config: testAccServiceResource_basic(serviceServiceName, serviceHostName, serviceDescription, serviceCheckCommand, serviceMaxCheckAttempts, serviceCheckInterval, serviceRetryInterval, serviceCheckPeriod, serviceNotificationInterval, serviceNotificationPeriod, serviceContacts, serviceTemplates),
+				Config: testAccServiceResourceBasic(serviceServiceName, serviceHostName, serviceDescription, serviceCheckCommand, serviceMaxCheckAttempts, serviceCheckInterval, serviceRetryInterval, serviceCheckPeriod, serviceNotificationInterval, serviceNotificationPeriod, serviceContacts, serviceTemplates),
 				Check:  testAccCheckServiceExists(rName),
 			},
 		},
 	})
 }
 
-func TestAccService_updateName(t *testing.T) {
+func TestAccServiceUpdateName(t *testing.T) {
 	firstServiceName := "tf_" + acctest.RandString(10)
 	secondServiceName := "tf_" + acctest.RandString(10)
 	serviceHostName := "localhost"
@@ -107,14 +107,18 @@ func TestAccService_updateName(t *testing.T) {
 		CheckDestroy: testAccCheckServiceDestroy(),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccServiceResource_basic(firstServiceName, serviceHostName, serviceDescription, serviceCheckCommand, serviceMaxCheckAttempts, serviceCheckInterval, serviceRetryInterval, serviceCheckPeriod, serviceNotificationInterval, serviceNotificationPeriod, serviceContacts, serviceTemplates),
+				Config: testAccServiceResourceBasic(firstServiceName, serviceHostName, serviceDescription, serviceCheckCommand,
+					serviceMaxCheckAttempts, serviceCheckInterval, serviceRetryInterval, serviceCheckPeriod, serviceNotificationInterval,
+					serviceNotificationPeriod, serviceContacts, serviceTemplates),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckServiceExists(rName),
 					resource.TestCheckResourceAttr(rName, "service_name", firstServiceName),
 				),
 			},
 			{
-				Config: testAccServiceResource_basic(secondServiceName, serviceHostName, serviceDescription, serviceCheckCommand, serviceMaxCheckAttempts, serviceCheckInterval, serviceRetryInterval, serviceCheckPeriod, serviceNotificationInterval, serviceNotificationPeriod, serviceContacts, serviceTemplates),
+				Config: testAccServiceResourceBasic(secondServiceName, serviceHostName, serviceDescription, serviceCheckCommand,
+					serviceMaxCheckAttempts, serviceCheckInterval, serviceRetryInterval, serviceCheckPeriod, serviceNotificationInterval,
+					serviceNotificationPeriod, serviceContacts, serviceTemplates),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckServiceExists(rName),
 					resource.TestCheckResourceAttr(rName, "service_name", secondServiceName),
@@ -124,7 +128,7 @@ func TestAccService_updateName(t *testing.T) {
 	})
 }
 
-func testAccServiceResource_basic(serviceName, hostName, description, checkCommand, maxCheckAttempts, checkInterval, retryInterval, checkPeriod, notificationInterval, notificationPeriod, contacts, templates string) string {
+func testAccServiceResourceBasic(serviceName, hostName, description, checkCommand, maxCheckAttempts, checkInterval, retryInterval, checkPeriod, notificationInterval, notificationPeriod, contacts, templates string) string {
 	return fmt.Sprintf(`
 resource "nagios_service" "service" {
 	service_name			= "%s"
