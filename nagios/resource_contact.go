@@ -12,7 +12,7 @@ import (
 
 // TODO: Need to add in all of the other fields. What we have right now will work for initial testing
 type Contact struct {
-	ContactName                 string                 `json:"contact_name,omitempty"`
+	ContactName                 string                 `json:"contact_name"`
 	HostNotificationsEnabled    string                 `json:"host_notifications_enabled,omitempty"`
 	ServiceNotificationsEnabled string                 `json:"service_notifications_enabled,omitempty"`
 	HostNotificationPeriod      string                 `json:"host_notification_period,omitempty"`
@@ -157,6 +157,7 @@ func resourceContact() *schema.Resource {
 				Optional:    true,
 				Description: "Determines whether or not non-status information about the contact is retained across program restarts.",
 			},
+			// TODO: Free variables are not being set in Nagios. They show correctly in state
 			"free_variables": {
 				Type:        schema.TypeMap,
 				Optional:    true,
