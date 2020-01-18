@@ -9,7 +9,7 @@ Refer to the object definition for [hostgroups](https://assets.nagios.com/downlo
 ## Example
 
 ```hcl
-data_source "nagios_hostgroup" "hostgroup1" {
+data "nagios_hostgroup" "hostgroup1" {
     name    = "hostgroup1"
 }
 ```
