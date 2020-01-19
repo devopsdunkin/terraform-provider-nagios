@@ -24,6 +24,11 @@ func NagiosProvider() *schema.Provider {
 				Sensitive:   true,
 			},
 		},
+		DataSourcesMap: map[string]*schema.Resource{
+			"nagios_host":      dataSourceHost(),
+			"nagios_service":   dataSourceService(),
+			"nagios_hostgroup": dataSourceHostgroup(),
+		},
 		ResourcesMap: map[string]*schema.Resource{
 			"nagios_contact":      resourceContact(),
 			"nagios_contactgroup": resourceContactgroup(),
@@ -31,6 +36,7 @@ func NagiosProvider() *schema.Provider {
 			"nagios_host":         resourceHost(),
 			"nagios_service":      resourceService(),
 			"nagios_servicegroup": resourceServiceGroup(),
+			"nagios_authserver":   resourceAuthServer(),
 		},
 		ConfigureFunc: providerConfigure,
 	}
