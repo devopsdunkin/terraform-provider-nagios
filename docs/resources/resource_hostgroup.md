@@ -3,7 +3,7 @@
 ## Overview
 
 This resource manages Nagios host groups. Host groups are used to logically group servers together that may share a
-similar function or other attribute. Refer to the object definition for [hostgroups](https://assets.nagios.com/downloads/nagioscore/docs/nagioscore/3/en/objectdefinitions.html#hostgroup) from Nagios to learn more
+similar function or other attribute. The resource can be used to create, update and delete host groups, as well as manage all attributes that are currently supported by Nagios.
 
 Refer to the object definition for [hostgroups](https://assets.nagios.com/downloads/nagioscore/docs/nagioscore/3/en/objectdefinitions.html#hostgroup) from Nagios to learn more
 

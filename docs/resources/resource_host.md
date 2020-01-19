@@ -2,7 +2,7 @@
 
 ## Overview
 
-This resource manages Nagios hosts. Nagios monitors hosts based off health checks defined by an administrator.
+This resource manages Nagios hosts. It can be used to create, update and delete hosts, as well as manage all attributes that Nagios currently supports.
 
 Refer to the object definition for [hosts](https://assets.nagios.com/downloads/nagioscore/docs/nagioscore/3/en/objectdefinitions.html#host) from Nagios to learn more
 

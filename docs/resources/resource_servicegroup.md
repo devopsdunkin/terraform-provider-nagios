@@ -2,8 +2,9 @@
 
 ## Overview
 
-This resource manages Nagios servicegroups. Servicegroups are used to logically group services together that may share a
-similar function or provide checks for a specific type of server. Refer to the object definition for [servicegroups](https://assets.nagios.com/downloads/nagioscore/docs/nagioscore/3/en/objectdefinitions.html#servicegroup) from Nagios to learn more
+This resource manages Nagios servicegroups. It can be used to create, update and delete service groups, as well as manage all attributes currently supported by Nagios.
+
+Refer to the object definition for [servicegroups](https://assets.nagios.com/downloads/nagioscore/docs/nagioscore/3/en/objectdefinitions.html#servicegroup) from Nagios to learn more
 
 ## Example
 

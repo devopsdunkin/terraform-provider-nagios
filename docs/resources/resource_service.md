@@ -2,7 +2,7 @@
 
 ## Overview
 
-This resource manages Nagios services. Nagios monitors services based off health checks defined by an administrator.
+This resource manages Nagios services. It can be used to create, update and delete services, as well as manage all attributes currently supported by Nagios.
 
 Refer to the object definition for [services](https://assets.nagios.com/downloads/nagioscore/docs/nagioscore/3/en/objectdefinitions.html#service) from Nagios to learn more
 
