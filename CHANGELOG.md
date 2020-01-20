@@ -1,5 +1,28 @@
 # CHANGELOG
 
+## 1.4.0 (December XX, 2019)
+
+FEATURES:
+
+* **New Data Source:** `data_source_host` ([#65](https://github.com/devopsdunkin/terraform-provider-nagios/pull/65))
+* **New Data Source:** `data_source_service` ([#65](https://github.com/devopsdunkin/terraform-provider-nagios/pull/65))
+* **New Data Source:** `data_source_hostgroup` ([#65](https://github.com/devopsdunkin/terraform-provider-nagios/pull/65))
+* **New Resource:** `resource_authserver` ([#65](https://github.com/devopsdunkin/terraform-provider-nagios/pull/65))
+
+IMPROVEMENTS:
+
+* Changes resource `nagios_host` from using `name` to `host_name` ([#65](https://github.com/devopsdunkin/terraform-provider-nagios/pull/65))
+* Removes all underscores from tests to comply with linting ([#65](https://github.com/devopsdunkin/terraform-provider-nagios/pull/65))
+* Renames `name` to `host_name` for resource `resource_host` ([#65](https://github.com/devopsdunkin/terraform-provider-nagios/pull/65))
+* Several fixes to documentation formatting ([#65](https://github.com/devopsdunkin/terraform-provider-nagios/pull/65))
+* Adds `make resource` and `make data_source` for quicker creation of files ([#65](https://github.com/devopsdunkin/terraform-provider-nagios/pull/65))
+
+BUG FIXES:
+
+* Fixes formatting issue with `docs/resources/resource_host.md` ([#65](https://github.com/devopsdunkin/terraform-provider-nagios/pull/65))
+* Fixes inconsistencies within documentation ([#65](https://github.com/devopsdunkin/terraform-provider-nagios/pull/65))
+* Removes `free_variables` attribute from `resource_contact` due to issue [#64](https://github.com/devopsdunkin/terraform-provider-nagios/issues/64) ([#65](https://github.com/devopsdunkin/terraform-provider-nagios/pull/65))
+
 ## 1.3.0 (December 16, 2019)
 
 FEATURES:

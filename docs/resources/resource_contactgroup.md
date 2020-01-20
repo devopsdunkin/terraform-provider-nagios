@@ -1,12 +1,12 @@
-# resource: contactgroup
+# Resource: Contactgroup
 
-## overview
+## Overview
 
 This resource manages Nagios contact groups. Nagios uses contact groups to group togther contacts for alerting
 
 Refer to the object definition for [contactgroups](https://assets.nagios.com/downloads/nagioscore/docs/nagioscore/3/en/objectdefinitions.html#contactgroup) from Nagios to learn more
 
-## example
+## Example
 
 ```hcl
 resource "nagios_contactgroup" "contactgroup" {
@@ -22,7 +22,7 @@ resource "nagios_contactgroup" "contactgroup" {
 }
 ```
 
-## arguments
+## Arguments
 
 Below is a brief description of what each field is used for in Nagios. Refer to the [official Nagios documentation](https://assets.nagios.com/downloads/nagioscore/docs/nagioscore/3/en/objectdefinitions.html) for more detail
 

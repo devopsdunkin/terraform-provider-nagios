@@ -68,6 +68,8 @@ func (c *Client) buildURL(objectType, method, objectName, name, oldVal, objectDe
 		if method != "POST" {
 			return "", errors.New("You must use a HTTP POST when performing an applyconfig")
 		}
+	} else if objectType == "authserver" {
+		apiType = "system"
 	} else {
 		apiType = "config"
 	}
@@ -87,7 +89,6 @@ func (c *Client) buildURL(objectType, method, objectName, name, oldVal, objectDe
 	// If we are doing a GET, PUT or DELETE, we need to provide the name of the object
 	// and type to filter results to only that. Otherwise, Nagios
 	// will return all results for that particular object type
-	// TODO: This is getting messy. Need to figure out a more streamlined way to handle all of this
 	if method == "GET" {
 		nagiosURL.WriteString("?apikey=")
 		nagiosURL.WriteString(c.token)
@@ -95,26 +96,30 @@ func (c *Client) buildURL(objectType, method, objectName, name, oldVal, objectDe
 		nagiosURL.WriteString(objectName)
 		nagiosURL.WriteString("=")
 
-		if name == "" {
+		if name != "" {
+			nagiosURL.WriteString(name)
+		} else {
 			errMsg := "Name must be provided when using the " + method + " method"
 			return "", errors.New(errMsg)
-		} else {
-			nagiosURL.WriteString(name)
 		}
 
 		nagiosURL.WriteString("&pretty=1")
 	} else if method == "DELETE" {
+		if objectType == "authserver" {
+			nagiosURL.WriteString("/" + name)
+		}
 		nagiosURL.WriteString("?apikey=")
 		nagiosURL.WriteString(c.token)
 		nagiosURL.WriteString("&")
 		nagiosURL.WriteString(objectName)
 		nagiosURL.WriteString("=")
 
-		if name == "" {
+		if name != "" {
+			nagiosURL.WriteString(name)
+
+		} else {
 			errMsg := "Name must be provided when using the " + method + " method"
 			return "", errors.New(errMsg)
-		} else {
-			nagiosURL.WriteString(name)
 		}
 	} else if method == "PUT" {
 		nagiosURL.WriteString("/")
@@ -322,7 +327,7 @@ func setURLParams(nagiosObject interface{}) *url.Values {
 		curType := values.Field(i).Type().String()
 		tags := strings.Split(values.Type().Field(i).Tag.Get("json"), ",")
 
-		for k, _ := range tags {
+		for k := range tags {
 			if tags[k] != "omitempty" {
 				tag = tags[k]
 				break

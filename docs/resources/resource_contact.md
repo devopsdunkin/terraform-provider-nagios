@@ -1,12 +1,12 @@
-# resource: contact
+# Resource: Contact
 
-## overview
+## Overview
 
 This resource manages Nagios contacts. Nagios uses contacts to send notifications about changes in state of objects that Nagios manages.
 
 Refer to the object definition for [contacts](https://assets.nagios.com/downloads/nagioscore/docs/nagioscore/3/en/objectdefinitions.html#contact) from Nagios to learn more
 
-## example
+## Example
 
 ```hcl
 resource "nagios_contact" "contact" {
@@ -32,7 +32,7 @@ resource "nagios_contact" "contact" {
 }
 ```
 
-## arguments
+## Arguments
 
 Below is a brief description of what each field is used for in Nagios. Refer to the [official Nagios documentation](https://assets.nagios.com/downloads/nagioscore/docs/nagioscore/3/en/objectdefinitions.html) for more detail
 

@@ -8,7 +8,7 @@ import (
 )
 
 type Host struct {
-	Name                       string                 `json:"host_name"`
+	HostName                   string                 `json:"host_name"`
 	Address                    string                 `json:"address"`
 	DisplayName                string                 `json:"display_name,omitempty"`
 	MaxCheckAttempts           string                 `json:"max_check_attempts"`
@@ -63,7 +63,7 @@ type Host struct {
 func resourceHost() *schema.Resource {
 	return &schema.Resource{
 		Schema: map[string]*schema.Schema{
-			"name": {
+			"host_name": {
 				Type:        schema.TypeString,
 				Required:    true,
 				Description: "The name of the host",
@@ -317,7 +317,7 @@ func resourceCreateHost(d *schema.ResourceData, m interface{}) error {
 		return err
 	}
 
-	d.SetId(host.Name)
+	d.SetId(host.HostName)
 
 	return resourceReadHost(d, m)
 }
@@ -352,13 +352,16 @@ func resourceUpdateHost(d *schema.ResourceData, m interface{}) error {
 
 	host := getHostSchema(d)
 
-	oldVal, _ := d.GetChange("name")
+	oldVal, _ := d.GetChange("host_name")
 
 	if oldVal == "" { // No change, but perhaps the resource was manually deleted and need to update it so pass in the same name
-		oldVal = d.Get("name").(string)
+		oldVal = d.Get("host_name").(string)
 	}
 
 	err := nagiosClient.updateHost(host, oldVal)
+
+	// TODO: Need to move err check where we create a new host if one does not exist during an update to right below
+	// This will happen as we migrate to the separate gonagios client
 
 	if err != nil {
 		return err
@@ -390,8 +393,8 @@ func resourceDeleteHost(d *schema.ResourceData, m interface{}) error {
 
 func setDataFromHost(d *schema.ResourceData, host *Host) error {
 	// Required attributes
-	d.SetId(host.Name)
-	d.Set("name", host.Name)
+	d.SetId(host.HostName)
+	d.Set("host_name", host.HostName)
 	d.Set("alias", host.Alias)
 	d.Set("address", host.Address)
 	d.Set("max_check_attempts", host.MaxCheckAttempts)
@@ -542,7 +545,7 @@ func setDataFromHost(d *schema.ResourceData, host *Host) error {
 // getHostSchema retrieves the values provided from the user in their TF files and sets the Host struct fields to its values
 func getHostSchema(d *schema.ResourceData) *Host {
 	host := &Host{
-		Name:                       d.Get("name").(string),
+		HostName:                   d.Get("host_name").(string),
 		Alias:                      d.Get("alias").(string),
 		Address:                    d.Get("address").(string),
 		MaxCheckAttempts:           d.Get("max_check_attempts").(string),

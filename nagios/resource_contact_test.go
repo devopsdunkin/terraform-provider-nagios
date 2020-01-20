@@ -2,7 +2,6 @@ package nagios
 
 import (
 	"fmt"
-	"log"
 	"testing"
 
 	"github.com/hashicorp/terraform/helper/acctest"
@@ -10,7 +9,7 @@ import (
 	"github.com/hashicorp/terraform/terraform"
 )
 
-func TestAccContact_basic(t *testing.T) {
+func TestAccContactBasic(t *testing.T) {
 	contactName := "tf_" + acctest.RandString(10)
 	contactHostNotificationPeriod := "24x7"
 	contactServiceNotificationPeriod := "24x7"
@@ -29,7 +28,7 @@ func TestAccContact_basic(t *testing.T) {
 		CheckDestroy: testAccCheckContactDestroy(),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccContactResource_basic(contactName, contactHostNotificationPeriod, contactServiceNotificationPeriod, contactHostNotificationOptions, contactServiceNotificationOptions, contactHostNotificationCommands, contactServiceNotificationCommands, contactAlias, contactTemplates, contactEmail),
+				Config: testAccContactResourceBasic(contactName, contactHostNotificationPeriod, contactServiceNotificationPeriod, contactHostNotificationOptions, contactServiceNotificationOptions, contactHostNotificationCommands, contactServiceNotificationCommands, contactAlias, contactTemplates, contactEmail),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckContactExists(rName),
 				),
@@ -38,7 +37,7 @@ func TestAccContact_basic(t *testing.T) {
 	})
 }
 
-func TestAccContact_createAfterManualDestroy(t *testing.T) {
+func TestAccContactCreateAfterManualDestroy(t *testing.T) {
 	var contact = &Contact{}
 	contactName := "tf_" + acctest.RandString(10)
 	contactHostNotificationPeriod := "24x7"
@@ -58,7 +57,7 @@ func TestAccContact_createAfterManualDestroy(t *testing.T) {
 		CheckDestroy: testAccCheckContactDestroy(),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccContactResource_basic(contactName, contactHostNotificationPeriod, contactServiceNotificationPeriod, contactHostNotificationOptions, contactServiceNotificationOptions, contactHostNotificationCommands, contactServiceNotificationCommands, contactAlias, contactTemplates, contactEmail),
+				Config: testAccContactResourceBasic(contactName, contactHostNotificationPeriod, contactServiceNotificationPeriod, contactHostNotificationOptions, contactServiceNotificationOptions, contactHostNotificationCommands, contactServiceNotificationCommands, contactAlias, contactTemplates, contactEmail),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckContactExists(rName),
 					testAccCheckContactFetch(rName, contact),
@@ -73,14 +72,14 @@ func TestAccContact_createAfterManualDestroy(t *testing.T) {
 						t.Fatal(err)
 					}
 				},
-				Config: testAccContactResource_basic(contactName, contactHostNotificationPeriod, contactServiceNotificationPeriod, contactHostNotificationOptions, contactServiceNotificationOptions, contactHostNotificationCommands, contactServiceNotificationCommands, contactAlias, contactTemplates, contactEmail),
+				Config: testAccContactResourceBasic(contactName, contactHostNotificationPeriod, contactServiceNotificationPeriod, contactHostNotificationOptions, contactServiceNotificationOptions, contactHostNotificationCommands, contactServiceNotificationCommands, contactAlias, contactTemplates, contactEmail),
 				Check:  testAccCheckContactExists(rName),
 			},
 		},
 	})
 }
 
-func TestAccContact_updateName(t *testing.T) {
+func TestAccContactUpdateName(t *testing.T) {
 	firstContactName := "tf_" + acctest.RandString(10)
 	secondContactName := "tf_" + acctest.RandString(10)
 	contactHostNotificationPeriod := "24x7"
@@ -100,14 +99,14 @@ func TestAccContact_updateName(t *testing.T) {
 		CheckDestroy: testAccCheckContactDestroy(),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccContactResource_basic(firstContactName, contactHostNotificationPeriod, contactServiceNotificationPeriod, contactHostNotificationOptions, contactServiceNotificationOptions, contactHostNotificationCommands, contactServiceNotificationCommands, contactAlias, contactTemplates, contactEmail),
+				Config: testAccContactResourceBasic(firstContactName, contactHostNotificationPeriod, contactServiceNotificationPeriod, contactHostNotificationOptions, contactServiceNotificationOptions, contactHostNotificationCommands, contactServiceNotificationCommands, contactAlias, contactTemplates, contactEmail),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckContactExists(rName),
 					resource.TestCheckResourceAttr(rName, "contact_name", firstContactName),
 				),
 			},
 			{
-				Config: testAccContactResource_basic(secondContactName, contactHostNotificationPeriod, contactServiceNotificationPeriod, contactHostNotificationOptions, contactServiceNotificationOptions, contactHostNotificationCommands, contactServiceNotificationCommands, contactAlias, contactTemplates, contactEmail),
+				Config: testAccContactResourceBasic(secondContactName, contactHostNotificationPeriod, contactServiceNotificationPeriod, contactHostNotificationOptions, contactServiceNotificationOptions, contactHostNotificationCommands, contactServiceNotificationCommands, contactAlias, contactTemplates, contactEmail),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckContactExists(rName),
 					resource.TestCheckResourceAttr(rName, "contact_name", secondContactName),
@@ -117,7 +116,7 @@ func TestAccContact_updateName(t *testing.T) {
 	})
 }
 
-func testAccContactResource_basic(contactName, hostNotificationPeriod, serviceNotificationPeriod, hostNotificationOptions, serviceNotificationOptions, hostNotificationCommands, serviceNotificationCommands, alias, templates, email string) string {
+func testAccContactResourceBasic(contactName, hostNotificationPeriod, serviceNotificationPeriod, hostNotificationOptions, serviceNotificationOptions, hostNotificationCommands, serviceNotificationCommands, alias, templates, email string) string {
 	return fmt.Sprintf(`
 resource "nagios_contact" "contact" {
 	contact_name				  = "%s"
@@ -139,10 +138,6 @@ resource "nagios_contact" "contact" {
 	]
 	email						  = "%s"
 	can_submit_commands			  = true
-	free_variables				  = {
-		"_team" = "System Admins",
-		"_test" = "TestContact123"
-	}
 }
 	`, contactName, hostNotificationPeriod, serviceNotificationPeriod, hostNotificationOptions, serviceNotificationOptions, hostNotificationCommands, serviceNotificationCommands, alias, templates, email)
 }
@@ -188,7 +183,6 @@ func getContactFromState(s *terraform.State, rName string) (*Contact, error) {
 	}
 
 	name := rs.Primary.Attributes["contact_name"]
-	log.Printf("[DEBUG] Name value from state - %s", name)
 
 	contact, err := nagiosClient.getContact(name)
 
@@ -231,10 +225,6 @@ func testAccCheckContactFetch(rName string, contact *Contact) resource.TestCheck
 
 		if returnedContact.CanSubmitCommands != "" {
 			contact.CanSubmitCommands = returnedContact.CanSubmitCommands
-		}
-
-		if returnedContact.FreeVariables != nil {
-			contact.FreeVariables = returnedContact.FreeVariables
 		}
 
 		return nil

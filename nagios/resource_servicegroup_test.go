@@ -2,7 +2,6 @@ package nagios
 
 import (
 	"fmt"
-	"log"
 	"testing"
 
 	"github.com/hashicorp/terraform/helper/acctest"
@@ -10,7 +9,7 @@ import (
 	"github.com/hashicorp/terraform/terraform"
 )
 
-func TestAccservicegroup_basic(t *testing.T) {
+func TestAccservicegroupBasic(t *testing.T) {
 	sgName := "tf_" + acctest.RandString(10)
 	sgAlias := "tf_" + acctest.RandString(10)
 	rName := "nagios_servicegroup.servicegroup"
@@ -21,7 +20,7 @@ func TestAccservicegroup_basic(t *testing.T) {
 		CheckDestroy: testAccCheckservicegroupDestroy(),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccservicegroupResource_basic(sgName, sgAlias),
+				Config: testAccservicegroupResourceBasic(sgName, sgAlias),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckServicegroupExists(rName),
 				),
@@ -30,7 +29,7 @@ func TestAccservicegroup_basic(t *testing.T) {
 	})
 }
 
-func TestAccservicegroup_createAfterManualDestroy(t *testing.T) {
+func TestAccservicegroupCreateAfterManualDestroy(t *testing.T) {
 	var servicegroup = &Servicegroup{}
 	sgName := "tf_" + acctest.RandString(10)
 	sgAlias := "tf_" + acctest.RandString(10)
@@ -42,7 +41,7 @@ func TestAccservicegroup_createAfterManualDestroy(t *testing.T) {
 		CheckDestroy: testAccCheckservicegroupDestroy(),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccservicegroupResource_basic(sgName, sgAlias),
+				Config: testAccservicegroupResourceBasic(sgName, sgAlias),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckServicegroupExists(rName),
 					testAccCheckServicegroupFetch(rName, servicegroup),
@@ -57,14 +56,14 @@ func TestAccservicegroup_createAfterManualDestroy(t *testing.T) {
 						t.Fatal(err)
 					}
 				},
-				Config: testAccservicegroupResource_basic(sgName, sgAlias),
+				Config: testAccservicegroupResourceBasic(sgName, sgAlias),
 				Check:  testAccCheckServicegroupExists(rName),
 			},
 		},
 	})
 }
 
-func TestAccservicegroup_updateName(t *testing.T) {
+func TestAccservicegroupUpdateName(t *testing.T) {
 	sgFirstName := "tf_" + acctest.RandString(10)
 	sgAlias := "tf_" + acctest.RandString(10)
 	sgSecondName := "tf_" + acctest.RandString(10)
@@ -76,14 +75,14 @@ func TestAccservicegroup_updateName(t *testing.T) {
 		CheckDestroy: testAccCheckservicegroupDestroy(),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccservicegroupResource_basic(sgFirstName, sgAlias),
+				Config: testAccservicegroupResourceBasic(sgFirstName, sgAlias),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckServicegroupExists(rName),
 					resource.TestCheckResourceAttr(rName, "name", sgFirstName),
 				),
 			},
 			{
-				Config: testAccservicegroupResource_basic(sgSecondName, sgAlias),
+				Config: testAccservicegroupResourceBasic(sgSecondName, sgAlias),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckServicegroupExists(rName),
 					resource.TestCheckResourceAttr(rName, "name", sgSecondName),
@@ -93,7 +92,7 @@ func TestAccservicegroup_updateName(t *testing.T) {
 	})
 }
 
-func testAccservicegroupResource_basic(name, alias string) string {
+func testAccservicegroupResourceBasic(name, alias string) string {
 	return fmt.Sprintf(`
 resource "nagios_servicegroup" "servicegroup" {
 	name = "%s"
@@ -119,8 +118,6 @@ func testAccCheckservicegroupDestroy() resource.TestCheckFunc {
 				return fmt.Errorf("servicegroup %s still exists", name)
 			}
 		}
-
-		log.Printf("[DEBUG] Just seeing when we hit this in logs to deteremine if destroy is getting called early")
 
 		return nil
 	}

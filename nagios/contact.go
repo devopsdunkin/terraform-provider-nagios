@@ -55,9 +55,7 @@ func (c *Client) getContact(name string) (*Contact, error) {
 		return nil, err
 	}
 
-	json.Unmarshal(body, &contact.FreeVariables)
-
-	for i, _ := range contactArray {
+	for i := range contactArray {
 		contact.ContactName = contactArray[i].ContactName
 		contact.HostNotificationsEnabled = contactArray[i].HostNotificationsEnabled
 		contact.ServiceNotificationsEnabled = contactArray[i].ServiceNotificationsEnabled

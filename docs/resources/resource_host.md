@@ -1,8 +1,8 @@
-# resource: host
+# Resource: Host
 
 ## Overview
 
-This resource manages Nagios hosts. Nagios monitors hosts based off health checks defined by an administrator.
+This resource manages Nagios hosts. It can be used to create, update and delete hosts, as well as manage all attributes that Nagios currently supports.
 
 Refer to the object definition for [hosts](https://assets.nagios.com/downloads/nagioscore/docs/nagioscore/3/en/objectdefinitions.html#host) from Nagios to learn more
 
@@ -14,7 +14,7 @@ This resource allows you to configure any attribute on a host, however, we recom
 
 ```hcl
 resource "nagios_host" "host1" {
-    name                            = "host1"
+    host_name                       = "host1"
     address                         = "127.0.0.1"
     display_name                    = "host1 - Test server"
     max_check_attempts              = "2"
@@ -56,7 +56,7 @@ resource "nagios_host" "host1" {
 
 Below is a brief description of what each field is used for in Nagios. Refer to the [official Nagios documentation](https://assets.nagios.com/downloads/nagioscore/docs/nagioscore/3/en/objectdefinitions.html) for more detail
 
-`name` (required): The name of the host  
+`host_name` (required): The name of the host  
 `address` (required): The IP address of the host  
 `display_name`: Another name for the host that will be displayed in the web interface. If left blank, the value from `name` will be displayed  
 `max_check_attempts` (required): How many times to retry the host check before alerting when the state is anything other than OK  
@@ -114,5 +114,5 @@ Below is a brief description of what each field is used for in Nagios. Refer to 
 `vrml_image`: The image that will be used as a texture map for the specified host  
 `statusmap_image`: The name of the image that should be used in the statusmap CGI in Nagios  
 `2d_coords`: The coordinates to use when drawing the host in the statusmap CGI  
-`3d_coords`: The coordinates to use when drawing the host in the statuswrl CGI
+`3d_coords`: The coordinates to use when drawing the host in the statuswrl CGI  
 `free_variables`: A key/value pair of custom information that can be associated with the host. Nagios requires that the key begin with an underscore
