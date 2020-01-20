@@ -22,3 +22,8 @@ resource:
 	touch nagios/resource_${name}.go
 	touch nagios/resource_${name}_test.go
 	touch docs/resources/resource_${name}.md
+
+data_source:
+	touch nagios/data_source_${name}.go
+	touch nagios/data_source_${name}_test.go
+	touch docs/data_sources/data_source_${name}.md
