@@ -3,7 +3,6 @@ package nagios
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 
 	"github.com/hashicorp/terraform/helper/schema"
 )
@@ -147,9 +146,7 @@ func resourceReadAuthServer(d *schema.ResourceData, m interface{}) error {
 	nagiosClient := m.(*Client)
 
 	authServer, err := nagiosClient.getAuthServer(d.Id())
-	log.Printf("[DEBUG] server_id value: %s", d.Id())
 
-	log.Printf("[DEBUG] authServer inside resourceReadAuthServer = %s", authServer)
 	if err != nil {
 		return err
 	}
@@ -160,11 +157,7 @@ func resourceReadAuthServer(d *schema.ResourceData, m interface{}) error {
 		return nil
 	}
 
-	log.Printf("[DEBUG] Right before calling setDataFromAuthServer()")
-
 	setDataFromAuthServer(d, authServer)
-
-	log.Printf("[DEBUG] authServer inside READ = %s", authServer)
 
 	return nil
 }

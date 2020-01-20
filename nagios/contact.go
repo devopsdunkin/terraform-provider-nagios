@@ -2,7 +2,6 @@ package nagios
 
 import (
 	"encoding/json"
-	"log"
 	"net/url"
 	"strings"
 )
@@ -87,11 +86,9 @@ func (c *Client) getContact(name string) (*Contact, error) {
 }
 
 func (c *Client) updateContact(contact *Contact, oldVal interface{}) error {
-	log.Printf("[DEBUG] contact name: %s; oldVal: %s", contact.ContactName, oldVal.(string))
 	nagiosURL, err := c.buildURL("contact", "PUT", "contact_name", contact.ContactName, oldVal.(string), "")
 
 	if err != nil {
-		log.Printf("[ERROR] Error occurred: %s", err.Error())
 		return err
 	}
 
@@ -106,7 +103,6 @@ func (c *Client) updateContact(contact *Contact, oldVal interface{}) error {
 		if strings.Contains(err.Error(), "Does the contact exist?") {
 			c.newContact(contact)
 		} else {
-			log.Printf("[ERROR] Error occurred during put. %s", err.Error())
 			return err
 		}
 	}

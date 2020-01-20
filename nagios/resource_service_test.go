@@ -2,7 +2,6 @@ package nagios
 
 import (
 	"fmt"
-	"log"
 	"testing"
 
 	"github.com/hashicorp/terraform/helper/acctest"
@@ -180,12 +179,10 @@ func testAccCheckServiceDestroy() resource.TestCheckFunc {
 
 func testAccCheckServiceExists(resourceName string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
-		service, err := getServiceFromState(s, resourceName)
+		_, err := getServiceFromState(s, resourceName)
 		if err != nil {
 			return err
 		}
-
-		log.Printf("[DEBUG] testAccCheckServiceExists, service: %s", service)
 
 		return nil
 	}

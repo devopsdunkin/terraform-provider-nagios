@@ -2,7 +2,6 @@ package nagios
 
 import (
 	"encoding/json"
-	"log"
 	"net/url"
 	"strings"
 )
@@ -17,8 +16,6 @@ func (c *Client) newAuthServer(authServer *AuthServer) ([]byte, error) {
 	data := createAuthServerHTTPBody(authServer)
 
 	body, err := c.post(data, nagiosURL)
-
-	log.Printf("[DEBUG] Value of body (newAuthServer) %s", body)
 
 	if err != nil {
 		return nil, err
@@ -38,35 +35,22 @@ func (c *Client) getAuthServer(ID string) (*AuthServer, error) {
 	var authServer AuthServer
 	var mapAuthServer MapOfAuthServers
 
-	log.Printf("[DEBUG] Value of ID during getAuthServer: %s", ID)
-
 	nagiosURL, err := c.buildURL("authserver", "GET", "server_id", ID, "", "")
 
 	if err != nil {
 		return nil, err
 	}
 
-	log.Printf("[DEBUG] NagiosURL = %s", nagiosURL)
-	// log.Printf("[DEBUG] mapAuthServer = %s", mapAuthServer)
-
 	data := &url.Values{}
 	data.Set("server_id", ID)
-
-	log.Printf("[DEBUG] data: %s", data.Encode())
 
 	body, err := c.get(data.Encode(), nagiosURL)
 
 	if err != nil {
-		log.Printf("[DEBUG] Error during get(). Returning error")
 		return nil, err
 	}
 
-	log.Printf("[DEBUG] body: %s", body)
-
-	log.Printf("[DEBUG] Right before Unmarshal")
-
 	err = json.Unmarshal(body, &mapAuthServer)
-	// err = json.Unmarshal(body, &authServer)
 
 	if err != nil {
 		return nil, err
@@ -76,13 +60,6 @@ func (c *Client) getAuthServer(ID string) (*AuthServer, error) {
 		authServer = mapAuthServer.AuthServerEntry[0]
 		authServer.ServerID = authServer.ID
 	}
-
-	// if i > 1 {
-	// break
-	// }
-	// }
-	log.Printf("[DEBUG] Made it through getAuthServer(). Returning authServer object")
-	log.Printf("[DEBUG] authServer value inside getAuthServer = %s", authServer)
 
 	return &authServer, nil
 }
@@ -94,7 +71,8 @@ func (c *Client) updateAuthServer(authServer *AuthServer, oldVal interface{}) er
 		return err
 	}
 
-	nagiosURL = setUpdateURLAuthServerParams(nagiosURL, authServer)
+	// nagiosURL = setUpdateURLAuthServerParams(nagiosURL, authServer)
+	nagiosURL = nagiosURL + setURLParams(authServer).Encode()
 
 	_, err = c.put(nagiosURL)
 

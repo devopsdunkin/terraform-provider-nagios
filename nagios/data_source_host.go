@@ -1,8 +1,6 @@
 package nagios
 
 import (
-	"log"
-
 	"github.com/hashicorp/terraform/helper/schema"
 )
 
@@ -249,15 +247,11 @@ func dataSourceHostRead(d *schema.ResourceData, m interface{}) error {
 
 	hostName := d.Get("host_name").(string)
 
-	log.Printf("[DEBUG] hostName = %s", hostName)
-
 	host, err := client.getHost(hostName)
 
 	if err != nil {
 		return err
 	}
-
-	log.Printf("[DEBUG] host: %s", host)
 
 	setDataFromHost(d, host)
 

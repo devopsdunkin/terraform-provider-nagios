@@ -2,7 +2,6 @@ package nagios
 
 import (
 	"encoding/json"
-	"log"
 	"net/url"
 	"strings"
 )
@@ -16,8 +15,6 @@ func (c *Client) newHost(host *Host) ([]byte, error) {
 	}
 
 	data := setURLParams(host)
-
-	log.Printf("[DEBUG] NagiosURL: %s", nagiosURL)
 
 	body, err := c.post(data, nagiosURL)
 
@@ -48,7 +45,6 @@ func (c *Client) getHost(name string) (*Host, error) {
 	data := &url.Values{}
 	data.Set("host_name", name)
 
-	// err = c.get(data, &hostArray, nagiosURL)
 	body, err := c.get(data.Encode(), nagiosURL)
 
 	if err != nil {
@@ -66,7 +62,7 @@ func (c *Client) getHost(name string) (*Host, error) {
 	// TODO: We need to find a better way of checking for this as an optional field
 	json.Unmarshal(body, &host.FreeVariables)
 
-	for i, _ := range hostArray {
+	for i := range hostArray {
 		host.HostName = hostArray[i].HostName
 		host.Alias = hostArray[i].Alias
 		host.Address = hostArray[i].Address
@@ -125,8 +121,6 @@ func (c *Client) updateHost(host *Host, oldVal interface{}) error {
 	}
 
 	nagiosURL = nagiosURL + setURLParams(host).Encode()
-
-	log.Printf("Nagios URL: %s", nagiosURL)
 
 	_, err = c.put(nagiosURL)
 

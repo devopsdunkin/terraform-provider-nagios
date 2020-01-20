@@ -2,7 +2,6 @@ package nagios
 
 import (
 	"fmt"
-	"log"
 	"testing"
 
 	"github.com/hashicorp/terraform/helper/resource"
@@ -105,8 +104,6 @@ func testAccAuthServerResourceBasic(enabled bool, connMethod, adAccountsuffix, a
 			`, enabled, connMethod, ldapPort, ldapHost, baseDN, securityLevel)
 	}
 
-	log.Printf("[DEBUG] Auth server output: %s", output)
-
 	return output
 }
 
@@ -119,7 +116,6 @@ func testAccCheckAuthServerDestroy() resource.TestCheckFunc {
 
 			// Get the ID from the state and check if it still exists
 			name := rs.Primary.Attributes["server_id"]
-			log.Printf("[DEBUG] testAccCheckAuthServerDestroy() - name: %s", name)
 
 			conn := testAccProvider.Meta().(*Client)
 
@@ -152,10 +148,8 @@ func getAuthServerFromState(s *terraform.State, resourceName string) (*AuthServe
 	}
 
 	ID := rs.Primary.Attributes["server_id"]
-	log.Printf("[DEBUG] Name value from state - %s", ID)
 
 	authServer, err := nagiosClient.getAuthServer(ID)
-	log.Printf("[DEBUG] Inside getAuthServerFromState")
 
 	if err != nil {
 		return nil, fmt.Errorf("error getting auth server with name %s: %s", ID, err)

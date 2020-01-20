@@ -2,7 +2,6 @@ package nagios
 
 import (
 	"fmt"
-	"log"
 	"testing"
 
 	"github.com/hashicorp/terraform/helper/acctest"
@@ -119,8 +118,6 @@ func testAccCheckservicegroupDestroy() resource.TestCheckFunc {
 				return fmt.Errorf("servicegroup %s still exists", name)
 			}
 		}
-
-		log.Printf("[DEBUG] Just seeing when we hit this in logs to deteremine if destroy is getting called early")
 
 		return nil
 	}

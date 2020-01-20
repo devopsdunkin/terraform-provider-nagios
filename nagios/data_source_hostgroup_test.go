@@ -2,7 +2,6 @@ package nagios
 
 import (
 	"fmt"
-	"log"
 	"testing"
 
 	"github.com/hashicorp/terraform/helper/acctest"
@@ -47,8 +46,6 @@ func TestAccHostgroupDataSource_basic(t *testing.T) {
 }
 
 func testAccHostgroupDataSourceBasic(hostName, hostAlias, hostAddress, hostMaxCheckAttempts, hostCheckPeriod, hostNotificationInterval, hostNotificationPeriod, contacts, hostTemplates, hgName, hgAlias string) string {
-	log.Printf("hostgroup name: %s", hgName)
-
 	return fmt.Sprintf(`
 	resource "nagios_host" "host" {
 		host_name = "%s"

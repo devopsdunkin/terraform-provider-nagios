@@ -2,7 +2,6 @@ package nagios
 
 import (
 	"encoding/json"
-	"log"
 	"net/url"
 	"strings"
 )
@@ -35,7 +34,6 @@ func (c *Client) newService(service *Service) ([]byte, error) {
 
 // TODO: Need to refactor get, update and delete to accomodtae contacts being an array
 func (c *Client) getService(name string) (*Service, error) {
-	log.Printf("[DEBUG] getService, name: %s", name)
 	var serviceArray = []Service{}
 	var service Service
 
@@ -61,10 +59,6 @@ func (c *Client) getService(name string) (*Service, error) {
 	}
 
 	json.Unmarshal(body, &service.FreeVariables)
-
-	// if err != nil {
-	// 	return nil, err
-	// }
 
 	for i := range serviceArray {
 		service.ServiceName = serviceArray[i].ServiceName

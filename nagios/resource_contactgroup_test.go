@@ -2,7 +2,6 @@ package nagios
 
 import (
 	"fmt"
-	"log"
 	"testing"
 
 	"github.com/hashicorp/terraform/helper/acctest"
@@ -149,7 +148,6 @@ func getContactgroupFromState(s *terraform.State, resourceName string) (*Contact
 	}
 
 	name := rs.Primary.Attributes["contactgroup_name"]
-	log.Printf("[DEBUG] Name value from state - %s", name)
 
 	contactgroup, err := nagiosClient.getContactgroup(name)
 
