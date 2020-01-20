@@ -66,7 +66,7 @@ func (c *Client) getService(name string) (*Service, error) {
 	// 	return nil, err
 	// }
 
-	for i, _ := range serviceArray {
+	for i := range serviceArray {
 		service.ServiceName = serviceArray[i].ServiceName
 		service.HostName = serviceArray[i].HostName
 		service.Description = serviceArray[i].Description
@@ -105,6 +105,7 @@ func (c *Client) getService(name string) (*Service, error) {
 		service.IconImage = serviceArray[i].IconImage
 		service.IconImageAlt = serviceArray[i].IconImageAlt
 		service.Register = serviceArray[i].Register
+		service.FreeVariables = serviceArray[i].FreeVariables
 
 		if i > 1 { // Nagios should only return 1 object during a GET with the way we are manipulating it. So only grab the first object and break if we have more than 1
 			break
