@@ -55,8 +55,31 @@
           
             <li class="toctree-l1">
 		
+    <span class="caption-text">data sources</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../data_sources/data_source_host/">data_source_host</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../data_sources/data_source_hostgroup/">data_source_hostgroup</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../data_sources/data_source_service/">data_source_service</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
     <span class="caption-text">resources</span>
     <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../resource_authserver/">resource_authserver</a>
+                </li>
                 <li class="">
                     
     <a class="" href="../resource_contact/">resource_contact</a>
@@ -143,13 +166,13 @@
               
                 <h1 id="resource-host">Resource: Host</h1>
 <h2 id="overview">Overview</h2>
-<p>This resource manages Nagios hosts. Nagios monitors hosts based off health checks defined by an administrator.</p>
+<p>This resource manages Nagios hosts. It can be used to create, update and delete hosts, as well as manage all attributes that Nagios currently supports.</p>
 <p>Refer to the object definition for <a href="https://assets.nagios.com/downloads/nagioscore/docs/nagioscore/3/en/objectdefinitions.html#host">hosts</a> from Nagios to learn more</p>
 <h2 id="best-practices">Best practices</h2>
 <p>This resource allows you to configure any attribute on a host, however, we recommend to manually create a host template that contains common settings for the hosts, and then use the host resource to create your hosts and set host specific attributes.</p>
 <h2 id="example">Example</h2>
 <pre><code class="hcl">resource &quot;nagios_host&quot; &quot;host1&quot; {
-    name                            = &quot;host1&quot;
+    host_name                       = &quot;host1&quot;
     address                         = &quot;127.0.0.1&quot;
     display_name                    = &quot;host1 - Test server&quot;
     max_check_attempts              = &quot;2&quot;
@@ -189,7 +212,7 @@
 
 <h2 id="arguments">Arguments</h2>
 <p>Below is a brief description of what each field is used for in Nagios. Refer to the <a href="https://assets.nagios.com/downloads/nagioscore/docs/nagioscore/3/en/objectdefinitions.html">official Nagios documentation</a> for more detail</p>
-<p><code>name</code> (required): The name of the host<br />
+<p><code>host_name</code> (required): The name of the host<br />
 <code>address</code> (required): The IP address of the host<br />
 <code>display_name</code>: Another name for the host that will be displayed in the web interface. If left blank, the value from <code>name</code> will be displayed<br />
 <code>max_check_attempts</code> (required): How many times to retry the host check before alerting when the state is anything other than OK<br />

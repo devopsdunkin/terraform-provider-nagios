@@ -55,8 +55,31 @@
           
             <li class="toctree-l1">
 		
+    <span class="caption-text">data sources</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../data_sources/data_source_host/">data_source_host</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../data_sources/data_source_hostgroup/">data_source_hostgroup</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../data_sources/data_source_service/">data_source_service</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
     <span class="caption-text">resources</span>
     <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../resource_authserver/">resource_authserver</a>
+                </li>
                 <li class="">
                     
     <a class="" href="../resource_contact/">resource_contact</a>
@@ -141,8 +164,8 @@
               
                 <h1 id="resource-servicegroup">Resource: Servicegroup</h1>
 <h2 id="overview">Overview</h2>
-<p>This resource manages Nagios servicegroups. Servicegroups are used to logically group services together that may share a
-similar function or provide checks for a specific type of server. Refer to the object definition for <a href="https://assets.nagios.com/downloads/nagioscore/docs/nagioscore/3/en/objectdefinitions.html#servicegroup">servicegroups</a> from Nagios to learn more</p>
+<p>This resource manages Nagios servicegroups. It can be used to create, update and delete service groups, as well as manage all attributes currently supported by Nagios.</p>
+<p>Refer to the object definition for <a href="https://assets.nagios.com/downloads/nagioscore/docs/nagioscore/3/en/objectdefinitions.html#servicegroup">servicegroups</a> from Nagios to learn more</p>
 <h2 id="example">Example</h2>
 <pre><code class="hcl">resource &quot;nagios_servicegroup&quot; &quot;servicegroup1&quot; {
     name    = &quot;servicegroup1&quot;

@@ -55,8 +55,31 @@
           
             <li class="toctree-l1">
 		
+    <span class="caption-text">data sources</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../data_sources/data_source_host/">data_source_host</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../data_sources/data_source_hostgroup/">data_source_hostgroup</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../data_sources/data_source_service/">data_source_service</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
     <span class="caption-text">resources</span>
     <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../resource_authserver/">resource_authserver</a>
+                </li>
                 <li class="">
                     
     <a class="" href="../resource_contact/">resource_contact</a>
@@ -142,7 +165,7 @@
                 <h1 id="resource-hostgroup">Resource: Hostgroup</h1>
 <h2 id="overview">Overview</h2>
 <p>This resource manages Nagios host groups. Host groups are used to logically group servers together that may share a
-similar function or other attribute. Refer to the object definition for <a href="https://assets.nagios.com/downloads/nagioscore/docs/nagioscore/3/en/objectdefinitions.html#hostgroup">hostgroups</a> from Nagios to learn more</p>
+similar function or other attribute. The resource can be used to create, update and delete host groups, as well as manage all attributes that are currently supported by Nagios.</p>
 <p>Refer to the object definition for <a href="https://assets.nagios.com/downloads/nagioscore/docs/nagioscore/3/en/objectdefinitions.html#hostgroup">hostgroups</a> from Nagios to learn more</p>
 <h2 id="example">Example</h2>
 <pre><code class="hcl">resource &quot;nagios_hostgroup&quot; &quot;hostgroup1&quot; {

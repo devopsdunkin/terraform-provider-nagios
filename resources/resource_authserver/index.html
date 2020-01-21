@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../../img/favicon.ico">
-  <title>data_source_host - terraform provider: nagios</title>
+  <title>resource_authserver - terraform provider: nagios</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
@@ -17,9 +17,9 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "data_source_host";
-    var mkdocs_page_input_path = "data_sources/data_source_host.md";
-    var mkdocs_page_url = "/terraform-propvider-nagios/data_sources/data_source_host/";
+    var mkdocs_page_name = "resource_authserver";
+    var mkdocs_page_input_path = "resources/resource_authserver.md";
+    var mkdocs_page_url = "/terraform-propvider-nagios/resources/resource_authserver/";
   </script>
   
   <script src="../../js/jquery-2.1.1.min.js" defer></script>
@@ -57,12 +57,31 @@
 		
     <span class="caption-text">data sources</span>
     <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../data_sources/data_source_host/">data_source_host</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../data_sources/data_source_hostgroup/">data_source_hostgroup</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../data_sources/data_source_service/">data_source_service</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">resources</span>
+    <ul class="subnav">
                 <li class=" current">
                     
-    <a class="current" href="./">data_source_host</a>
+    <a class="current" href="./">resource_authserver</a>
     <ul class="subnav">
             
-    <li class="toctree-l3"><a href="#data-source-host">Data Source: Host</a></li>
+    <li class="toctree-l3"><a href="#resource-auth-server">Resource: Auth Server</a></li>
     
         <ul>
         
@@ -79,46 +98,27 @@
                 </li>
                 <li class="">
                     
-    <a class="" href="../data_source_hostgroup/">data_source_hostgroup</a>
+    <a class="" href="../resource_contact/">resource_contact</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../data_source_service/">data_source_service</a>
-                </li>
-    </ul>
-	    </li>
-          
-            <li class="toctree-l1">
-		
-    <span class="caption-text">resources</span>
-    <ul class="subnav">
-                <li class="">
-                    
-    <a class="" href="../../resources/resource_authserver/">resource_authserver</a>
+    <a class="" href="../resource_contactgroup/">resource_contactgroup</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../resources/resource_contact/">resource_contact</a>
+    <a class="" href="../resource_host/">resource_host</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../resources/resource_contactgroup/">resource_contactgroup</a>
+    <a class="" href="../resource_hostgroup/">resource_hostgroup</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../resources/resource_host/">resource_host</a>
+    <a class="" href="../resource_service/">resource_service</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../resources/resource_hostgroup/">resource_hostgroup</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../../resources/resource_service/">resource_service</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../../resources/resource_servicegroup/">resource_servicegroup</a>
+    <a class="" href="../resource_servicegroup/">resource_servicegroup</a>
                 </li>
     </ul>
 	    </li>
@@ -145,14 +145,14 @@
     
       
         
-          <li>data sources &raquo;</li>
+          <li>resources &raquo;</li>
         
       
     
-    <li>data_source_host</li>
+    <li>resource_authserver</li>
     <li class="wy-breadcrumbs-aside">
       
-        <a href="https://github.com/devopsdunkin/terraform-provider-nagios/edit/master/docs/data_sources/data_source_host.md"
+        <a href="https://github.com/devopsdunkin/terraform-provider-nagios/edit/master/docs/resources/resource_authserver.md"
           class="icon icon-github"> Edit on GitHub</a>
       
     </li>
@@ -162,19 +162,30 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="data-source-host">Data Source: Host</h1>
+                <h1 id="resource-auth-server">Resource: Auth Server</h1>
 <h2 id="overview">Overview</h2>
-<p>This data source retrieves a host object from Nagios. The data source will retrieve any setting that is defined in Nagios for the host.</p>
-<p>Refer to the object definition for <a href="https://assets.nagios.com/downloads/nagioscore/docs/nagioscore/3/en/objectdefinitions.html#host">hosts</a> from Nagios to learn more</p>
+<p>This resource manages Nagios authentication servers. Authentication servers allow for LDAP or Active Directory authentication for Nagios XI. This resource provides the ability to create and delete authentication servers. The Nagios XI API currently does not support update (HTTP PUT) operations, so any changes made to an existing resource require the resource to be destroyed and created with the new values.</p>
 <h2 id="example">Example</h2>
-<pre><code class="hcl">data &quot;nagios_host&quot; &quot;webserver1&quot; {
-    host_name       = &quot;webserver1&quot;
+<pre><code class="hcl">resource &quot;nagios_authserver&quot; &quot;authserver1&quot; {
+    enabled                 = true
+    connection_method       = &quot;ad&quot;
+    ad_account_suffix       = &quot;@domain.local&quot;
+    ad_domain_controllers   = &quot;dc1.domain.local&quot;
+    base_dn                 = &quot;OU=IT, DC=domain, DC=local&quot;
+    security_level          = &quot;ssl&quot;
 }
 </code></pre>
 
 <h2 id="arguments">Arguments</h2>
-<p>Below is a brief description of what each field is used for in Nagios. Refer to the <a href="https://assets.nagios.com/downloads/nagioscore/docs/nagioscore/3/en/objectdefinitions.html">official Nagios documentation</a> for more detail</p>
-<p><code>host_name</code> (required): The name of the host to retrieve from Nagios.</p>
+<p>Below is a brief description of what each field is used for in Nagios</p>
+<p><code>enabled</code>: Determines if the authentication server is enabled in Nagios XI. The default is <code>true</code>
+<code>connection_method</code> (required): The connection method to use. It must be either <code>ad</code> or <code>ldap</code>
+<code>ad_account_suffix</code>: The account suffix to use when <code>connection_method</code> is <code>ad</code>. It must be in the format of <code>@domain.local</code>.
+<code>ad_domain_controllers</code>: A list of domain controllers used for authentication. This field is required when <code>connection_method</code> is <code>ad</code>. The list should be provided as a comma separated string
+<code>base_dn</code> (required): The disntguished name within the directory or tree where the query should look for users
+<code>security_level</code>: The type of encryption to use, which can be either <code>ssl</code>, <code>tls</code> or <code>none</code>
+<code>ldap_host</code>: The host name of the LDAP server to connect to. This field is required when the <code>connection_method</code> is set to <code>ldap</code>
+<code>ldap_port</code>: The port to use when connecting with LDAP. This field is required when the <code>connection_method</code> is set to <code>ldap</code>. The default is <code>389</code></p>
               
             </div>
           </div>
@@ -182,10 +193,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../data_source_hostgroup/" class="btn btn-neutral float-right" title="data_source_hostgroup">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../resource_contact/" class="btn btn-neutral float-right" title="resource_contact">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../.." class="btn btn-neutral" title="getting started"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../../data_sources/data_source_service/" class="btn btn-neutral" title="data_source_service"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -213,10 +224,10 @@
           <a href="https://github.com/devopsdunkin/terraform-provider-nagios/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
       
       
-        <span><a href="../.." style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../../data_sources/data_source_service/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../data_source_hostgroup/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../resource_contact/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>

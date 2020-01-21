@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../../img/favicon.ico">
-  <title>data_source_host - terraform provider: nagios</title>
+  <title>data_source_hostgroup - terraform provider: nagios</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
@@ -17,9 +17,9 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "data_source_host";
-    var mkdocs_page_input_path = "data_sources/data_source_host.md";
-    var mkdocs_page_url = "/terraform-propvider-nagios/data_sources/data_source_host/";
+    var mkdocs_page_name = "data_source_hostgroup";
+    var mkdocs_page_input_path = "data_sources/data_source_hostgroup.md";
+    var mkdocs_page_url = "/terraform-propvider-nagios/data_sources/data_source_hostgroup/";
   </script>
   
   <script src="../../js/jquery-2.1.1.min.js" defer></script>
@@ -57,12 +57,16 @@
 		
     <span class="caption-text">data sources</span>
     <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../data_source_host/">data_source_host</a>
+                </li>
                 <li class=" current">
                     
-    <a class="current" href="./">data_source_host</a>
+    <a class="current" href="./">data_source_hostgroup</a>
     <ul class="subnav">
             
-    <li class="toctree-l3"><a href="#data-source-host">Data Source: Host</a></li>
+    <li class="toctree-l3"><a href="#data-source-hostgroup">Data Source: Hostgroup</a></li>
     
         <ul>
         
@@ -76,10 +80,6 @@
     
 
     </ul>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../data_source_hostgroup/">data_source_hostgroup</a>
                 </li>
                 <li class="">
                     
@@ -149,10 +149,10 @@
         
       
     
-    <li>data_source_host</li>
+    <li>data_source_hostgroup</li>
     <li class="wy-breadcrumbs-aside">
       
-        <a href="https://github.com/devopsdunkin/terraform-provider-nagios/edit/master/docs/data_sources/data_source_host.md"
+        <a href="https://github.com/devopsdunkin/terraform-provider-nagios/edit/master/docs/data_sources/data_source_hostgroup.md"
           class="icon icon-github"> Edit on GitHub</a>
       
     </li>
@@ -162,19 +162,18 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="data-source-host">Data Source: Host</h1>
+                <h1 id="data-source-hostgroup">Data Source: Hostgroup</h1>
 <h2 id="overview">Overview</h2>
-<p>This data source retrieves a host object from Nagios. The data source will retrieve any setting that is defined in Nagios for the host.</p>
-<p>Refer to the object definition for <a href="https://assets.nagios.com/downloads/nagioscore/docs/nagioscore/3/en/objectdefinitions.html#host">hosts</a> from Nagios to learn more</p>
+<p>This data source retrieves a host group from Nagios. The data source will retrieve any setting that is defined in Nagios for the host group.</p>
+<p>Refer to the object definition for <a href="https://assets.nagios.com/downloads/nagioscore/docs/nagioscore/3/en/objectdefinitions.html#hostgroup">hostgroups</a> from Nagios to learn more</p>
 <h2 id="example">Example</h2>
-<pre><code class="hcl">data &quot;nagios_host&quot; &quot;webserver1&quot; {
-    host_name       = &quot;webserver1&quot;
+<pre><code class="hcl">data &quot;nagios_hostgroup&quot; &quot;hostgroup1&quot; {
+    name    = &quot;hostgroup1&quot;
 }
 </code></pre>
 
 <h2 id="arguments">Arguments</h2>
-<p>Below is a brief description of what each field is used for in Nagios. Refer to the <a href="https://assets.nagios.com/downloads/nagioscore/docs/nagioscore/3/en/objectdefinitions.html">official Nagios documentation</a> for more detail</p>
-<p><code>host_name</code> (required): The name of the host to retrieve from Nagios.</p>
+<p><code>name</code> (required): The name of the Nagios host group  </p>
               
             </div>
           </div>
@@ -182,10 +181,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../data_source_hostgroup/" class="btn btn-neutral float-right" title="data_source_hostgroup">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../data_source_service/" class="btn btn-neutral float-right" title="data_source_service">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../.." class="btn btn-neutral" title="getting started"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../data_source_host/" class="btn btn-neutral" title="data_source_host"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -213,10 +212,10 @@
           <a href="https://github.com/devopsdunkin/terraform-provider-nagios/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
       
       
-        <span><a href="../.." style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../data_source_host/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../data_source_hostgroup/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../data_source_service/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>

@@ -55,8 +55,31 @@
           
             <li class="toctree-l1">
 		
+    <span class="caption-text">data sources</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../data_sources/data_source_host/">data_source_host</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../data_sources/data_source_hostgroup/">data_source_hostgroup</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../data_sources/data_source_service/">data_source_service</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
     <span class="caption-text">resources</span>
     <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../resource_authserver/">resource_authserver</a>
+                </li>
                 <li class="">
                     
     <a class="" href="../resource_contact/">resource_contact</a>
@@ -143,7 +166,7 @@
               
                 <h1 id="resource-service">Resource: Service</h1>
 <h2 id="overview">Overview</h2>
-<p>This resource manages Nagios services. Nagios monitors services based off health checks defined by an administrator.</p>
+<p>This resource manages Nagios services. It can be used to create, update and delete services, as well as manage all attributes currently supported by Nagios.</p>
 <p>Refer to the object definition for <a href="https://assets.nagios.com/downloads/nagioscore/docs/nagioscore/3/en/objectdefinitions.html#service">services</a> from Nagios to learn more</p>
 <h2 id="best-practices">Best practices</h2>
 <p>This resource allows you to configure any attribute for a service, however, we recommend to manually create a service template that contains common settings for the service, and then use this resource to create your services and set service or host specific attributes.</p>
