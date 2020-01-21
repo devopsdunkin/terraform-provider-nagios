@@ -170,8 +170,8 @@
 <p>This provider was tested on Nagios XI 5.6.7. It may work with other versions, it will just depend on if there are differences in how the API processes commands.</p>
 <h2 id="provider-setup">Provider setup</h2>
 <p>The provider requires the following attributes:</p>
-<p><code>url</code> (required): The URL to login to Nagios XI. This should just be the FQDN of the Nagios server, with <code>/nagiosxi</code> appended to it. It defaults to using the environment variable <code>NAGIOS_URL</code> if no value is provided in the provider definition.</p>
-<p><code>token</code> (required): The API token used to login to the Nagios XI API. This value can be found by logging in to the web application, clicking <code>Help</code>, and on the left hand side menu, click <code>Introduction</code>. Then it will be listed under the <code>Authentication</code> section. It defaults to using the environment variable <code>API_TOKEN</code> if no value is provided in the provider definition.</p>
+<p><code>url</code> (required): The URL to login to Nagios XI. This should just be the FQDN of the Nagios server, with <code>/nagiosxi</code> appended to it. It defaults to using the environment variable <code>NAGIOS_URL</code> if no value is provided in the provider definition.  </p>
+<p><code>token</code> (required): The API token used to login to the Nagios XI API. This value can be found by logging in to the web application, clicking <code>Help</code>, and on the left hand side menu, click <code>Introduction</code>. Then it will be listed under the <code>Authentication</code> section. It defaults to using the environment variable <code>API_TOKEN</code> if no value is provided in the provider definition.  </p>
 <h2 id="examples">Examples</h2>
 <pre><code class="hcl">provider &quot;nagios&quot; {
     url = &quot;http://localhost/nagiosxi&quot;
@@ -232,5 +232,5 @@
 
 <!--
 MkDocs version : 1.0.4
-Build Date UTC : 2020-01-21 02:51:28
+Build Date UTC : 2020-01-21 02:54:46
 -->
