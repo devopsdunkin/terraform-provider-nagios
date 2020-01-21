@@ -178,14 +178,14 @@
 
 <h2 id="arguments">Arguments</h2>
 <p>Below is a brief description of what each field is used for in Nagios</p>
-<p><code>enabled</code>: Determines if the authentication server is enabled in Nagios XI. The default is <code>true</code><br />
-<code>connection_method</code> (required): The connection method to use. It must be either <code>ad</code> or <code>ldap</code><br />
-<code>ad_account_suffix</code>: The account suffix to use when <code>connection_method</code> is <code>ad</code>. It must be in the format of <code>@domain.local</code>.<br />
-<code>ad_domain_controllers</code>: A list of domain controllers used for authentication. This field is required when <code>connection_method</code> is <code>ad</code>. The list should be provided as a comma separated string<br />
+<p><code>connection_method</code> (required): The connection method to use. It must be either <code>ad</code> or <code>ldap</code><br />
+<code>ad_account_suffix</code>: The account suffix to use when connection method is <code>ad</code>. It must be in the format of <code>@domain.local</code><br />
+<code>ad_domain_controllers</code>: A list of domain controllers used for authentication. This field is required when connection method is <code>ad</code>. The list should be provided as a comma separated string<br />
 <code>base_dn</code> (required): The disntguished name within the directory or tree where the query should look for users<br />
 <code>security_level</code>: The type of encryption to use, which can be either <code>ssl</code>, <code>tls</code> or <code>none</code><br />
-<code>ldap_host</code>: The host name of the LDAP server to connect to. This field is required when the <code>connection_method</code> is set to <code>ldap</code><br />
-<code>ldap_port</code>: The port to use when connecting with LDAP. This field is required when the <code>connection_method</code> is set to <code>ldap</code>. The default is <code>389</code>  </p>
+<code>ldap_host</code>: The host name of the LDAP server to connect to. This field is required when the connection method is set to <code>ldap</code><br />
+<code>ldap_port</code>: The port to use when connecting with LDAP. This field is required when the connection method is set to <code>ldap</code>. The default is "389"<br />
+<code>enabled</code>: Determines if the authentication server is enabled in Nagios XI. The default is <code>true</code>  </p>
               
             </div>
           </div>
