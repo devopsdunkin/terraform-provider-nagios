@@ -54,6 +54,27 @@ func (c *Client) sendRequest(httpRequest *http.Request) ([]byte, error) {
 	return body, nil
 }
 
+func (c *Client) buildURLv2(apiType, objectType, queryField, method string) (string, error) {
+	var nagiosURL strings.Builder
+
+	// Add URL set in provider definition
+	nagiosURL.WriteString(c.url)
+
+	nagiosURL.WriteString("/api/v1/")
+	nagiosURL.WriteString(apiType)
+	nagiosURL.WriteString("/")
+	nagiosURL.WriteString(objectType) // Until this point, calls are the same for all methods
+
+	if method == http.MethodPut || method == http.MethodDelete {
+		nagiosURL.WriteString(currentValue)
+
+		// Block to check if service, then we append svc desc into URL
+	}
+
+	// Append API key and pretty=1
+	// Append URL params if needed (PUT or GET)
+}
+
 // buildURL generates the appropriate URL to interact with the Nagios XI API
 func (c *Client) buildURL(objectType, method, objectName, name, oldVal, objectDescription string) (string, error) {
 	// TODO: This func has really become a mess...but it works. Plan is to revisit after building functionality
