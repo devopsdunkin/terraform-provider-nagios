@@ -52,9 +52,13 @@ workflows:
               only: /.*/
               ignore:
                 - gh-pages
+      - hold:
+          type: approval
+          requires:
+           - test
       - release:
           requires:
-            - test
+            - hold
           filters:
             branches:
               only: master
