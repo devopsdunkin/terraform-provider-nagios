@@ -48,9 +48,8 @@ workflows:
     jobs:
       - test:
           filters:
-            tags:
-              only: /.*/
             branches:
+              only: /.*/
               ignore:
                 - gh-pages
       - release:
