@@ -1,0 +1,47 @@
+CREATE
+/api/v1/config/host?apikey={{api_key}}&pretty=1
+/api/v1/config/hostgroup?apikey={{api_key}}&pretty=1
+/api/v1/config/service?apikey={{api_key}}&pretty=1
+/api/v1/config/servicegroup?apikey={{api_key}}&pretty=1
+/api/v1/config/contact?apikey={{api_key}}&pretty=1
+/api/v1/config/timeperiod?apikey={{api_key}}&pretty=1
+/api/v1/config/contactgroup?apikey={{api_key}}&pretty=1
+/api/v1/config/command?apikey={{api_key}}&pretty=1
+
+baseURL/apiType/objectType?apikey=c.api_key&pretty=1
+
+READ
+/api/v1/config/host?apikey={{api_key}}&pretty=1
+/api/v1/config/hostgroup?apikey={{api_key}}&pretty=1
+/api/v1/config/service?apikey={{api_key}}&pretty=1
+/api/v1/config/servicegroup?apikey={{api_key}}&pretty=1"
+/api/v1/config/contact?apikey={{api_key}}&pretty=1
+/api/v1/config/timeperiod?apikey={{api_key}}&pretty=1
+/api/v1/config/contactgroup?apikey={{api_key}}&pretty=1
+/api/v1/config/command?apikey={{api_key}}&pretty=1
+
+baseURL/apiType/objectType?apikey=c.api_key&pretty=1
+
+UPDATE
+/api/v1/config/host/tf_test1234?apikey={{api_key}}&pretty=1&applyconfig=1
+/api/v1/config/hostgroup/tf_test1?apikey={{api_key}}&pretty=1
+/api/v1/config/service/Ping1/Ping Check?apikey={{api_key}}&pretty=1
+/api/v1/config/servicegroup/testapiservicegroup?apikey={{api_key}}&pretty=1&alias=New Alias&applyconfig=1
+api/v1/config/contact/testcontact?apikey={{api_key}}&pretty=1
+/api/v1/config/timeperiod/testtimeperiod?apikey={{api_key}}&pretty=1
+/api/v1/config/contactgroup/testcontactgroup?apikey={{api_key}}&pretty=1
+/api/v1/config/command/check_touch_tmp?apikey={{api_key}}&pretty=1
+
+baseURL/apiType/objectType/currentValue?apikey=c.api_key&pretty=1&queryField=newValue
+
+DELETE
+/api/v1/config/host/testapihost?apikey={{api_key}}&pretty=1&applyconfig=1
+/api/v1/config/hostgroup/tf_test?apikey={{api_key}}&pretty=1&applyconfig=1
+/api/v1/config/service/svc1/svc-test?apike={{api_key}}&pretty=1&applyconfig=1 (service/<config_name>/<service_description>)
+/api/v1/config/servicegroup/testsg1?apikey={{api_key}}&pretty=1&applyconfig=1
+/api/v1/config/contact/testcontact?apikey={{api_key}}&pretty=1
+/api/v1/config/timeperiod/testtimeperiod?apikey={{api_key}}&pretty=1
+/api/v1/config/contactgroup/testcontactgroup?apikey={{api_key}}&pretty=1
+/api/v1/config/command/check_touch_tmp?apikey={{api_key}}&pretty=1
+
+baseURL/apiType/objectType/currentValue?apikey=c.api_key&pretty=1
