@@ -27,6 +27,7 @@ jobs:
       - run: go get -u github.com/mitchellh/gox
       - run: go get -u github.com/tcnksm/ghr
       - run:
+          # TODO: Need to add if statement in to check if provider files actually changed. Don't need to release if .circleci/docs/env folder change
           name: build and release
           command: |
             if [ "$CIRCLE_PROJECT_USERNAME" == "devopsdunkin"]; then
