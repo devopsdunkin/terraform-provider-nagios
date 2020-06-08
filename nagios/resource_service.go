@@ -43,7 +43,7 @@ type Service struct {
 	FirstNotificationDelay     string                 `json:"first_notification_delay,omitempty"`
 	NotificationOptions        []interface{}          `json:"notification_options,omitempty"`
 	NotificationsEnabled       string                 `json:"notifications_enabled,omitempty"`
-	ContactGroups              []interface{}          `json:"contact_group,omitemptys"`
+	ContactGroups              []interface{}          `json:"contact_groups,omitemptys"`
 	Notes                      string                 `json:"notes,omitempty"`
 	NotesURL                   string                 `json:"notes_url,omitempty"`
 	ActionURL                  string                 `json:"action_url,omitempty"`
