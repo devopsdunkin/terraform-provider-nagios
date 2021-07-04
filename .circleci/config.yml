@@ -27,17 +27,19 @@ jobs:
       - run: go get -u github.com/mitchellh/gox
       - run: go get -u github.com/tcnksm/ghr
       - run:
-          name: build
+          # TODO: Need to add if statement in to check if provider files actually changed. Don't need to release if .circleci/docs/env folder change
+          name: build and release
           command: |
-            gox -os="linux darwin windows" -arch="amd64" -output="dist/${CIRCLE_PROJECT_REPONAME}_{{.OS}}_{{.Arch}}"
-            cd dist/ && gzip *
-      - run:
-          name: create release
-          command: |
-            if [ "$CIRCLE_TAG" ]; then
-              ghr -t $GITHUB_TOKEN -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} --replace $CIRCLE_TAG dist/
+            if [ "$CIRCLE_PROJECT_USERNAME" == "devopsdunkin"]; then
+              gox -os="linux darwin windows" -arch="amd64" -output="dist/${CIRCLE_PROJECT_REPONAME}_{{.OS}}_{{.Arch}}"
+              cd dist/ && gzip *
+              if [ "$CIRCLE_TAG" ]; then
+                  ghr -t $GITHUB_TOKEN -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} --replace $CIRCLE_TAG dist/
+              else
+                echo "no tagged version to deploy"
+              fi
             else
-              echo "no tagged version to deploy"
+              echo "Release does not occur on forked master branch"
             fi
     environment:
       GO111MODULE: "on"
@@ -57,6 +59,6 @@ workflows:
             - test
           filters:
             branches:
-              only: master
+              only: devopsdunkin/master
             tags:
               only: /^v.*/
